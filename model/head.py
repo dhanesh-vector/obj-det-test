@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from models.backbone import ConvBNLayer, BasicBlock
+from .backbone import ConvBNLayer, BasicBlock
 
 
 class ESEAttn(nn.Module):

@@ -33,8 +33,8 @@ class YOLOEPUFocalLoss(YOLOELoss):
     of objects might not be labeled (e.g. 10% labeling rate).
     """
     
-    def __init__(self, num_classes=80, reg_max=16, strides=[32, 16, 8], gamma=2.0, beta=1.0):
-        super(YOLOEPUFocalLoss, self).__init__(num_classes, reg_max, strides)
+    def __init__(self, num_classes=80, reg_max=16, strides=[32, 16, 8], gamma=2.0, beta=1.0, label_smooth=0.0):
+        super(YOLOEPUFocalLoss, self).__init__(num_classes, reg_max, strides, label_smooth=label_smooth)
         # Gamma for Soft Sampling (down-weighting highly confident but unlabeled backgrounds)
         self.gamma = gamma
         # Beta for Focal IoU (up-weighting positive anchors with high localization IoU)
@@ -70,45 +70,16 @@ class YOLOEPUFocalLoss(YOLOELoss):
             # If no ground truths are present in this image
             if len(gt_boxes) == 0:
                 target_cls = torch.zeros_like(pred_cls)
-                base_bce = self.bce(pred_cls, target_cls) # (num_anchors, num_classes)
-                
-                # Soft Sampling: lambda_soft_sampling = (1 - P_{objectness})^\gamma
-                # Soften penalty for false positives because they might be unlabelled real objects
+                base_bce = self.bce(pred_cls, target_cls)  # (num_anchors, num_classes)
+
+                # Soft Sampling: soften penalty for unlabelled potential positives.
+                # Use sum()/num_anchors (i.e. mean) here since there are no positives
+                # to normalize against — this image contributes a flat background term.
                 soft_weight = (1.0 - obj_score).pow(self.gamma).unsqueeze(-1)
-                loss_cls += (base_bce * soft_weight).mean()
+                loss_cls += (base_bce * soft_weight).sum() / num_anchors
                 continue
             
-            num_gts = len(gt_boxes)
-            gt_centers = (gt_boxes[:, :2] + gt_boxes[:, 2:]) / 2
-            distances = torch.cdist(anchor_points, gt_centers)
-            
-            target_cls = torch.zeros_like(pred_cls)
-            target_box = torch.zeros((num_anchors, 4), device=device)
-            fg_mask = torch.zeros(num_anchors, dtype=torch.bool, device=device)
-            
-            # Multi-anchor assignment per GT
-            k = min(13, num_anchors // max(num_gts, 1))
-            k = max(k, 3)
-            
-            for gt_idx in range(num_gts):
-                _, topk_indices = torch.topk(distances[:, gt_idx], k=k, largest=False)
-                gt_box = gt_boxes[gt_idx]
-                
-                # Check anchors inside GT box
-                inside = (
-                    (anchor_points[topk_indices, 0] >= gt_box[0]) &
-                    (anchor_points[topk_indices, 0] <= gt_box[2]) &
-                    (anchor_points[topk_indices, 1] >= gt_box[1]) &
-                    (anchor_points[topk_indices, 1] <= gt_box[3])
-                )
-                
-                assigned = topk_indices[inside] if inside.any() else topk_indices[:3]
-                
-                for idx in assigned:
-                    target_cls[idx, gt_labels[gt_idx]] = 1.0
-                    target_box[idx] = gt_box
-                    fg_mask[idx] = True
-            
+            target_cls, target_box, fg_mask = self._assign_targets(gt_boxes, gt_labels, anchor_points, num_anchors, device)
             num_pos = fg_mask.sum().item()
             
             # Base classification loss computation
@@ -133,26 +104,47 @@ class YOLOEPUFocalLoss(YOLOELoss):
                 
                 weight[fg_mask] = iou.pow(self.beta)
                 
-                # Apply class balance scaling and Focal IoU weight
-                pos_weight = min(num_anchors / num_pos, 50.0)
-                pos_loss = (base_cls_loss[fg_mask] * weight[fg_mask].unsqueeze(-1)).mean() * pos_weight
+                # Normalize by num_pos (same as base loss fix): Focal IoU weights
+                # modulate per-anchor contribution but total is still / num_pos.
+                pos_loss = (base_cls_loss[fg_mask] * weight[fg_mask].unsqueeze(-1)).sum() / num_pos
             else:
                 pos_loss = torch.tensor(0.0, device=device)
-            
-            # Compute Negative loss with Soft Sampling weight
-            neg_loss = (base_cls_loss[neg_mask] * weight[neg_mask].unsqueeze(-1)).mean()
+
+            # Soft Sampling negatives normalized by num_pos so neg total is
+            # commensurate with pos total, not diluted across thousands of anchors.
+            neg_loss = (base_cls_loss[neg_mask] * weight[neg_mask].unsqueeze(-1)).sum() / max(num_pos, 1)
             loss_cls += pos_loss + neg_loss
             
             # Box Regression Loss
             if fg_mask.any():
                 pred_boxes = self._decode_boxes(pred_reg[fg_mask], anchor_points[fg_mask], stride_tensor[fg_mask])
                 loss_box += nn.functional.smooth_l1_loss(pred_boxes, target_box[fg_mask], reduction='mean')
+                
+                # Compute DFL targets: (l, t, r, b) scaled by stride
+                stride = stride_tensor[fg_mask].squeeze(-1)
+                anchors = anchor_points[fg_mask]
+                tgts = target_box[fg_mask]
+                
+                target_ltrb = torch.zeros_like(tgts)
+                target_ltrb[:, 0] = (anchors[:, 0] - tgts[:, 0]) / stride
+                target_ltrb[:, 1] = (anchors[:, 1] - tgts[:, 1]) / stride
+                target_ltrb[:, 2] = (tgts[:, 2] - anchors[:, 0]) / stride
+                target_ltrb[:, 3] = (tgts[:, 3] - anchors[:, 1]) / stride
+                
+                # Clamp to [0, reg_max - 0.01] to prevent out of bounds
+                target_ltrb = target_ltrb.clamp(0, self.reg_max - 0.01)
+                
+                pred_distri = pred_reg[fg_mask].reshape(-1, self.reg_max + 1)
+                target_ltrb = target_ltrb.reshape(-1)
+                
+                loss_dfl += self.dfl(pred_distri, target_ltrb).mean()
         
         loss_cls = loss_cls / batch_size * self.cls_weight
         loss_box = loss_box / batch_size * self.box_weight
+        loss_dfl = loss_dfl / batch_size * self.dfl_weight
         
         return {
-            'loss': loss_cls + loss_box + loss_dfl * self.dfl_weight,
+            'loss': loss_cls + loss_box + loss_dfl,
             'loss_cls': loss_cls,
             'loss_box': loss_box,
             'loss_dfl': loss_dfl

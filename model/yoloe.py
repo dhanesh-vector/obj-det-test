@@ -128,19 +128,19 @@ class YOLOEWithLoss(nn.Module):
     YOLOE with integrated loss computation for training
     """
     
-    def __init__(self, model, num_classes=80, reg_max=16, use_pu_loss=False, gamma=2.0, beta=1.0):
+    def __init__(self, model, num_classes=80, reg_max=16, use_pu_loss=False, gamma=2.0, beta=1.0, label_smooth=0.0):
         super(YOLOEWithLoss, self).__init__()
         self.model = model
         self.num_classes = num_classes
         self.reg_max = reg_max
         self.use_pu_loss = use_pu_loss
-        
+
         if self.use_pu_loss:
             from .pu_loss import YOLOEPUFocalLoss
-            self.loss_fn = YOLOEPUFocalLoss(num_classes=num_classes, reg_max=reg_max, strides=model.strides, gamma=gamma, beta=beta)
+            self.loss_fn = YOLOEPUFocalLoss(num_classes=num_classes, reg_max=reg_max, strides=model.strides, gamma=gamma, beta=beta, label_smooth=label_smooth)
         else:
             from .loss import YOLOELoss
-            self.loss_fn = YOLOELoss(num_classes=num_classes, reg_max=reg_max, strides=model.strides)
+            self.loss_fn = YOLOELoss(num_classes=num_classes, reg_max=reg_max, strides=model.strides, label_smooth=label_smooth)
         
     def forward(self, x, targets=None):
         """

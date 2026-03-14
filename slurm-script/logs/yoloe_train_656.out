@@ -1,0 +1,36 @@
+Job started at: Fri Mar 13 08:21:02 PM EDT 2026
+Running on node: bn001
+Activating virtual environment...
+Starting training...
+Using config file: train/config/default.yaml
+Using device: cuda
+Loading datasets...
+Train dataset size: 2306
+Validation dataset size: 357
+Building YOLOE model (size: s)...
+Starting training for 50 epochs...
+Epoch [1/50] Time: 73.28s | LR: 0.000050 | Train Loss: 273.2261 | Val Loss: 87.8646 | AP@50: 0.0014 | Prec: 0.0000 | Recall: 0.0000 | Recall@100: 0.0622
+--> Saved new best model with AP@50: 0.0014 (Val Loss: 87.8646)
+Epoch [2/50] Time: 60.76s | LR: 0.000200 | Train Loss: 33.8866 | Val Loss: 36.1415 | AP@50: 0.1773 | Prec: 0.5000 | Recall: 0.0056 | Recall@100: 0.1641
+--> Saved new best model with AP@50: 0.1773 (Val Loss: 36.1415)
+Epoch [3/50] Time: 61.46s | LR: 0.000350 | Train Loss: 17.2120 | Val Loss: 34.3203 | AP@50: 0.3645 | Prec: 0.4545 | Recall: 0.3922 | Recall@100: 0.2846
+--> Saved new best model with AP@50: 0.3645 (Val Loss: 34.3203)
+Epoch [4/50] Time: 60.51s | LR: 0.000500 | Train Loss: 12.2762 | Val Loss: 27.2571 | AP@50: 0.3746 | Prec: 0.5437 | Recall: 0.4874 | Recall@100: 0.2916
+--> Saved new best model with AP@50: 0.3746 (Val Loss: 27.2571)
+Epoch [5/50] Time: 61.35s | LR: 0.000499 | Train Loss: 9.9974 | Val Loss: 31.6353 | AP@50: 0.4414 | Prec: 0.4737 | Recall: 0.5042 | Recall@100: 0.2622
+--> Saved new best model with AP@50: 0.4414 (Val Loss: 31.6353)
+Epoch [6/50] Time: 61.02s | LR: 0.000498 | Train Loss: 8.8781 | Val Loss: 30.0241 | AP@50: 0.3087 | Prec: 0.5058 | Recall: 0.4902 | Recall@100: 0.3084
+Epoch [7/50] Time: 60.96s | LR: 0.000495 | Train Loss: 7.9638 | Val Loss: 32.5993 | AP@50: 0.2475 | Prec: 0.3687 | Recall: 0.3501 | Recall@100: 0.2692
+Epoch [8/50] Time: 61.49s | LR: 0.000491 | Train Loss: 7.5263 | Val Loss: 32.2631 | AP@50: 0.2547 | Prec: 0.4844 | Recall: 0.3053 | Recall@100: 0.3249
+Epoch [9/50] Time: 60.57s | LR: 0.000486 | Train Loss: 7.2076 | Val Loss: 31.9680 | AP@50: 0.3523 | Prec: 0.5411 | Recall: 0.4790 | Recall@100: 0.3317
+Epoch [10/50] Time: 60.13s | LR: 0.000481 | Train Loss: 6.8398 | Val Loss: 28.5485 | AP@50: 0.2945 | Prec: 0.3412 | Recall: 0.5266 | Recall@100: 0.3361
+Epoch [11/50] Time: 59.36s | LR: 0.000474 | Train Loss: 6.4620 | Val Loss: 28.7917 | AP@50: 0.3297 | Prec: 0.5164 | Recall: 0.5294 | Recall@100: 0.3148
+Epoch [12/50] Time: 60.15s | LR: 0.000466 | Train Loss: 6.2458 | Val Loss: 29.9201 | AP@50: 0.3979 | Prec: 0.6300 | Recall: 0.4818 | Recall@100: 0.3560
+Epoch [13/50] Time: 60.33s | LR: 0.000457 | Train Loss: 5.9599 | Val Loss: 31.7118 | AP@50: 0.3415 | Prec: 0.5079 | Recall: 0.5378 | Recall@100: 0.3574
+Epoch [14/50] Time: 59.81s | LR: 0.000447 | Train Loss: 5.5641 | Val Loss: 32.4002 | AP@50: 0.3540 | Prec: 0.5872 | Recall: 0.4622 | Recall@100: 0.3143
+Epoch [15/50] Time: 59.90s | LR: 0.000437 | Train Loss: 5.4056 | Val Loss: 32.4119 | AP@50: 0.3976 | Prec: 0.5058 | Recall: 0.4846 | Recall@100: 0.3507
+Early stopping triggered: AP@50 did not improve for 10 epochs.
+Training complete!
+Best AP@50: 0.4414 at Epoch 5
+Run summary saved to results/training_run_20260313_202121.json
+Job completed at: Fri Mar 13 08:36:45 PM EDT 2026

@@ -1,0 +1,45 @@
+Job started at: Fri Mar 13 04:37:02 PM EDT 2026
+Running on node: bn001
+Activating virtual environment...
+Starting training...
+Using config file: train/config/default.yaml
+Using device: cuda
+Loading datasets...
+Train dataset size: 2306
+Validation dataset size: 357
+Building YOLOE model (size: s)...
+Starting training for 50 epochs...
+Epoch [1/50] Time: 70.48s | LR: 0.000100 | Train Loss: 49.3007 | Val Loss: 34.9493 | mAP@50: 0.0085 | mAP@75: 0.0001
+--> Saved new best model with mAP@50: 0.0085 (Val Loss: 34.9493)
+Epoch [2/50] Time: 68.19s | LR: 0.000400 | Train Loss: 22.1601 | Val Loss: 34.0676 | mAP@50: 0.0141 | mAP@75: 0.0002
+--> Saved new best model with mAP@50: 0.0141 (Val Loss: 34.0676)
+Epoch [3/50] Time: 70.88s | LR: 0.000700 | Train Loss: 15.3977 | Val Loss: 31.3626 | mAP@50: 0.0517 | mAP@75: 0.0018
+--> Saved new best model with mAP@50: 0.0517 (Val Loss: 31.3626)
+Epoch [4/50] Time: 70.55s | LR: 0.001000 | Train Loss: 10.8647 | Val Loss: 40.3688 | mAP@50: 0.0182 | mAP@75: 0.0005
+Epoch [5/50] Time: 66.67s | LR: 0.000999 | Train Loss: 8.0038 | Val Loss: 40.9147 | mAP@50: 0.1513 | mAP@75: 0.0042
+--> Saved new best model with mAP@50: 0.1513 (Val Loss: 40.9147)
+Epoch [6/50] Time: 66.36s | LR: 0.000996 | Train Loss: 6.8756 | Val Loss: 31.1889 | mAP@50: 0.0141 | mAP@75: 0.0016
+Epoch [7/50] Time: 64.69s | LR: 0.000990 | Train Loss: 5.8266 | Val Loss: 67.2989 | mAP@50: 0.0850 | mAP@75: 0.0015
+Epoch [8/50] Time: 63.95s | LR: 0.000982 | Train Loss: 5.4219 | Val Loss: 59.1638 | mAP@50: 0.1960 | mAP@75: 0.0179
+--> Saved new best model with mAP@50: 0.1960 (Val Loss: 59.1638)
+Epoch [9/50] Time: 64.23s | LR: 0.000973 | Train Loss: 4.7972 | Val Loss: 69.2514 | mAP@50: 0.2747 | mAP@75: 0.0159
+--> Saved new best model with mAP@50: 0.2747 (Val Loss: 69.2514)
+Epoch [10/50] Time: 65.73s | LR: 0.000961 | Train Loss: 4.9551 | Val Loss: 45.4074 | mAP@50: 0.0336 | mAP@75: 0.0041
+Epoch [11/50] Time: 63.30s | LR: 0.000947 | Train Loss: 4.3778 | Val Loss: 54.6239 | mAP@50: 0.1133 | mAP@75: 0.0151
+Epoch [12/50] Time: 62.91s | LR: 0.000931 | Train Loss: 3.7595 | Val Loss: 87.8953 | mAP@50: 0.2137 | mAP@75: 0.0446
+Epoch [13/50] Time: 62.36s | LR: 0.000913 | Train Loss: 3.9518 | Val Loss: 84.6715 | mAP@50: 0.3915 | mAP@75: 0.0299
+--> Saved new best model with mAP@50: 0.3915 (Val Loss: 84.6715)
+Epoch [14/50] Time: 63.23s | LR: 0.000893 | Train Loss: 3.2330 | Val Loss: 106.3846 | mAP@50: 0.2727 | mAP@75: 0.1256
+Epoch [15/50] Time: 62.53s | LR: 0.000872 | Train Loss: 2.9584 | Val Loss: 62.3789 | mAP@50: 0.0488 | mAP@75: 0.0036
+Epoch [16/50] Time: 61.09s | LR: 0.000849 | Train Loss: 3.0069 | Val Loss: 108.4928 | mAP@50: 0.3247 | mAP@75: 0.0486
+Epoch [17/50] Time: 61.29s | LR: 0.000825 | Train Loss: 2.7321 | Val Loss: 141.0735 | mAP@50: 0.2891 | mAP@75: 0.1862
+Epoch [18/50] Time: 60.72s | LR: 0.000799 | Train Loss: 2.6301 | Val Loss: 98.1823 | mAP@50: 0.2070 | mAP@75: 0.1069
+Epoch [19/50] Time: 61.43s | LR: 0.000771 | Train Loss: 2.4632 | Val Loss: 134.3794 | mAP@50: 0.3706 | mAP@75: 0.0457
+Epoch [20/50] Time: 61.95s | LR: 0.000743 | Train Loss: 2.3270 | Val Loss: 150.9987 | mAP@50: 0.2980 | mAP@75: 0.0822
+Epoch [21/50] Time: 61.70s | LR: 0.000713 | Train Loss: 2.2003 | Val Loss: 154.0034 | mAP@50: 0.1761 | mAP@75: 0.0718
+Epoch [22/50] Time: 61.19s | LR: 0.000683 | Train Loss: 2.1973 | Val Loss: 166.5156 | mAP@50: 0.2788 | mAP@75: 0.1038
+Epoch [23/50] Time: 67.63s | LR: 0.000652 | Train Loss: 5.7091 | Val Loss: 36.2987 | mAP@50: 0.0311 | mAP@75: 0.0007
+Epoch [24/50] Time: 63.09s | LR: 0.000620 | Train Loss: 4.5593 | Val Loss: 46.1448 | mAP@50: 0.0389 | mAP@75: 0.0051
+Epoch [25/50] Time: 63.05s | LR: 0.000587 | Train Loss: 3.5387 | Val Loss: 59.8826 | mAP@50: 0.0460 | mAP@75: 0.0083
+Epoch [26/50] Time: 61.51s | LR: 0.000555 | Train Loss: 2.8353 | Val Loss: 82.3301 | mAP@50: 0.0568 | mAP@75: 0.0101
+Epoch [27/50] Time: 62.28s | LR: 0.000522 | Train Loss: 2.4367 | Val Loss: 96.3233 | mAP@50: 0.0672 | mAP@75: 0.0069

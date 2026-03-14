@@ -1,0 +1,19 @@
+data_dir: /projects/tenomix/ml-share/training/07/data
+model_size: s
+num_classes: 1
+batch_size: 16
+epochs: 50
+learning_rate: 0.001
+weight_decay: 0.0005
+num_workers: 8
+use_pu_loss: true
+device: cuda
+early_stopping_patience: 10
+early_stopping_min_delta: 0.05
+augmentations:
+  - HorizontalFlip: {p: 0.5}
+  - VerticalFlip: {p: 0.5}
+  - RandomBrightnessContrast: {brightness_limit: 0.15, contrast_limit: 0.15, p: 0.3}
+  - GaussianBlur: {blur_limit: [3, 7], p: 0.3}
+  - GaussNoise: {std_range: [0.01, 0.05], p: 0.4}
+  - CLAHE: {clip_limit: 2.0, tile_grid_size: [8, 8], p: 0.3}

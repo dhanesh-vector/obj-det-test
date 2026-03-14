@@ -1,0 +1,34 @@
+Job started at: Fri Mar 13 05:15:11 PM EDT 2026
+Running on node: bn001
+Activating virtual environment...
+Starting training...
+Using config file: train/config/default.yaml
+Using device: cuda
+Loading datasets...
+Train dataset size: 2306
+Validation dataset size: 357
+Building YOLOE model (size: s)...
+Starting training for 50 epochs...
+Epoch [1/50] Time: 75.53s | LR: 0.000100 | Train Loss: 52.1537 | Val Loss: 35.7316 | mAP@50: 0.0041 | mAP@75: 0.0000
+--> Saved new best model with mAP@50: 0.0041 (Val Loss: 35.7316)
+Epoch [2/50] Time: 73.00s | LR: 0.000400 | Train Loss: 24.6783 | Val Loss: 32.6815 | mAP@50: 0.0885 | mAP@75: 0.0253
+--> Saved new best model with mAP@50: 0.0885 (Val Loss: 32.6815)
+Epoch [3/50] Time: 69.27s | LR: 0.000700 | Train Loss: 14.8125 | Val Loss: 25.3530 | mAP@50: 0.0113 | mAP@75: 0.0017
+Epoch [4/50] Time: 67.30s | LR: 0.001000 | Train Loss: 12.3370 | Val Loss: 29.3792 | mAP@50: 0.0119 | mAP@75: 0.0008
+Epoch [5/50] Time: 64.01s | LR: 0.000999 | Train Loss: 9.1344 | Val Loss: 26.9301 | mAP@50: 0.0980 | mAP@75: 0.0234
+--> Saved new best model with mAP@50: 0.0980 (Val Loss: 26.9301)
+Epoch [6/50] Time: 64.71s | LR: 0.000996 | Train Loss: 8.3535 | Val Loss: 30.9859 | mAP@50: 0.0147 | mAP@75: 0.0002
+Epoch [7/50] Time: 64.21s | LR: 0.000990 | Train Loss: 7.3968 | Val Loss: 37.4930 | mAP@50: 0.0219 | mAP@75: 0.0062
+Epoch [8/50] Time: 63.78s | LR: 0.000982 | Train Loss: 6.3068 | Val Loss: 38.0496 | mAP@50: 0.0393 | mAP@75: 0.0038
+Epoch [9/50] Time: 61.41s | LR: 0.000973 | Train Loss: 5.6556 | Val Loss: 51.8391 | mAP@50: 0.0507 | mAP@75: 0.0098
+Epoch [10/50] Time: 65.40s | LR: 0.000961 | Train Loss: 5.3885 | Val Loss: 48.9002 | mAP@50: 0.0733 | mAP@75: 0.0199
+Epoch [11/50] Time: 63.40s | LR: 0.000947 | Train Loss: 4.6652 | Val Loss: 44.1358 | mAP@50: 0.0493 | mAP@75: 0.0125
+Epoch [12/50] Time: 61.56s | LR: 0.000931 | Train Loss: 4.6887 | Val Loss: 75.8358 | mAP@50: 0.0838 | mAP@75: 0.0157
+Epoch [13/50] Time: 62.53s | LR: 0.000913 | Train Loss: 4.1227 | Val Loss: 63.3994 | mAP@50: 0.0845 | mAP@75: 0.0182
+Epoch [14/50] Time: 61.02s | LR: 0.000893 | Train Loss: 3.8495 | Val Loss: 71.1720 | mAP@50: 0.0511 | mAP@75: 0.0089
+Epoch [15/50] Time: 61.55s | LR: 0.000872 | Train Loss: 3.7047 | Val Loss: 62.7788 | mAP@50: 0.0581 | mAP@75: 0.0197
+Early stopping triggered: no improvement in mAP@50 for 10 epochs.
+Training complete!
+Best mAP@50: 0.0980 at Epoch 5
+Run summary saved to results/training_run_20260313_171530.json
+Job completed at: Fri Mar 13 05:31:52 PM EDT 2026
