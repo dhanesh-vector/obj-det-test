@@ -49,12 +49,23 @@ def set_seed(seed: int):
     torch.cuda.manual_seed_all(seed)
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
+    # Enforce determinism for all CUDA ops (scatter, index_add, upsample, etc.)
+    # Set warn_only=True to surface any non-deterministic ops without crashing.
+    torch.use_deterministic_algorithms(True, warn_only=True)
+    os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:8"
 
 
 def seed_worker(worker_id):
     worker_seed = torch.initial_seed() % 2**32
     np.random.seed(worker_seed)
     random.seed(worker_seed)
+    # Seed albumentations 2.x internal RNGs (uses its own numpy Generator + random.Random,
+    # not the global random state seeded above).
+    worker_info = torch.utils.data.get_worker_info()
+    if worker_info is not None:
+        dataset = worker_info.dataset
+        if hasattr(dataset, 'transform') and dataset.transform is not None:
+            dataset.transform.set_random_seed(worker_seed)
 
 
 def train_one_epoch(model, dataloader, optimizer, device):
@@ -151,7 +162,7 @@ def main():
     print(f"Validation dataset size: {len(val_dataset)}")
     
     if args.slice_stride > 1:
-        train_sampler = ScanAwareSampler(train_dataset, stride=args.slice_stride)
+        train_sampler = ScanAwareSampler(train_dataset, stride=args.slice_stride, seed=args.seed)
     else:
         train_sampler = None
 
