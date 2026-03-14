@@ -63,6 +63,9 @@ class Evaluator:
         )
         parsed_results['precision'] = precision
         parsed_results['recall'] = recall
+        parsed_results['slice_ap_50'] = self._per_slice_ap(
+            self._all_preds, self._all_targets, iou_thresh=0.5
+        )
         return parsed_results
 
     def _precision_recall_at_threshold(self, preds, targets, iou_thresh=0.5, conf_thresh=0.5):
@@ -108,6 +111,68 @@ class Evaluator:
         precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
         recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
         return precision, recall
+
+    def _per_slice_ap(self, preds, targets, iou_thresh=0.5):
+        """
+        Image-level (per-slice) AP at the given IoU threshold.
+
+        Each slice is treated as a single sample:
+          - Score:   max prediction confidence in the slice (0.0 if no predictions)
+          - Label:   positive if the slice has at least one GT box
+          - Hit:     positive slice is a TP if any prediction matches any GT at IoU >= iou_thresh
+
+        The PR curve is built by sweeping the score threshold from high to low,
+        and AP is the area under that curve (using the standard 101-point interpolation).
+        """
+        slice_scores = []
+        slice_is_positive = []
+        slice_is_hit = []
+
+        for pred, target in zip(preds, targets):
+            gt_boxes = target['boxes']
+            pred_boxes = pred['boxes']
+            pred_scores = pred['scores']
+
+            is_positive = len(gt_boxes) > 0
+            score = pred_scores.max().item() if len(pred_scores) > 0 else 0.0
+
+            hit = False
+            if is_positive and len(pred_boxes) > 0:
+                iou = box_iou(pred_boxes, gt_boxes)  # (n_pred, n_gt)
+                hit = bool((iou >= iou_thresh).any())
+
+            slice_scores.append(score)
+            slice_is_positive.append(is_positive)
+            slice_is_hit.append(hit)
+
+        # Sort slices by score descending
+        order = sorted(range(len(slice_scores)), key=lambda i: slice_scores[i], reverse=True)
+
+        n_pos = sum(slice_is_positive)
+        if n_pos == 0:
+            return 0.0
+
+        tp_cum = 0
+        fp_cum = 0
+        precisions = []
+        recalls = []
+
+        for i in order:
+            if slice_is_positive[i]:
+                if slice_is_hit[i]:
+                    tp_cum += 1
+            else:
+                fp_cum += 1
+            precisions.append(tp_cum / (tp_cum + fp_cum) if (tp_cum + fp_cum) > 0 else 0.0)
+            recalls.append(tp_cum / n_pos)
+
+        # 101-point interpolated AP
+        ap = 0.0
+        for t in [r / 100 for r in range(101)]:
+            p_at_t = max((p for p, r in zip(precisions, recalls) if r >= t), default=0.0)
+            ap += p_at_t / 101
+
+        return ap
 
     def reset(self):
         self.metric.reset()

@@ -1,0 +1,52 @@
+Job started at: Fri Mar 13 10:31:22 PM EDT 2026
+Running on node: bn001
+Activating virtual environment...
+Starting training...
+Using config file: train/config/default.yaml
+Using device: cuda
+Loading datasets...
+Train dataset size: 2306
+Validation dataset size: 357
+ScanAwareSampler: 13 scans, 2306 total slices, stride=10 → ~236 slices/epoch (10% of training set per epoch)
+Building YOLOE model (size: s)...
+Starting training for 100 epochs...
+Epoch [1/100] Time: 24.71s | LR: 0.000050 | Train Loss: 366.3457 | Val Loss: 360.3329 | AP@50: 0.0036 | Prec: 0.0039 | Recall: 0.4258 | Recall@100: 0.1067
+--> Saved new best model with AP@50: 0.0036 (Val Loss: 360.3329)
+Epoch [2/100] Time: 25.08s | LR: 0.000200 | Train Loss: 133.8549 | Val Loss: 79.9349 | AP@50: 0.0000 | Prec: 0.0000 | Recall: 0.0000 | Recall@100: 0.0171
+Epoch [3/100] Time: 18.21s | LR: 0.000350 | Train Loss: 39.8777 | Val Loss: 49.9968 | AP@50: 0.0024 | Prec: 0.0000 | Recall: 0.0000 | Recall@100: 0.0633
+Epoch [4/100] Time: 16.98s | LR: 0.000500 | Train Loss: 32.3015 | Val Loss: 42.2702 | AP@50: 0.0037 | Prec: 0.0000 | Recall: 0.0000 | Recall@100: 0.0185
+Epoch [5/100] Time: 17.51s | LR: 0.000500 | Train Loss: 32.0029 | Val Loss: 43.8712 | AP@50: 0.0043 | Prec: 0.0000 | Recall: 0.0000 | Recall@100: 0.0602
+Epoch [6/100] Time: 17.15s | LR: 0.000499 | Train Loss: 28.5976 | Val Loss: 45.0923 | AP@50: 0.0702 | Prec: 0.0000 | Recall: 0.0000 | Recall@100: 0.0742
+--> Saved new best model with AP@50: 0.0702 (Val Loss: 45.0923)
+Epoch [7/100] Time: 17.05s | LR: 0.000499 | Train Loss: 29.8426 | Val Loss: 40.7658 | AP@50: 0.0784 | Prec: 0.0000 | Recall: 0.0000 | Recall@100: 0.1367
+--> Saved new best model with AP@50: 0.0784 (Val Loss: 40.7658)
+Epoch [8/100] Time: 17.48s | LR: 0.000498 | Train Loss: 23.9484 | Val Loss: 42.2297 | AP@50: 0.0405 | Prec: 0.0000 | Recall: 0.0000 | Recall@100: 0.0905
+Epoch [9/100] Time: 17.24s | LR: 0.000497 | Train Loss: 23.5707 | Val Loss: 39.6529 | AP@50: 0.1655 | Prec: 0.5522 | Recall: 0.1036 | Recall@100: 0.1801
+--> Saved new best model with AP@50: 0.1655 (Val Loss: 39.6529)
+Epoch [10/100] Time: 17.47s | LR: 0.000495 | Train Loss: 21.5920 | Val Loss: 42.7849 | AP@50: 0.3827 | Prec: 0.6573 | Recall: 0.3277 | Recall@100: 0.2552
+--> Saved new best model with AP@50: 0.3827 (Val Loss: 42.7849)
+Epoch [11/100] Time: 17.36s | LR: 0.000494 | Train Loss: 19.5623 | Val Loss: 38.4861 | AP@50: 0.2158 | Prec: 0.3407 | Recall: 0.2605 | Recall@100: 0.1843
+Epoch [12/100] Time: 17.58s | LR: 0.000492 | Train Loss: 17.4026 | Val Loss: 40.7392 | AP@50: 0.1213 | Prec: 0.1308 | Recall: 0.2381 | Recall@100: 0.1518
+Epoch [13/100] Time: 17.65s | LR: 0.000490 | Train Loss: 15.9664 | Val Loss: 42.3108 | AP@50: 0.1712 | Prec: 0.1716 | Recall: 0.4062 | Recall@100: 0.1829
+Epoch [14/100] Time: 17.29s | LR: 0.000487 | Train Loss: 15.0429 | Val Loss: 40.7729 | AP@50: 0.2905 | Prec: 0.2390 | Recall: 0.4426 | Recall@100: 0.2969
+Epoch [15/100] Time: 17.88s | LR: 0.000485 | Train Loss: 14.3599 | Val Loss: 39.9874 | AP@50: 0.2856 | Prec: 0.1576 | Recall: 0.5434 | Recall@100: 0.3039
+Epoch [16/100] Time: 16.91s | LR: 0.000482 | Train Loss: 13.7287 | Val Loss: 37.3391 | AP@50: 0.2748 | Prec: 0.2292 | Recall: 0.3782 | Recall@100: 0.2426
+Epoch [17/100] Time: 17.40s | LR: 0.000479 | Train Loss: 13.2167 | Val Loss: 41.9140 | AP@50: 0.2120 | Prec: 0.2018 | Recall: 0.3838 | Recall@100: 0.2314
+Epoch [18/100] Time: 17.36s | LR: 0.000475 | Train Loss: 12.4791 | Val Loss: 37.8751 | AP@50: 0.3461 | Prec: 0.2607 | Recall: 0.4958 | Recall@100: 0.2902
+Epoch [19/100] Time: 17.54s | LR: 0.000472 | Train Loss: 11.1744 | Val Loss: 36.6715 | AP@50: 0.2471 | Prec: 0.2220 | Recall: 0.5378 | Recall@100: 0.3160
+Epoch [20/100] Time: 17.75s | LR: 0.000468 | Train Loss: 11.1547 | Val Loss: 32.6486 | AP@50: 0.2471 | Prec: 0.2375 | Recall: 0.5854 | Recall@100: 0.2653
+Epoch [21/100] Time: 17.80s | LR: 0.000464 | Train Loss: 11.9381 | Val Loss: 39.5708 | AP@50: 0.2872 | Prec: 0.2869 | Recall: 0.5014 | Recall@100: 0.2821
+Epoch [22/100] Time: 17.59s | LR: 0.000460 | Train Loss: 11.6651 | Val Loss: 37.9162 | AP@50: 0.2513 | Prec: 0.2764 | Recall: 0.3810 | Recall@100: 0.2574
+Epoch [23/100] Time: 17.46s | LR: 0.000455 | Train Loss: 10.9336 | Val Loss: 31.7810 | AP@50: 0.2882 | Prec: 0.3571 | Recall: 0.4902 | Recall@100: 0.3137
+Epoch [24/100] Time: 17.19s | LR: 0.000450 | Train Loss: 9.7246 | Val Loss: 36.5240 | AP@50: 0.2623 | Prec: 0.3011 | Recall: 0.3922 | Recall@100: 0.2006
+Epoch [25/100] Time: 17.21s | LR: 0.000445 | Train Loss: 10.0585 | Val Loss: 38.1064 | AP@50: 0.3750 | Prec: 0.4762 | Recall: 0.4762 | Recall@100: 0.2529
+Epoch [26/100] Time: 17.76s | LR: 0.000440 | Train Loss: 9.6653 | Val Loss: 37.8243 | AP@50: 0.2361 | Prec: 0.2328 | Recall: 0.4734 | Recall@100: 0.3098
+Epoch [27/100] Time: 17.69s | LR: 0.000435 | Train Loss: 9.6333 | Val Loss: 33.9297 | AP@50: 0.3809 | Prec: 0.2104 | Recall: 0.6022 | Recall@100: 0.2796
+Epoch [28/100] Time: 17.12s | LR: 0.000430 | Train Loss: 10.4491 | Val Loss: 34.9076 | AP@50: 0.3077 | Prec: 0.2981 | Recall: 0.4034 | Recall@100: 0.3255
+Epoch [29/100] Time: 17.19s | LR: 0.000424 | Train Loss: 9.7243 | Val Loss: 32.4048 | AP@50: 0.3733 | Prec: 0.3201 | Recall: 0.5630 | Recall@100: 0.3216
+Epoch [30/100] Time: 16.99s | LR: 0.000418 | Train Loss: 9.5885 | Val Loss: 36.1895 | AP@50: 0.3047 | Prec: 0.3393 | Recall: 0.5294 | Recall@100: 0.2835
+Early stopping triggered: AP@50 did not improve for 20 epochs.
+Training complete!
+Best AP@50: 0.3827 at Epoch 10
+Run summary saved to results/training_run_20260313_223137.json
+Job completed at: Fri Mar 13 10:40:38 PM EDT 2026

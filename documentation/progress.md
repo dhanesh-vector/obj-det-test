@@ -150,6 +150,47 @@ The train/val split is already done at the volume level (no leakage), but redund
 
 `slice_stride: 10` is the default — keeps ~3 representative samples per median run, reducing redundancy ~10× per epoch while maintaining full coverage across all 100 epochs.
 
+### 13. Cross-Scan Mosaic Augmentation (`data/dataset.py`)
+
+**Motivation:** With only ~230 slices/epoch (after scan-aware subsampling), the model sees limited scale and spatial diversity. Mosaic addresses this by compositing 4 images into a 2×2 grid, forcing the model to detect objects at half scale and across varied anatomical contexts in a single forward pass.
+
+**Design — cross-scan constraint:** The 3 mosaic partners are always drawn from 3 *different* scan IDs (different from the primary and from each other). This ensures each quadrant comes from a distinct acquisition, maximising context diversity and preventing near-duplicate slices from appearing in the same mosaic (which would reintroduce the redundancy the ScanAwareSampler eliminates).
+
+**Implementation (`data/dataset.py`):**
+- `__getitem__` now branches: with probability `mosaic_prob` calls `_load_mosaic(idx)`, otherwise `_load_single(idx)`. `mosaic_prob=0.0` is identical to prior behaviour.
+- `_load_raw(idx)` → loads image + boxes at target_size, no augmentation.
+- `_apply_augment(img, boxes, labels)` → applies albumentations transform (if configured) without `to_tensor`. Each mosaic quadrant is augmented independently.
+- `_load_mosaic(idx)` → loads 4 images from 4 different scans, applies independent augmentation per quadrant, resizes each to 320×320, composites into a 640×640 canvas. Boxes scaled ×0.5, offset by quadrant origin, clipped, degenerate boxes (<4 px width/height) discarded. Falls back to single image if fewer than 4 scans exist in the split.
+- `_load_single(idx)` → standard path, identical output to previous `__getitem__`.
+
+**On realism:** Mosaic produces images that no ultrasound probe can generate (4 fan regions tiled). This is intentional — augmentations need only preserve label validity (bounding boxes remain geometrically correct), not physical plausibility. The tile boundaries are spatially random and uncorrelated with lesion positions, so the model learns to ignore them. The black fan borders appearing at internal tile edges similarly carry no label information.
+
+**Integration:**
+- `train.py`: added `--mosaic_prob` (float). Passed to `UltrasoundDataset(mosaic_prob=...)`. Val dataset always uses `mosaic_prob=0.0`.
+- `train/config/default.yaml`: `mosaic_prob: 0.5` (half of training samples are mosaics).
+- To disable: set `mosaic_prob: 0.0` in config or `--mosaic_prob 0`.
+
+### 14. Per-Slice AP Metric (`utils/metrics.py`, `train/train.py`)
+
+**Motivation:** The existing `mAP@50` is computed at the **object level** — each GT lesion box is an independent recall event, and all predicted boxes across the whole validation set are pooled into a single PR curve. This is the right metric when the goal is precise localization of every lesion.
+
+However, a complementary question is: *does the model fire on the right slices at all?* A slice with 3 lesions where only 1 is detected contributes 1 TP and 2 FN to object-level mAP. At the slice level it is a correct detection regardless. This matters when:
+- Comparing across datasets with different lesion densities (per-object scale differs, per-slice does not)
+- Evaluating triage/screening performance (radiologist workflow: flag suspicious frames for review)
+- Assessing sensitivity to annotation incompleteness — if some slices have partial GT, per-slice AP is more robust because it asks "was anything found" rather than "was every instance found"
+
+**Implementation (`utils/metrics.py` — `Evaluator._per_slice_ap`):**
+- For each slice: `score = max prediction confidence` (0.0 if no predictions)
+- A slice is **positive** if it has ≥1 GT box; **negative** otherwise
+- A positive slice is a **hit** if any predicted box has IoU ≥ 0.5 with any GT box
+- Slices are sorted by score descending and a cumulative PR curve is built at the slice level
+- AP is computed using standard 101-point interpolation (COCO convention)
+- False alarms on negative (GT-free) slices penalize precision exactly as in the per-object case
+
+**Integration:**
+- `Evaluator.compute()` now returns `slice_ap_50` alongside all existing metrics
+- `train.py`: `slice_ap_50` logged per epoch to JSON and printed as `SliceAP@50` in the epoch line
+
 ### Next Steps
 - Evaluate run 655 results (label smoothing + loss fix combined): target AP@50 > 0.50 with Prec > 0.40.
 - If val loss continues diverging after epoch ~10, consider increasing `weight_decay` further or reducing `epochs` + relying on best-AP checkpoint.

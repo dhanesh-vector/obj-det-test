@@ -2,8 +2,10 @@ import sys
 import os
 import json
 import time
+import random
 from datetime import datetime
 import configargparse
+import numpy as np
 import torch
 import torch.optim as optim
 from torch.utils.data import DataLoader
@@ -35,8 +37,25 @@ def parse_args():
     parser.add('--early_stopping_min_delta', type=float, default=0.001, help='Minimum AP@50 increase to count as progress')
     parser.add('--label_smooth', type=float, default=0.0, help='Label smoothing for positive targets (e.g. 0.1 sets target to 0.9)')
     parser.add('--slice_stride', type=int, default=1, help='ScanAwareSampler window size: sample 1 slice per N consecutive slices per scan per epoch. 1 = all slices (standard shuffle). Recommended: 5-10 for dense ultrasound volumes.')
+    parser.add('--mosaic_prob', type=float, default=0.0, help='Probability of replacing a training sample with a 2×2 cross-scan mosaic. 0.0 disables mosaic (default). Recommended: 0.5.')
+    parser.add('--seed', type=int, default=42, help='Global random seed for reproducibility.')
 
     return parser.parse_args()
+
+def set_seed(seed: int):
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+
+
+def seed_worker(worker_id):
+    worker_seed = torch.initial_seed() % 2**32
+    np.random.seed(worker_seed)
+    random.seed(worker_seed)
+
 
 def train_one_epoch(model, dataloader, optimizer, device):
     model.train()
@@ -95,6 +114,7 @@ def validate(model, dataloader, device):
 
 def main():
     args = parse_args()
+    set_seed(args.seed)
 
     # Load raw config to get augmentations
     import yaml
@@ -125,7 +145,7 @@ def main():
 
     # Initialize Dataset and DataLoader
     print("Loading datasets...")
-    train_dataset = UltrasoundDataset(root_dir=args.data_dir, split='train', transform=train_transform)
+    train_dataset = UltrasoundDataset(root_dir=args.data_dir, split='train', transform=train_transform, mosaic_prob=args.mosaic_prob)
     val_dataset = UltrasoundDataset(root_dir=args.data_dir, split='val')    
     print(f"Train dataset size: {len(train_dataset)}")
     print(f"Validation dataset size: {len(val_dataset)}")
@@ -135,6 +155,9 @@ def main():
     else:
         train_sampler = None
 
+    g = torch.Generator()
+    g.manual_seed(args.seed)
+
     train_loader = DataLoader(
         train_dataset,
         batch_size=args.batch_size,
@@ -142,7 +165,9 @@ def main():
         sampler=train_sampler,
         num_workers=args.num_workers,
         collate_fn=collate_fn,
-        pin_memory=True if args.device == 'cuda' else False
+        pin_memory=True if args.device == 'cuda' else False,
+        worker_init_fn=seed_worker,
+        generator=g,
     )
     
     val_loader = DataLoader(
@@ -191,6 +216,7 @@ def main():
     training_info = {
         "timestamp_start": datetime.now().isoformat(),
         "args": vars(args),
+        "seed": args.seed,
         "metrics": {
             "train_loss": [],
             "val_loss": [],
@@ -200,6 +226,7 @@ def main():
             "mar_100": [],
             "precision": [],
             "recall": [],
+            "slice_ap_50": [],
             "epoch_times": []
         },
         "best_epoch": -1,
@@ -230,7 +257,8 @@ def main():
         
         print(f"Epoch [{epoch}/{args.epochs}] Time: {epoch_time:.2f}s | LR: {current_lr:.6f} | "
               f"Train Loss: {train_loss:.4f} | Val Loss: {val_loss:.4f} | "
-              f"AP@50: {map_metrics['map_50']:.4f} | Prec: {map_metrics['precision']:.4f} | "
+              f"AP@50: {map_metrics['map_50']:.4f} | SliceAP@50: {map_metrics['slice_ap_50']:.4f} | "
+              f"Prec: {map_metrics['precision']:.4f} | "
               f"Recall: {map_metrics['recall']:.4f} | Recall@100: {map_metrics['mar_100']:.4f}")
               
         # Record metrics
@@ -242,6 +270,7 @@ def main():
         training_info["metrics"]["mar_100"].append(map_metrics['mar_100'])
         training_info["metrics"]["precision"].append(map_metrics['precision'])
         training_info["metrics"]["recall"].append(map_metrics['recall'])
+        training_info["metrics"]["slice_ap_50"].append(map_metrics['slice_ap_50'])
         training_info["metrics"]["epoch_times"].append(epoch_time)
         
         # Save best model and drive early stopping — both keyed on AP@50
