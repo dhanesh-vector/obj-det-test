@@ -18,7 +18,7 @@ label_smooth: 0.0
 # median run length=30, mean=46. stride=10 keeps ~3 slices per median run
 # (~230 slices/epoch, 10% of 2306 total), meaningfully cutting redundancy
 # while still sampling diverse positions within each run.
-slice_stride: 8
+slice_stride: 10
 # Cross-scan mosaic augmentation: 2×2 grid from 4 different scans per sample.
 # Each quadrant is independently augmented; boxes are scaled ×0.5 and offset.
 # 0.0 disables mosaic (reverts to single-image behaviour). Recommended: 0.5.

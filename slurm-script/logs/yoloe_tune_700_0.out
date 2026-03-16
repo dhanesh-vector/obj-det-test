@@ -1,0 +1,11 @@
+Job array  : 700, task 0
+Node       : bn001
+Started at : Sat Mar 14 06:35:47 PM EDT 2026
+Config     : train/config/default.yaml
+Study      : yoloe_hparam_search @ sqlite:////fs01/home/dhaneshr/code/obj-det-test/optuna_studies/yoloe_hparam_search.db
+Trials     : 5 (this worker)
+Study name : yoloe_hparam_search
+Storage    : sqlite:////fs01/home/dhaneshr/code/obj-det-test/optuna_studies/yoloe_hparam_search.db
+Trials     : 5 (this worker)
+Epochs/trial: 50 (max, early stopping at patience=15)
+Task 0 completed at: Sat Mar 14 06:36:08 PM EDT 2026

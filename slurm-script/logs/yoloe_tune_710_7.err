@@ -1,0 +1,13 @@
+[I 2026-03-15 11:13:31,246] Using an existing study with name 'yoloe_hparam_search_v2' instead of creating a new one.
+/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/albumentations/core/validation.py:114: UserWarning: ShiftScaleRotate is a special case of Affine transform. Please use Affine transform instead.
+  original_init(self, **validated_kwargs)
+[I 2026-03-15 11:38:21,942] Trial 7 finished with value: 0.4588214159011841 and parameters: {'learning_rate': 0.00043284502212938834, 'weight_decay': 0.007969454818643935, 'slice_stride': 5, 'batch_size': 32, 'mosaic_prob': 0.34044600469728353, 'label_smooth': 0.10621088666940683, 'use_clahe': False, 'use_shift_scale_rotate': True, 'use_brightness_contrast': False}. Best is trial 8 with value: 0.5284878611564636.
+[I 2026-03-15 11:45:31,760] Trial 22 pruned. 
+[I 2026-03-15 11:54:10,723] Trial 37 pruned. 
+[I 2026-03-15 11:59:58,100] Trial 46 pruned. 
+[I 2026-03-15 12:23:15,884] Trial 50 finished with value: 0.4676511585712433 and parameters: {'learning_rate': 0.004922686868821584, 'weight_decay': 0.005533237191963128, 'slice_stride': 5, 'batch_size': 32, 'mosaic_prob': 0.3145396351811628, 'label_smooth': 0.09207063574978748, 'use_clahe': False, 'use_shift_scale_rotate': True, 'use_brightness_contrast': False}. Best is trial 40 with value: 0.5430223345756531.
+[I 2026-03-15 12:28:42,358] Trial 73 pruned. 
+[I 2026-03-15 12:33:59,410] Trial 81 pruned. 
+[I 2026-03-15 12:39:12,281] Trial 87 pruned. 
+[I 2026-03-15 12:44:06,007] Trial 93 pruned. 
+[I 2026-03-15 13:06:53,757] Trial 98 finished with value: 0.5578078031539917 and parameters: {'learning_rate': 0.00031541151070089215, 'weight_decay': 0.005267085623387704, 'slice_stride': 5, 'batch_size': 16, 'mosaic_prob': 0.3718090905629398, 'label_smooth': 0.08866135543143575, 'use_clahe': False, 'use_shift_scale_rotate': True, 'use_brightness_contrast': False}. Best is trial 60 with value: 0.5787034034729004.

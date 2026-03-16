@@ -1,0 +1,8 @@
+/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/albumentations/core/validation.py:114: UserWarning: ShiftScaleRotate is a special case of Affine transform. Please use Affine transform instead.
+  original_init(self, **validated_kwargs)
+[I 2026-03-14 18:36:12,652] Using an existing study with name 'yoloe_hparam_search' instead of creating a new one.
+[I 2026-03-14 18:56:58,910] Trial 5 finished with value: 0.4775036573410034 and parameters: {'learning_rate': 0.00043284502212938834, 'weight_decay': 0.007969454818643935, 'slice_stride': 5, 'batch_size': 32}. Best is trial 0 with value: 0.49578237533569336.
+[I 2026-03-14 19:02:09,299] Trial 11 pruned. 
+[I 2026-03-14 19:06:11,499] Trial 15 pruned. 
+[I 2026-03-14 19:10:54,151] Trial 19 pruned. 
+[I 2026-03-14 19:15:56,799] Trial 23 pruned. 

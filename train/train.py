@@ -39,6 +39,7 @@ def parse_args():
     parser.add('--slice_stride', type=int, default=1, help='ScanAwareSampler window size: sample 1 slice per N consecutive slices per scan per epoch. 1 = all slices (standard shuffle). Recommended: 5-10 for dense ultrasound volumes.')
     parser.add('--mosaic_prob', type=float, default=0.0, help='Probability of replacing a training sample with a 2×2 cross-scan mosaic. 0.0 disables mosaic (default). Recommended: 0.5.')
     parser.add('--seed', type=int, default=42, help='Global random seed for reproducibility.')
+    parser.add('--warmup_epochs', type=int, default=8, help='Number of linear warmup epochs before cosine decay.')
 
     return parser.parse_args()
 
@@ -207,8 +208,8 @@ def main():
         weight_decay=args.weight_decay
     )
     
-    # Setup Learning Rate Scheduler (3 Epochs Warmup + Cosine Decay)
-    warmup_epochs = 3
+    # Setup Learning Rate Scheduler (warmup_epochs linear warmup + Cosine Decay)
+    warmup_epochs = args.warmup_epochs
     warmup_scheduler = optim.lr_scheduler.LinearLR(
         optimizer, start_factor=0.1, total_iters=warmup_epochs
     )

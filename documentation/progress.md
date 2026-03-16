@@ -191,6 +191,21 @@ However, a complementary question is: *does the model fire on the right slices a
 - `Evaluator.compute()` now returns `slice_ap_50` alongside all existing metrics
 - `train.py`: `slice_ap_50` logged per epoch to JSON and printed as `SliceAP@50` in the epoch line
 
+### 15. Full Training Reproducibility (`train/train.py`)
+
+**Problem:** Training runs were non-deterministic across restarts — `set_seed()` seeded PyTorch, NumPy, and Python `random`, but three sources of non-determinism remained:
+1. CUDA non-deterministic ops (scatter, index_add, upsample, etc.) were unrestricted.
+2. Albumentations 2.x maintains its own internal RNGs (a NumPy `Generator` and a `random.Random`) that are separate from the global state seeded by `set_seed()`. DataLoader workers inherit process state at fork time but are not re-seeded by `seed_worker`.
+3. `ScanAwareSampler` used a fixed internal seed (`seed=42`) regardless of the training seed, so the sampling sequence was identical across all runs rather than being governed by `--seed`.
+
+**Fixes (`train/train.py`):**
+
+- **CUDA determinism:** Added `torch.use_deterministic_algorithms(True, warn_only=True)` and `os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:8"` inside `set_seed()`. `warn_only=True` surfaces any remaining non-deterministic ops (e.g. from the model backbone) without crashing, allowing them to be addressed incrementally.
+- **Albumentations RNG seeding:** Extended `seed_worker()` to call `dataset.transform.set_random_seed(worker_seed)` per worker. This seeds Albumentations' internal RNGs with the worker-specific seed (derived from PyTorch's initial seed) rather than a fixed global state.
+- **`ScanAwareSampler` seed propagation:** `ScanAwareSampler` now accepts a `seed` argument (forwarded from `args.seed`). The sampler's internal RNG is initialised from this seed, so different `--seed` values produce different (but reproducible) sampling sequences.
+
+**Result:** Two runs with the same `--seed` value now produce identical loss curves, metric sequences, and saved checkpoints.
+
 ### Next Steps
 - Evaluate run 655 results (label smoothing + loss fix combined): target AP@50 > 0.50 with Prec > 0.40.
 - If val loss continues diverging after epoch ~10, consider increasing `weight_decay` further or reducing `epochs` + relying on best-AP checkpoint.
