@@ -40,6 +40,13 @@ def parse_args():
     parser.add('--mosaic_prob', type=float, default=0.0, help='Probability of replacing a training sample with a 2×2 cross-scan mosaic. 0.0 disables mosaic (default). Recommended: 0.5.')
     parser.add('--seed', type=int, default=42, help='Global random seed for reproducibility.')
     parser.add('--warmup_epochs', type=int, default=8, help='Number of linear warmup epochs before cosine decay.')
+    parser.add('--use_median_blur', action='store_true', help='Add MedianBlur augmentation (speckle-aware, better than GaussianBlur for ultrasound).')
+    parser.add('--median_blur_limit', type=int, default=5, help='Max kernel size for MedianBlur (must be odd). Default: 5.')
+    parser.add('--median_blur_p', type=float, default=0.3, help='Probability of applying MedianBlur. Default: 0.3.')
+    parser.add('--use_multiplicative_noise', action='store_true', help='Add MultiplicativeNoise augmentation (simulates ultrasound speckle noise).')
+    parser.add('--multiplicative_noise_multiplier_min', type=float, default=0.9, help='Lower bound of multiplicative noise multiplier range. Default: 0.9.')
+    parser.add('--multiplicative_noise_multiplier_max', type=float, default=1.1, help='Upper bound of multiplicative noise multiplier range. Default: 1.1.')
+    parser.add('--multiplicative_noise_p', type=float, default=0.4, help='Probability of applying MultiplicativeNoise. Default: 0.4.')
 
     return parser.parse_args()
 
@@ -141,12 +148,28 @@ def main():
                 aug_class = getattr(A, name)
                 aug_list.append(aug_class(**params))
 
+    if args.use_median_blur:
+        aug_list.append(A.MedianBlur(blur_limit=args.median_blur_limit, p=args.median_blur_p))
+    if args.use_multiplicative_noise:
+        aug_list.append(A.MultiplicativeNoise(
+            multiplier=(args.multiplicative_noise_multiplier_min, args.multiplicative_noise_multiplier_max),
+            p=args.multiplicative_noise_p
+        ))
+
     train_transform = None
     if aug_list:
         train_transform = A.Compose(
             aug_list,
             bbox_params=A.BboxParams(format='pascal_voc', label_fields=['class_labels'])
         )
+
+    copy_paste = None
+    copy_paste_cfg = raw_config.get('copy_paste', {})
+    if copy_paste_cfg.get('enabled', False):
+        from data.augmentations import TissueAwareCopyPaste
+        copy_paste_params = {k: v for k, v in copy_paste_cfg.items() if k != 'enabled'}
+        copy_paste = TissueAwareCopyPaste(**copy_paste_params)
+        print(f"TissueAwareCopyPaste enabled: {copy_paste_params}")
 
     # Setup directories
     os.makedirs(args.checkpoints_dir, exist_ok=True)
@@ -157,7 +180,8 @@ def main():
 
     # Initialize Dataset and DataLoader
     print("Loading datasets...")
-    train_dataset = UltrasoundDataset(root_dir=args.data_dir, split='train', transform=train_transform, mosaic_prob=args.mosaic_prob)
+    train_dataset = UltrasoundDataset(root_dir=args.data_dir, split='train', transform=train_transform,
+                                       mosaic_prob=args.mosaic_prob, copy_paste=copy_paste)
     val_dataset = UltrasoundDataset(root_dir=args.data_dir, split='val')    
     print(f"Train dataset size: {len(train_dataset)}")
     print(f"Validation dataset size: {len(val_dataset)}")

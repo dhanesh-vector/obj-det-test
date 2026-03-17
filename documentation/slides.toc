@@ -1,0 +1,7 @@
+\beamer@sectionintoc {1}{Architecture \& Setup}{3}{0}{1}
+\beamer@sectionintoc {2}{Loss Functions}{3}{0}{2}
+\beamer@sectionintoc {3}{Training Stability Fixes}{3}{0}{3}
+\beamer@sectionintoc {4}{Data \& Augmentation}{3}{0}{4}
+\beamer@sectionintoc {5}{Metrics \& Reproducibility}{3}{0}{5}
+\beamer@sectionintoc {6}{Hyperparameter Optimisation}{3}{0}{6}
+\beamer@sectionintoc {7}{Baseline vs PU Loss — Full Training Comparison}{3}{0}{7}

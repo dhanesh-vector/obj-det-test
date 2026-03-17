@@ -19,15 +19,13 @@ augmentations:
     p: 0.5
 - VerticalFlip:
     p: 0.5
-- GaussianBlur:
-    blur_limit:
-    - 3
-    - 7
+- MedianBlur:
+    blur_limit: 5
     p: 0.3
-- GaussNoise:
-    std_range:
-    - 0.01
-    - 0.05
+- MultiplicativeNoise:
+    multiplier:
+    - 0.9
+    - 1.1
     p: 0.4
 - ShiftScaleRotate:
     shift_limit: 0.08
