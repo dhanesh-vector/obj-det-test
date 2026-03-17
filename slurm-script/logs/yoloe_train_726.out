@@ -1,0 +1,29 @@
+Job started at: Mon Mar 16 09:08:14 PM EDT 2026
+Running on node: bn002
+Activating virtual environment...
+Starting training...
+Using config file: train/config/best_hparams_pu_loss.yaml
+Using device: cuda
+Loading datasets...
+Train dataset size: 2306
+Validation dataset size: 357
+ScanAwareSampler: 13 scans, 2306 total slices, stride=5 → ~467 slices/epoch (20% of training set per epoch)
+Building YOLOE model (size: s)...
+Starting training for 100 epochs...
+Epoch [1/100] Time: 38.61s | LR: 0.000061 | Train Loss: 211.0194 | Val Loss: 189.9580 | AP@50: 0.0000 | SliceAP@50: 0.1782 | Prec: 0.0000 | Recall: 0.0000 | Recall@100: 0.0000
+--> Saved new best model with AP@50: 0.0000 (Val Loss: 189.9580)
+Epoch [2/100] Time: 34.25s | LR: 0.000129 | Train Loss: 134.1118 | Val Loss: 111.7637 | AP@50: 0.0003 | SliceAP@50: 0.2475 | Prec: 0.0009 | Recall: 0.0420 | Recall@100: 0.0345
+Epoch [3/100] Time: 36.57s | LR: 0.000198 | Train Loss: 72.4860 | Val Loss: 75.4063 | AP@50: 0.0002 | SliceAP@50: 0.5941 | Prec: 0.0011 | Recall: 0.3894 | Recall@100: 0.0389
+Epoch [4/100] Time: 32.02s | LR: 0.000266 | Train Loss: 44.5589 | Val Loss: 43.1393 | AP@50: 0.0010 | SliceAP@50: 0.3762 | Prec: 0.0019 | Recall: 0.3417 | Recall@100: 0.0846
+--> Saved new best model with AP@50: 0.0010 (Val Loss: 43.1393)
+Epoch [5/100] Time: 29.55s | LR: 0.000334 | Train Loss: 30.1383 | Val Loss: 36.6967 | AP@50: 0.0025 | SliceAP@50: 0.2376 | Prec: 0.0048 | Recall: 0.2213 | Recall@100: 0.0493
+--> Saved new best model with AP@50: 0.0025 (Val Loss: 36.6967)
+Epoch [6/100] Time: 28.36s | LR: 0.000403 | Train Loss: 26.6636 | Val Loss: 33.9874 | AP@50: 0.0196 | SliceAP@50: 0.2970 | Prec: 0.0000 | Recall: 0.0000 | Recall@100: 0.0796
+--> Saved new best model with AP@50: 0.0196 (Val Loss: 33.9874)
+Epoch [7/100] Time: 28.79s | LR: 0.000471 | Train Loss: 24.8045 | Val Loss: 34.6998 | AP@50: 0.0031 | SliceAP@50: 0.0792 | Prec: 0.0000 | Recall: 0.0000 | Recall@100: 0.0272
+Epoch [8/100] Time: 28.74s | LR: 0.000540 | Train Loss: 23.4341 | Val Loss: 34.7322 | AP@50: 0.0565 | SliceAP@50: 0.2871 | Prec: 0.0000 | Recall: 0.0000 | Recall@100: 0.0711
+--> Saved new best model with AP@50: 0.0565 (Val Loss: 34.7322)
+Epoch [9/100] Time: 29.26s | LR: 0.000608 | Train Loss: 22.3792 | Val Loss: 35.1995 | AP@50: 0.0972 | SliceAP@50: 0.5149 | Prec: 0.1333 | Recall: 0.0224 | Recall@100: 0.1639
+--> Saved new best model with AP@50: 0.0972 (Val Loss: 35.1995)
+Epoch [10/100] Time: 29.05s | LR: 0.000608 | Train Loss: 20.4875 | Val Loss: 34.3707 | AP@50: 0.2239 | SliceAP@50: 0.4752 | Prec: 0.5575 | Recall: 0.1765 | Recall@100: 0.1252
+--> Saved new best model with AP@50: 0.2239 (Val Loss: 34.3707)
