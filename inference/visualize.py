@@ -23,10 +23,10 @@ def main():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     
     # Paths
-    base_dir = '/fs01/home/dhaneshr/code/obj-det-test'
+    base_dir = '/h/dhaneshr/code/obj-det-test'
     data_dir = '/projects/tenomix/ml-share/training/07/data'
-    baseline_weights = os.path.join(base_dir, 'checkpoints', 'best_model_20260313_095851.pth')
-    pu_weights = os.path.join(base_dir, 'checkpoints', 'best_model_20260313_100344.pth')
+    baseline_weights = os.path.join(base_dir, 'checkpoints', 'best_model_20260315_101545.pth')
+    pu_weights = os.path.join(base_dir, 'checkpoints', 'best_model_20260314_170531.pth')
     
     # Load models
     print("Loading models...")

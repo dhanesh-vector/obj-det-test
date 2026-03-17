@@ -1,0 +1,22 @@
+/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/albumentations/core/validation.py:114: UserWarning: ShiftScaleRotate is a special case of Affine transform. Please use Affine transform instead.
+  original_init(self, **validated_kwargs)
+Traceback (most recent call last):
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/torch/serialization.py", line 977, in save
+    _save(
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/torch/serialization.py", line 1286, in _save
+    zip_file.write_record(name, storage, num_bytes)
+RuntimeError: basic_ios::clear: iostream error
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/fs01/home/dhaneshr/code/obj-det-test/train/train.py", line 329, in <module>
+    main()
+  File "/fs01/home/dhaneshr/code/obj-det-test/train/train.py", line 302, in main
+    torch.save(checkpoint, best_checkpoint_path)
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/torch/serialization.py", line 976, in save
+    with _open_zipfile_writer(f) as opened_zipfile:
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/torch/serialization.py", line 808, in __exit__
+    self.file_like.write_end_of_file()
+RuntimeError: [enforce fail at inline_container.cc:668] . unexpected pos 7993472 vs 7993368

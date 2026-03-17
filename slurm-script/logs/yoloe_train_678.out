@@ -1,0 +1,18 @@
+Job started at: Sat Mar 14 04:43:39 PM EDT 2026
+Running on node: bn001
+Activating virtual environment...
+Starting training...
+Using config file: train/config/default.yaml
+Using device: cuda
+Loading datasets...
+Train dataset size: 2306
+Validation dataset size: 357
+ScanAwareSampler: 13 scans, 2306 total slices, stride=8 → ~294 slices/epoch (13% of training set per epoch)
+Building YOLOE model (size: s)...
+Starting training for 100 epochs...
+Epoch [1/100] Time: 30.00s | LR: 0.000050 | Train Loss: 444.8493 | Val Loss: 303.0583 | AP@50: 0.0004 | SliceAP@50: 0.3960 | Prec: 0.0020 | Recall: 0.1625 | Recall@100: 0.0336
+--> Saved new best model with AP@50: 0.0004 (Val Loss: 303.0583)
+Epoch [2/100] Time: 24.41s | LR: 0.000200 | Train Loss: 134.0970 | Val Loss: 62.4310 | AP@50: 0.0022 | SliceAP@50: 0.4455 | Prec: 0.0000 | Recall: 0.0000 | Recall@100: 0.0804
+--> Saved new best model with AP@50: 0.0022 (Val Loss: 62.4310)
+Epoch [3/100] Time: 19.76s | LR: 0.000350 | Train Loss: 43.1243 | Val Loss: 43.9991 | AP@50: 0.0107 | SliceAP@50: 0.2970 | Prec: 0.0000 | Recall: 0.0000 | Recall@100: 0.0644
+Job completed at: Sat Mar 14 04:45:16 PM EDT 2026

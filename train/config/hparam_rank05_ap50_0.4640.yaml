@@ -1,0 +1,17 @@
+data_dir: /projects/tenomix/ml-share/training/07/data
+model_size: s
+num_classes: 1
+batch_size: 32
+epochs: 100
+learning_rate: 0.00043284502212938834
+weight_decay: 0.007969454818643935
+num_workers: 8
+use_pu_loss: false
+device: cuda
+early_stopping_patience: 20
+early_stopping_min_delta: 0.001
+label_smooth: 0.0
+slice_stride: 5
+mosaic_prob: 0.0
+_optuna_trial_number: 2
+_optuna_ap50: 0.464001

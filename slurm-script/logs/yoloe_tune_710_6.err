@@ -1,0 +1,13 @@
+[I 2026-03-15 11:13:29,501] Using an existing study with name 'yoloe_hparam_search_v2' instead of creating a new one.
+/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/albumentations/core/validation.py:114: UserWarning: ShiftScaleRotate is a special case of Affine transform. Please use Affine transform instead.
+  original_init(self, **validated_kwargs)
+[I 2026-03-15 11:38:20,736] Trial 6 finished with value: 0.5206241011619568 and parameters: {'learning_rate': 0.00043284502212938834, 'weight_decay': 0.007969454818643935, 'slice_stride': 5, 'batch_size': 32, 'mosaic_prob': 0.34044600469728353, 'label_smooth': 0.10621088666940683, 'use_clahe': False, 'use_shift_scale_rotate': True, 'use_brightness_contrast': False}. Best is trial 8 with value: 0.5284878611564636.
+[I 2026-03-15 11:58:29,176] Trial 21 finished with value: 0.49638399481773376 and parameters: {'learning_rate': 0.0020917152515896632, 'weight_decay': 0.00010280029617905621, 'slice_stride': 7, 'batch_size': 8, 'mosaic_prob': 0.4853155707904022, 'label_smooth': 0.039576161662593604, 'use_clahe': True, 'use_shift_scale_rotate': False, 'use_brightness_contrast': True}. Best is trial 3 with value: 0.538092315196991.
+[I 2026-03-15 12:04:13,961] Trial 48 pruned. 
+[I 2026-03-15 12:09:30,724] Trial 52 pruned. 
+[I 2026-03-15 12:34:29,005] Trial 58 finished with value: 0.5362152457237244 and parameters: {'learning_rate': 0.0006079456599557675, 'weight_decay': 0.009689539966562306, 'slice_stride': 5, 'batch_size': 32, 'mosaic_prob': 0.3618153739220932, 'label_smooth': 0.09748504026815552, 'use_clahe': False, 'use_shift_scale_rotate': True, 'use_brightness_contrast': False}. Best is trial 40 with value: 0.5430223345756531.
+[I 2026-03-15 12:39:44,641] Trial 88 pruned. 
+[I 2026-03-15 12:45:32,560] Trial 95 pruned. 
+[I 2026-03-15 12:50:35,871] Trial 100 pruned. 
+[I 2026-03-15 12:56:18,955] Trial 105 pruned. 
+[I 2026-03-15 13:18:37,910] Trial 112 finished with value: 0.5030103325843811 and parameters: {'learning_rate': 0.0004158589190482315, 'weight_decay': 0.005147288934164282, 'slice_stride': 5, 'batch_size': 8, 'mosaic_prob': 0.3281805315159243, 'label_smooth': 0.1146436513736341, 'use_clahe': False, 'use_shift_scale_rotate': True, 'use_brightness_contrast': False}. Best is trial 60 with value: 0.5787034034729004.

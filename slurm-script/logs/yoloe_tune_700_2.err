@@ -1,0 +1,82 @@
+/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/albumentations/core/validation.py:114: UserWarning: ShiftScaleRotate is a special case of Affine transform. Please use Affine transform instead.
+  original_init(self, **validated_kwargs)
+Traceback (most recent call last):
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: table alembic_version already exists
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/fs01/home/dhaneshr/code/obj-det-test/train/tune_hyperparams.py", line 342, in <module>
+    main()
+  File "/fs01/home/dhaneshr/code/obj-det-test/train/tune_hyperparams.py", line 312, in main
+    study = optuna.create_study(
+            ^^^^^^^^^^^^^^^^^^^^
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/optuna/_convert_positional_args.py", line 134, in converter_wrapper
+    return func(**kwargs)  # type: ignore[call-arg]
+           ^^^^^^^^^^^^^^
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/optuna/study/study.py", line 1295, in create_study
+    storage = storages.get_storage(storage)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/optuna/storages/__init__.py", line 49, in get_storage
+    return _CachedStorage(RDBStorage(storage))
+                          ^^^^^^^^^^^^^^^^^^^
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/optuna/storages/_rdb/storage.py", line 243, in __init__
+    self._version_manager = _VersionManager(self.url, self.engine, self.scoped_session)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/optuna/storages/_rdb/storage.py", line 1090, in __init__
+    self._init_alembic()
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/optuna/storages/_rdb/storage.py", line 1121, in _init_alembic
+    self._set_alembic_revision(revision)
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/optuna/storages/_rdb/storage.py", line 1128, in _set_alembic_revision
+    context.stamp(script, revision)
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/alembic/runtime/migration.py", line 569, in stamp
+    self._ensure_version_table()
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/alembic/runtime/migration.py", line 547, in _ensure_version_table
+    self._version.create(self.connection, checkfirst=True)
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/sqlalchemy/sql/schema.py", line 1288, in create
+    bind._run_ddl_visitor(ddl.SchemaGenerator, self, checkfirst=checkfirst)
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2467, in _run_ddl_visitor
+    ).traverse_single(element)
+      ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/sqlalchemy/sql/visitors.py", line 661, in traverse_single
+    return meth(obj, **kw)
+           ^^^^^^^^^^^^^^^
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/sqlalchemy/sql/ddl.py", line 1022, in visit_table
+    )._invoke_with(self.connection)
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/sqlalchemy/sql/ddl.py", line 321, in _invoke_with
+    return bind.execute(self)
+           ^^^^^^^^^^^^^^^^^^
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/sqlalchemy/sql/ddl.py", line 187, in _execute_on_connection
+    return connection._execute_ddl(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1530, in _execute_ddl
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) table alembic_version already exists
+[SQL: 
+CREATE TABLE alembic_version (
+	version_num VARCHAR(32) NOT NULL, 
+	CONSTRAINT alembic_version_pkc PRIMARY KEY (version_num)
+)
+
+]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)

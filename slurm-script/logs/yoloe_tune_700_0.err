@@ -1,0 +1,79 @@
+/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/albumentations/core/validation.py:114: UserWarning: ShiftScaleRotate is a special case of Affine transform. Please use Affine transform instead.
+  original_init(self, **validated_kwargs)
+Traceback (most recent call last):
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: table studies already exists
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/fs01/home/dhaneshr/code/obj-det-test/train/tune_hyperparams.py", line 342, in <module>
+    main()
+  File "/fs01/home/dhaneshr/code/obj-det-test/train/tune_hyperparams.py", line 312, in main
+    study = optuna.create_study(
+            ^^^^^^^^^^^^^^^^^^^^
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/optuna/_convert_positional_args.py", line 134, in converter_wrapper
+    return func(**kwargs)  # type: ignore[call-arg]
+           ^^^^^^^^^^^^^^
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/optuna/study/study.py", line 1295, in create_study
+    storage = storages.get_storage(storage)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/optuna/storages/__init__.py", line 49, in get_storage
+    return _CachedStorage(RDBStorage(storage))
+                          ^^^^^^^^^^^^^^^^^^^
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/optuna/storages/_rdb/storage.py", line 241, in __init__
+    models.BaseModel.metadata.create_all(self.engine)
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/sqlalchemy/sql/schema.py", line 5928, in create_all
+    bind._run_ddl_visitor(
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3268, in _run_ddl_visitor
+    conn._run_ddl_visitor(visitorcallable, element, **kwargs)
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2467, in _run_ddl_visitor
+    ).traverse_single(element)
+      ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/sqlalchemy/sql/visitors.py", line 661, in traverse_single
+    return meth(obj, **kw)
+           ^^^^^^^^^^^^^^^
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/sqlalchemy/sql/ddl.py", line 984, in visit_metadata
+    self.traverse_single(
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/sqlalchemy/sql/visitors.py", line 661, in traverse_single
+    return meth(obj, **kw)
+           ^^^^^^^^^^^^^^^
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/sqlalchemy/sql/ddl.py", line 1022, in visit_table
+    )._invoke_with(self.connection)
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/sqlalchemy/sql/ddl.py", line 321, in _invoke_with
+    return bind.execute(self)
+           ^^^^^^^^^^^^^^^^^^
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/sqlalchemy/sql/ddl.py", line 187, in _execute_on_connection
+    return connection._execute_ddl(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1530, in _execute_ddl
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) table studies already exists
+[SQL: 
+CREATE TABLE studies (
+	study_id INTEGER NOT NULL, 
+	study_name VARCHAR(512) NOT NULL, 
+	PRIMARY KEY (study_id)
+)
+
+]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)

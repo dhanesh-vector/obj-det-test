@@ -19,18 +19,23 @@ label_smooth: 0.0
 # (~230 slices/epoch, 10% of 2306 total), meaningfully cutting redundancy
 # while still sampling diverse positions within each run.
 slice_stride: 10
+warmup_epochs: 8
+# Cross-scan mosaic augmentation: 2×2 grid from 4 different scans per sample.
+# Each quadrant is independently augmented; boxes are scaled ×0.5 and offset.
+# 0.0 disables mosaic (reverts to single-image behaviour). Recommended: 0.5.
+mosaic_prob: 0.0
 augmentations:
   - HorizontalFlip: {p: 0.5}
   - VerticalFlip: {p: 0.5}
   # Gain/TGC variation — reduced limits (0.3→0.15) and probability (0.6→0.3)
   # to avoid blowout when CLAHE fires in the same sample
-  - RandomBrightnessContrast: {brightness_limit: 0.15, contrast_limit: 0.15, p: 0.3}
+  - RandomBrightnessContrast: {brightness_limit: 0.1, contrast_limit: 0.1, p: 0.3}
   # Depth-dependent focus blur
   - GaussianBlur: {blur_limit: [3, 7], p: 0.3}
   # Electronic/quantisation noise
   - GaussNoise: {std_range: [0.01, 0.05], p: 0.4}
   # Contrast normalisation variation (ultrasound images are often CLAHE-preprocessed)
   # RandomGamma removed — redundant with CLAHE and caused destructive stacking at extremes
-  - CLAHE: {clip_limit: 2.0, tile_grid_size: [8, 8], p: 0.3}
+  - CLAHE: {clip_limit: 2.0, tile_grid_size: [8, 8], p: 0.4}
   # Small rotation/scale/shift variation — keeps lesion geometry plausible for ultrasound
   - ShiftScaleRotate: {shift_limit: 0.08, scale_limit: 0.2, rotate_limit: 15, p: 0.4}
