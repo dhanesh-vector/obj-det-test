@@ -206,7 +206,53 @@ However, a complementary question is: *does the model fire on the right slices a
 
 **Result:** Two runs with the same `--seed` value now produce identical loss curves, metric sequences, and saved checkpoints.
 
+### 16. Speckle-Specific Intensity Augmentations — MedianBlur + MultiplicativeNoise
+
+**Motivation:** The previous augmentation config used `GaussianBlur` and `GaussNoise` as intensity augmentations. Both are poor models of ultrasound physics:
+
+- **GaussianBlur** is a linear, isotropic low-pass filter. It blurs tissue boundaries and lesion edges indiscriminately. In clinical practice, ultrasound preprocessing uses speckle-reduction filtering (e.g. median filtering, anisotropic diffusion) that selectively smooths the interior of homogeneous regions while preserving edges. GaussianBlur does not replicate this behaviour.
+- **GaussNoise** adds i.i.d. zero-mean additive noise to each pixel — matching electronic/quantisation noise. However, the dominant noise source in ultrasound images is **speckle**, which arises from coherent interference of backscattered ultrasound waves. Speckle intensity is proportional to local tissue backscatter: the noise is **multiplicative**, not additive. `GaussNoise` models the wrong physical process.
+
+**Replacements (`train.py` flags, `best_hparams_pu_loss_speckle_copy_paste.yaml`):**
+
+- **`MedianBlur`** (`blur_limit=5, p=0.3`): Non-linear, edge-preserving filter. The median filter replaces each pixel by the median of its neighbourhood, which eliminates isolated high/low pixels (speckle) without blurring transitions between tissue regions. This matches the effect of variable speckle-reduction preprocessing applied by different ultrasound machines and reconstruction settings.
+- **`MultiplicativeNoise`** (`multiplier=[0.9, 1.1], p=0.4`): Each pixel is multiplied by an independent random scalar drawn from $U[0.9, 1.1]$. This directly models the multiplicative speckle process: $I_{\text{aug}} = I \times \eta$, $\eta \sim U[0.9, 1.1]$. The narrow multiplier range avoids extreme contrast changes while still introducing biologically plausible spatial intensity variation.
+
+**Integration (`train.py`):**
+- Added `--use_median_blur` / `--median_blur_limit` / `--median_blur_p` flags.
+- Added `--use_multiplicative_noise` / `--multiplicative_noise_multiplier_min` / `--multiplicative_noise_multiplier_max` / `--multiplicative_noise_p` flags.
+- The flags append the corresponding `albumentations` transforms after any YAML-defined augmentations in `aug_list`.
+
+**Current status:** In progress — running experiments with `best_hparams_pu_loss_speckle_copy_paste.yaml` which uses MedianBlur + MultiplicativeNoise in place of GaussianBlur + GaussNoise. CLAHE and RandomBrightnessContrast are also removed in this config (consistent with HPO findings that CLAHE/RBC do not help with this scanner).
+
+### 17. Tissue-Aware Copy-Paste Augmentation (`data/augmentations.py`)
+
+**Motivation:** Labeled lesion instances are sparse (~10% label coverage). Standard copy-paste augmentation pastes lesion crops at arbitrary image locations, which can produce physically implausible composites (e.g. lesion pasted on the ultrasound machine border or inside another lesion). This can introduce noisy training signal. A tissue-aware variant instead constrains paste locations to regions with tissue statistics similar to the source lesion's background, ensuring the pasted crop is at least locally consistent with surrounding tissue.
+
+**Algorithm (`TissueAwareCopyPaste.__call__`):**
+
+1. **Valid-tissue mask:** Binarise the grayscale image at `tissue_threshold=10` to exclude the black machine border and background. Erode the mask by the crop bounding box size to guarantee every candidate centre places the full crop inside tissue.
+2. **Source statistics:** For each GT bounding box (the lesion to copy), compute the mean and std of a circular neighbourhood of radius `radius=30 px` around the box centre. This characterises the tissue background surrounding the lesion.
+3. **Candidate scoring:** Sample up to `n_candidates=50` positions from the eroded tissue mask. For each, compute the same neighbourhood statistics and score the candidate as $|\Delta\mu| + |\Delta\sigma|$. The candidate with the lowest score (closest tissue context to source) is selected.
+4. **Threshold rejection:** If the best score exceeds `std_tol=25`, the paste is rejected — no sufficiently similar tissue region exists.
+5. **Exclusion zones:** Before scoring, the valid mask is zeroed over (a) all existing GT bounding boxes (prevent pasting on top of a real annotation) and (b) a `±2·radius` region around the source lesion (prevent the scoring function from selecting back the origin neighbourhood).
+6. **Paste and annotate:** The crop is pasted at the selected location and a new bounding box with the source class label is appended to the GT.
+7. **Repeat:** Up to `max_pastes=2` new instances are created per image from shuffled GT pairs.
+
+**Key design decisions:**
+- **Shuffle source boxes** before iterating so the cap `max_pastes` does not always favour the first annotated box.
+- **Per-source exclusion mask** (not a global one) so different source boxes can still overlap in their candidate regions — only each source's own neighbourhood is excluded.
+- The paste does not blend edges (hard copy). This is intentional: blending would require alpha-matte estimation and is unnecessary since the tissue-match constraint already ensures local consistency.
+
+**Integration:**
+- `train.py`: reads `copy_paste` block from YAML config; instantiates `TissueAwareCopyPaste` if `enabled: true`; passes it to `UltrasoundDataset(copy_paste=...)`.
+- `data/dataset.py`: `copy_paste` is applied in `_load_single` after `_load_raw` and before the Albumentations transform, so the pasted instances are subject to the same downstream augmentations.
+- `train/config/default.yaml`: `copy_paste.enabled: false` (opt-in). Active in `best_hparams_pu_loss_speckle_copy_paste.yaml` with `p=0.4`, `max_pastes=2`.
+
+**Current status:** In progress — running with the speckle + copy-paste combined config. Expected benefit: higher instance diversity per epoch especially for rare lesion sizes; model forced to detect lesions across varied tissue backgrounds.
+
 ### Next Steps
-- Evaluate run 655 results (label smoothing + loss fix combined): target AP@50 > 0.50 with Prec > 0.40.
+- Evaluate run results with MedianBlur + MultiplicativeNoise + TissueAwareCopyPaste.
+- Compare against PU-Loss baseline (AP@50 = 0.557) to isolate contribution of speckle augmentations and copy-paste.
 - If val loss continues diverging after epoch ~10, consider increasing `weight_decay` further or reducing `epochs` + relying on best-AP checkpoint.
 - Pseudo-labeling on unlabeled data is a viable next step if AP plateaus — run best checkpoint on unlabeled images, keep high-confidence detections as new training labels, retrain.

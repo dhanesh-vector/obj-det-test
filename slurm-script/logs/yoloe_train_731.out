@@ -1,0 +1,92 @@
+Job started at: Tue Mar 17 09:41:58 AM EDT 2026
+Running on node: bn002
+Activating virtual environment...
+Starting training...
+Using config file: train/config/best_hparams_pu_loss_speckle_copy_paste.yaml
+TissueAwareCopyPaste enabled: {'p': 0.4, 'std_tol': 25.0, 'max_pastes': 2}
+Using device: cuda
+Loading datasets...
+Train dataset size: 2306
+Validation dataset size: 357
+ScanAwareSampler: 13 scans, 2306 total slices, stride=5 → ~467 slices/epoch (20% of training set per epoch)
+Building YOLOE model (size: s)...
+Starting training for 100 epochs...
+Epoch [1/100] Time: 40.70s | LR: 0.000061 | Train Loss: 196.1606 | Val Loss: 184.7535 | AP@50: 0.0000 | SliceAP@50: 0.1683 | Prec: 0.0000 | Recall: 0.0000 | Recall@100: 0.0000
+--> Saved new best model with AP@50: 0.0000 (Val Loss: 184.7535)
+Epoch [2/100] Time: 35.23s | LR: 0.000129 | Train Loss: 125.9747 | Val Loss: 111.1469 | AP@50: 0.0002 | SliceAP@50: 0.1980 | Prec: 0.0000 | Recall: 0.0000 | Recall@100: 0.0367
+Epoch [3/100] Time: 39.57s | LR: 0.000198 | Train Loss: 64.5571 | Val Loss: 78.8162 | AP@50: 0.0004 | SliceAP@50: 0.5644 | Prec: 0.0012 | Recall: 0.3613 | Recall@100: 0.0227
+Epoch [4/100] Time: 34.59s | LR: 0.000266 | Train Loss: 42.4270 | Val Loss: 44.3281 | AP@50: 0.0008 | SliceAP@50: 0.5050 | Prec: 0.0018 | Recall: 0.3922 | Recall@100: 0.0499
+Epoch [5/100] Time: 31.28s | LR: 0.000334 | Train Loss: 30.8510 | Val Loss: 37.5700 | AP@50: 0.0041 | SliceAP@50: 0.3267 | Prec: 0.0048 | Recall: 0.3165 | Recall@100: 0.0801
+--> Saved new best model with AP@50: 0.0041 (Val Loss: 37.5700)
+Epoch [6/100] Time: 31.15s | LR: 0.000403 | Train Loss: 27.5578 | Val Loss: 35.7634 | AP@50: 0.0006 | SliceAP@50: 0.0495 | Prec: 0.0000 | Recall: 0.0000 | Recall@100: 0.0056
+Epoch [7/100] Time: 29.99s | LR: 0.000471 | Train Loss: 26.5198 | Val Loss: 33.6455 | AP@50: 0.0035 | SliceAP@50: 0.2376 | Prec: 0.0000 | Recall: 0.0000 | Recall@100: 0.0866
+Epoch [8/100] Time: 29.24s | LR: 0.000540 | Train Loss: 25.2998 | Val Loss: 36.2527 | AP@50: 0.0139 | SliceAP@50: 0.2475 | Prec: 0.0000 | Recall: 0.0000 | Recall@100: 0.0507
+--> Saved new best model with AP@50: 0.0139 (Val Loss: 36.2527)
+Epoch [9/100] Time: 29.17s | LR: 0.000608 | Train Loss: 22.1286 | Val Loss: 34.2551 | AP@50: 0.0426 | SliceAP@50: 0.1584 | Prec: 0.0000 | Recall: 0.0000 | Recall@100: 0.0308
+--> Saved new best model with AP@50: 0.0426 (Val Loss: 34.2551)
+Epoch [10/100] Time: 30.92s | LR: 0.000608 | Train Loss: 19.9524 | Val Loss: 32.9025 | AP@50: 0.0862 | SliceAP@50: 0.3762 | Prec: 0.4565 | Recall: 0.0588 | Recall@100: 0.0896
+--> Saved new best model with AP@50: 0.0862 (Val Loss: 32.9025)
+Epoch [11/100] Time: 32.44s | LR: 0.000607 | Train Loss: 19.5833 | Val Loss: 34.4615 | AP@50: 0.1609 | SliceAP@50: 0.5743 | Prec: 0.3958 | Recall: 0.0532 | Recall@100: 0.2076
+--> Saved new best model with AP@50: 0.1609 (Val Loss: 34.4615)
+Epoch [12/100] Time: 31.63s | LR: 0.000606 | Train Loss: 16.4113 | Val Loss: 33.1244 | AP@50: 0.2306 | SliceAP@50: 0.4950 | Prec: 0.5053 | Recall: 0.1345 | Recall@100: 0.2336
+--> Saved new best model with AP@50: 0.2306 (Val Loss: 33.1244)
+Epoch [13/100] Time: 31.91s | LR: 0.000605 | Train Loss: 14.8222 | Val Loss: 32.5165 | AP@50: 0.3163 | SliceAP@50: 0.6238 | Prec: 0.1846 | Recall: 0.4650 | Recall@100: 0.2350
+--> Saved new best model with AP@50: 0.3163 (Val Loss: 32.5165)
+Epoch [14/100] Time: 31.66s | LR: 0.000604 | Train Loss: 15.4214 | Val Loss: 29.0472 | AP@50: 0.2738 | SliceAP@50: 0.7129 | Prec: 0.2985 | Recall: 0.5042 | Recall@100: 0.3580
+Epoch [15/100] Time: 30.95s | LR: 0.000602 | Train Loss: 12.9140 | Val Loss: 34.9902 | AP@50: 0.2298 | SliceAP@50: 0.5050 | Prec: 0.2683 | Recall: 0.3585 | Recall@100: 0.1857
+Epoch [16/100] Time: 30.69s | LR: 0.000599 | Train Loss: 13.4421 | Val Loss: 30.7194 | AP@50: 0.3462 | SliceAP@50: 0.6337 | Prec: 0.1990 | Recall: 0.5854 | Recall@100: 0.2196
+--> Saved new best model with AP@50: 0.3462 (Val Loss: 30.7194)
+Epoch [17/100] Time: 31.16s | LR: 0.000597 | Train Loss: 12.4244 | Val Loss: 26.0108 | AP@50: 0.3859 | SliceAP@50: 0.6238 | Prec: 0.3447 | Recall: 0.4230 | Recall@100: 0.2950
+--> Saved new best model with AP@50: 0.3859 (Val Loss: 26.0108)
+Epoch [18/100] Time: 30.14s | LR: 0.000594 | Train Loss: 11.5597 | Val Loss: 30.0068 | AP@50: 0.2646 | SliceAP@50: 0.5050 | Prec: 0.1660 | Recall: 0.4342 | Recall@100: 0.2678
+Epoch [19/100] Time: 29.43s | LR: 0.000591 | Train Loss: 11.1660 | Val Loss: 31.4504 | AP@50: 0.3321 | SliceAP@50: 0.6238 | Prec: 0.3652 | Recall: 0.3641 | Recall@100: 0.2689
+Epoch [20/100] Time: 29.54s | LR: 0.000587 | Train Loss: 10.6404 | Val Loss: 30.4617 | AP@50: 0.3475 | SliceAP@50: 0.6832 | Prec: 0.1777 | Recall: 0.5854 | Recall@100: 0.2796
+Epoch [21/100] Time: 30.07s | LR: 0.000583 | Train Loss: 10.0483 | Val Loss: 29.8127 | AP@50: 0.2277 | SliceAP@50: 0.6337 | Prec: 0.2080 | Recall: 0.4370 | Recall@100: 0.2465
+Epoch [22/100] Time: 30.31s | LR: 0.000579 | Train Loss: 9.7341 | Val Loss: 28.6872 | AP@50: 0.3898 | SliceAP@50: 0.6832 | Prec: 0.2987 | Recall: 0.5238 | Recall@100: 0.3308
+--> Saved new best model with AP@50: 0.3898 (Val Loss: 28.6872)
+Epoch [23/100] Time: 31.04s | LR: 0.000574 | Train Loss: 9.2130 | Val Loss: 28.3472 | AP@50: 0.4347 | SliceAP@50: 0.6337 | Prec: 0.3364 | Recall: 0.5042 | Recall@100: 0.3227
+--> Saved new best model with AP@50: 0.4347 (Val Loss: 28.3472)
+Epoch [24/100] Time: 29.77s | LR: 0.000570 | Train Loss: 9.5502 | Val Loss: 27.8931 | AP@50: 0.4021 | SliceAP@50: 0.6535 | Prec: 0.2591 | Recall: 0.5798 | Recall@100: 0.3403
+Epoch [25/100] Time: 30.52s | LR: 0.000564 | Train Loss: 9.0151 | Val Loss: 26.1913 | AP@50: 0.3747 | SliceAP@50: 0.7129 | Prec: 0.1720 | Recall: 0.6471 | Recall@100: 0.3137
+Epoch [26/100] Time: 29.60s | LR: 0.000559 | Train Loss: 8.7874 | Val Loss: 30.4560 | AP@50: 0.4247 | SliceAP@50: 0.6832 | Prec: 0.4036 | Recall: 0.5630 | Recall@100: 0.3546
+Epoch [27/100] Time: 30.43s | LR: 0.000553 | Train Loss: 8.2814 | Val Loss: 27.4329 | AP@50: 0.3177 | SliceAP@50: 0.7030 | Prec: 0.2644 | Recall: 0.5910 | Recall@100: 0.3482
+Epoch [28/100] Time: 30.18s | LR: 0.000547 | Train Loss: 8.5850 | Val Loss: 28.6395 | AP@50: 0.2879 | SliceAP@50: 0.6832 | Prec: 0.2863 | Recall: 0.5798 | Recall@100: 0.3899
+Epoch [29/100] Time: 30.10s | LR: 0.000541 | Train Loss: 8.2046 | Val Loss: 29.2459 | AP@50: 0.3556 | SliceAP@50: 0.6733 | Prec: 0.2189 | Recall: 0.6359 | Recall@100: 0.2728
+Epoch [30/100] Time: 30.05s | LR: 0.000534 | Train Loss: 7.9419 | Val Loss: 27.1792 | AP@50: 0.3097 | SliceAP@50: 0.6238 | Prec: 0.2926 | Recall: 0.4958 | Recall@100: 0.3126
+Epoch [31/100] Time: 30.39s | LR: 0.000527 | Train Loss: 8.1099 | Val Loss: 31.7855 | AP@50: 0.4436 | SliceAP@50: 0.6436 | Prec: 0.3554 | Recall: 0.6162 | Recall@100: 0.3515
+--> Saved new best model with AP@50: 0.4436 (Val Loss: 31.7855)
+Epoch [32/100] Time: 30.00s | LR: 0.000520 | Train Loss: 7.9867 | Val Loss: 28.2352 | AP@50: 0.3952 | SliceAP@50: 0.6535 | Prec: 0.3287 | Recall: 0.5350 | Recall@100: 0.3770
+Epoch [33/100] Time: 30.09s | LR: 0.000513 | Train Loss: 7.9734 | Val Loss: 27.9195 | AP@50: 0.4793 | SliceAP@50: 0.6535 | Prec: 0.2604 | Recall: 0.6303 | Recall@100: 0.3644
+--> Saved new best model with AP@50: 0.4793 (Val Loss: 27.9195)
+Epoch [34/100] Time: 30.28s | LR: 0.000505 | Train Loss: 7.6305 | Val Loss: 28.5710 | AP@50: 0.3957 | SliceAP@50: 0.6238 | Prec: 0.4362 | Recall: 0.4790 | Recall@100: 0.3448
+Epoch [35/100] Time: 30.23s | LR: 0.000498 | Train Loss: 7.3366 | Val Loss: 29.4794 | AP@50: 0.4831 | SliceAP@50: 0.6535 | Prec: 0.3566 | Recall: 0.6022 | Recall@100: 0.2916
+--> Saved new best model with AP@50: 0.4831 (Val Loss: 29.4794)
+Epoch [36/100] Time: 29.69s | LR: 0.000490 | Train Loss: 7.2777 | Val Loss: 25.9397 | AP@50: 0.3784 | SliceAP@50: 0.6238 | Prec: 0.2889 | Recall: 0.5042 | Recall@100: 0.3221
+Epoch [37/100] Time: 28.63s | LR: 0.000481 | Train Loss: 7.3184 | Val Loss: 28.4418 | AP@50: 0.3695 | SliceAP@50: 0.5347 | Prec: 0.4444 | Recall: 0.3810 | Recall@100: 0.2966
+Epoch [38/100] Time: 30.34s | LR: 0.000473 | Train Loss: 6.9923 | Val Loss: 27.2102 | AP@50: 0.5294 | SliceAP@50: 0.7129 | Prec: 0.3190 | Recall: 0.6667 | Recall@100: 0.3625
+--> Saved new best model with AP@50: 0.5294 (Val Loss: 27.2102)
+Epoch [39/100] Time: 30.82s | LR: 0.000464 | Train Loss: 6.4871 | Val Loss: 28.6910 | AP@50: 0.4840 | SliceAP@50: 0.6535 | Prec: 0.2916 | Recall: 0.6190 | Recall@100: 0.3852
+Epoch [40/100] Time: 30.77s | LR: 0.000456 | Train Loss: 6.4749 | Val Loss: 31.7291 | AP@50: 0.4772 | SliceAP@50: 0.6139 | Prec: 0.3286 | Recall: 0.5826 | Recall@100: 0.3367
+Epoch [41/100] Time: 30.45s | LR: 0.000447 | Train Loss: 6.4589 | Val Loss: 29.3528 | AP@50: 0.4504 | SliceAP@50: 0.6832 | Prec: 0.3323 | Recall: 0.5994 | Recall@100: 0.3782
+Epoch [42/100] Time: 29.99s | LR: 0.000437 | Train Loss: 6.2480 | Val Loss: 27.9557 | AP@50: 0.3694 | SliceAP@50: 0.6436 | Prec: 0.2701 | Recall: 0.5742 | Recall@100: 0.3140
+Epoch [43/100] Time: 29.67s | LR: 0.000428 | Train Loss: 6.0674 | Val Loss: 29.8650 | AP@50: 0.5100 | SliceAP@50: 0.6535 | Prec: 0.4015 | Recall: 0.5882 | Recall@100: 0.3473
+Epoch [44/100] Time: 30.01s | LR: 0.000419 | Train Loss: 6.7504 | Val Loss: 28.9090 | AP@50: 0.4250 | SliceAP@50: 0.6337 | Prec: 0.3577 | Recall: 0.5210 | Recall@100: 0.3538
+Epoch [45/100] Time: 30.74s | LR: 0.000409 | Train Loss: 6.2843 | Val Loss: 27.4279 | AP@50: 0.4540 | SliceAP@50: 0.6634 | Prec: 0.3138 | Recall: 0.5994 | Recall@100: 0.3291
+Epoch [46/100] Time: 29.53s | LR: 0.000399 | Train Loss: 6.0371 | Val Loss: 29.4239 | AP@50: 0.3584 | SliceAP@50: 0.6337 | Prec: 0.2524 | Recall: 0.5070 | Recall@100: 0.3524
+Epoch [47/100] Time: 29.85s | LR: 0.000390 | Train Loss: 6.6754 | Val Loss: 28.0727 | AP@50: 0.4579 | SliceAP@50: 0.6337 | Prec: 0.3205 | Recall: 0.6050 | Recall@100: 0.3658
+Epoch [48/100] Time: 29.89s | LR: 0.000380 | Train Loss: 6.3105 | Val Loss: 28.0271 | AP@50: 0.4670 | SliceAP@50: 0.6436 | Prec: 0.4354 | Recall: 0.5854 | Recall@100: 0.3910
+Epoch [49/100] Time: 29.99s | LR: 0.000370 | Train Loss: 5.9907 | Val Loss: 30.6726 | AP@50: 0.4664 | SliceAP@50: 0.6139 | Prec: 0.5486 | Recall: 0.5378 | Recall@100: 0.3692
+Epoch [50/100] Time: 29.97s | LR: 0.000360 | Train Loss: 5.9773 | Val Loss: 30.9523 | AP@50: 0.4755 | SliceAP@50: 0.6337 | Prec: 0.5366 | Recall: 0.5546 | Recall@100: 0.3762
+Epoch [51/100] Time: 28.74s | LR: 0.000350 | Train Loss: 5.6047 | Val Loss: 28.9453 | AP@50: 0.4516 | SliceAP@50: 0.6337 | Prec: 0.2806 | Recall: 0.5518 | Recall@100: 0.3706
+Epoch [52/100] Time: 30.00s | LR: 0.000340 | Train Loss: 5.5011 | Val Loss: 29.5584 | AP@50: 0.4265 | SliceAP@50: 0.6337 | Prec: 0.3684 | Recall: 0.5294 | Recall@100: 0.3739
+Epoch [53/100] Time: 29.66s | LR: 0.000329 | Train Loss: 5.8511 | Val Loss: 29.2750 | AP@50: 0.3391 | SliceAP@50: 0.6832 | Prec: 0.2790 | Recall: 0.5658 | Recall@100: 0.4022
+Epoch [54/100] Time: 30.85s | LR: 0.000319 | Train Loss: 5.7323 | Val Loss: 29.3370 | AP@50: 0.4845 | SliceAP@50: 0.6832 | Prec: 0.3876 | Recall: 0.6134 | Recall@100: 0.3922
+Epoch [55/100] Time: 31.56s | LR: 0.000309 | Train Loss: 5.4168 | Val Loss: 28.9446 | AP@50: 0.4598 | SliceAP@50: 0.6535 | Prec: 0.4019 | Recall: 0.5966 | Recall@100: 0.3793
+Epoch [56/100] Time: 31.35s | LR: 0.000299 | Train Loss: 5.2392 | Val Loss: 28.8081 | AP@50: 0.3453 | SliceAP@50: 0.6337 | Prec: 0.3285 | Recall: 0.5042 | Recall@100: 0.3720
+Epoch [57/100] Time: 30.38s | LR: 0.000289 | Train Loss: 5.2623 | Val Loss: 28.7496 | AP@50: 0.3968 | SliceAP@50: 0.5941 | Prec: 0.3772 | Recall: 0.4902 | Recall@100: 0.3406
+Epoch [58/100] Time: 30.45s | LR: 0.000278 | Train Loss: 5.3781 | Val Loss: 26.5957 | AP@50: 0.4967 | SliceAP@50: 0.6337 | Prec: 0.4662 | Recall: 0.5798 | Recall@100: 0.3916
+Early stopping triggered: AP@50 did not improve for 20 epochs.
+Training complete!
+Best AP@50: 0.5294 at Epoch 38
+Run summary saved to results/training_run_20260317_094215.json
+Job completed at: Tue Mar 17 10:12:11 AM EDT 2026

@@ -24,6 +24,22 @@ warmup_epochs: 8
 # Each quadrant is independently augmented; boxes are scaled ×0.5 and offset.
 # 0.0 disables mosaic (reverts to single-image behaviour). Recommended: 0.5.
 mosaic_prob: 0.0
+# Tissue-aware copy-paste: copies lesion crops from GT boxes and pastes them at
+# locations whose local tissue statistics (mean+std) closely match the source.
+# A valid-tissue mask is computed by grayscale thresholding (tissue_threshold).
+# The mask is eroded by the crop size so every sampled centre is fully inside tissue.
+# Runs after loading but before Albumentations so all downstream transforms are uniform.
+# Set enabled: true to activate; tune std_tol (lower = stricter tissue match required).
+copy_paste:
+  enabled: false
+  p: 0.5              # Probability of applying per image
+  n_candidates: 50    # Candidate locations sampled from eroded tissue mask
+  std_tol: 25.0       # Reject paste if best |Δmean|+|Δstd| exceeds this
+  radius: 30          # Neighbourhood radius (px) for tissue statistics
+  min_box_area: 256   # Minimum source box area (px²) to consider (~16×16)
+  max_pastes: 2       # Maximum new instances pasted per image
+  tissue_threshold: 10  # Grayscale threshold separating tissue from border
+
 augmentations:
   - HorizontalFlip: {p: 0.5}
   - VerticalFlip: {p: 0.5}
