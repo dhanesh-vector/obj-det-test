@@ -1,0 +1,18 @@
+[I 2026-03-17 22:47:58,153] Using an existing study with name 'yoloe_hparam_search_v5' instead of creating a new one.
+/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/albumentations/core/validation.py:114: UserWarning: ShiftScaleRotate is a special case of Affine transform. Please use Affine transform instead.
+  original_init(self, **validated_kwargs)
+[I 2026-03-17 22:52:27,014] Trial 234 pruned. 
+[I 2026-03-17 22:56:59,826] Trial 244 pruned. 
+[I 2026-03-17 23:00:54,809] Trial 253 pruned. 
+[I 2026-03-17 23:04:47,602] Trial 265 finished with value: 0.43762376237623785 and parameters: {'learning_rate': 0.0005074854401817235, 'weight_decay': 0.0034362734521751854, 'mosaic_prob': 0.5304453570550351, 'label_smooth': 0.09261814580225324, 'copy_paste_p': 0.25135860263513055, 'slice_stride': 10, 'batch_size': 8, 'use_clahe': True, 'use_shift_scale_rotate': True, 'use_brightness_contrast': False, 'use_median_blur': True, 'median_blur_limit': 7, 'use_speckle_noise': False, 'speckle_level': 'medium'}. Best is trial 123 with value: 0.7353625013713276.
+[I 2026-03-17 23:08:37,798] Trial 278 finished with value: 0.4950495049504953 and parameters: {'learning_rate': 0.000634359475476528, 'weight_decay': 0.034999639016950065, 'mosaic_prob': 0.35444637700394965, 'label_smooth': 0.09696439967797013, 'copy_paste_p': 0.26649120937268794, 'slice_stride': 7, 'batch_size': 8, 'use_clahe': True, 'use_shift_scale_rotate': True, 'use_brightness_contrast': False, 'use_median_blur': True, 'median_blur_limit': 7, 'use_speckle_noise': False, 'speckle_level': 'medium'}. Best is trial 123 with value: 0.7353625013713276.
+[I 2026-03-17 23:13:10,074] Trial 288 pruned. 
+[I 2026-03-17 23:25:46,408] Trial 298 pruned. 
+[I 2026-03-17 23:41:27,649] Trial 323 finished with value: 0.6103861308788343 and parameters: {'learning_rate': 0.00015809546274114168, 'weight_decay': 0.0019902944883909285, 'mosaic_prob': 0.6869937383170448, 'label_smooth': 0.10453254161067783, 'copy_paste_p': 0.5424236382077116, 'slice_stride': 5, 'batch_size': 16, 'use_clahe': False, 'use_shift_scale_rotate': False, 'use_brightness_contrast': False, 'use_median_blur': False, 'median_blur_limit': 5, 'use_speckle_noise': False, 'speckle_level': 'medium'}. Best is trial 123 with value: 0.7353625013713276.
+[I 2026-03-17 23:46:27,064] Trial 360 pruned. 
+[I 2026-03-17 23:51:10,194] Trial 371 pruned. 
+[I 2026-03-18 00:02:17,901] Trial 384 pruned. 
+[I 2026-03-18 00:06:21,826] Trial 412 pruned. 
+[I 2026-03-18 00:09:38,612] Trial 423 finished with value: 0.6534653465346538 and parameters: {'learning_rate': 0.0012547627331044799, 'weight_decay': 0.0012029754634886012, 'mosaic_prob': 0.38308204786820504, 'label_smooth': 0.09118098282045785, 'copy_paste_p': 0.29801726594996475, 'slice_stride': 10, 'batch_size': 8, 'use_clahe': True, 'use_shift_scale_rotate': True, 'use_brightness_contrast': False, 'use_median_blur': True, 'median_blur_limit': 7, 'use_speckle_noise': True, 'speckle_level': 'light'}. Best is trial 123 with value: 0.7353625013713276.
+[I 2026-03-18 00:13:50,932] Trial 429 pruned. 
+[I 2026-03-18 00:18:27,416] Trial 440 pruned. 

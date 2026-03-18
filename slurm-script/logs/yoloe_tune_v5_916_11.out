@@ -1,0 +1,388 @@
+Job array    : 916, task 11
+Node         : bn045
+Started at   : Tue Mar 17 10:47:24 PM EDT 2026
+Config       : train/config/default.yaml
+Study        : yoloe_hparam_search_v5 @ sqlite:////fs01/home/dhaneshr/code/obj-det-test/optuna_studies/yoloe_hparam_search_v5.db
+Trials       : 15 (this worker)
+Epochs/trial : 35 (max, EMA early stopping patience=8)
+Checkpoints  : top-3 per trial (min EMA=0.6) → /fs01/home/dhaneshr/code/obj-det-test/checkpoints/hparam_v5
+Study name   : yoloe_hparam_search_v5
+Storage      : sqlite:////fs01/home/dhaneshr/code/obj-det-test/optuna_studies/yoloe_hparam_search_v5.db
+Trials       : 15 (this worker)
+Epochs/trial : 35 (max, EMA early stopping patience=8)
+EMA alpha    : 0.3
+Checkpoints  : top-3 per trial → /fs01/home/dhaneshr/code/obj-det-test/checkpoints/hparam_v5
+
+[Trial 230] lr=7.92e-04  wd=4.14e-02  stride=10  bs=16  mosaic=0.72  ls=0.102  clahe=True  ssr=True  rbc=False  median=True(limit=5)  speckle=False(medium)  cp_p=0.29
+ScanAwareSampler: 13 scans, 2306 total slices, stride=10 → ~236 slices/epoch (10% of training set per epoch)
+  Epoch   1/35 | LR=7.92e-05 | TLoss=287.6812 | VLoss=400.3264 | AP@50=0.0002 | SliceAP=0.1881 | EMA_SliceAP=0.1881
+  Epoch   2/35 | LR=1.68e-04 | TLoss=144.4566 | VLoss=156.4729 | AP@50=0.0001 | SliceAP=0.4752 | EMA_SliceAP=0.2743
+  Epoch   3/35 | LR=2.57e-04 | TLoss=56.4743 | VLoss=73.7148 | AP@50=0.0002 | SliceAP=0.3366 | EMA_SliceAP=0.2930
+  Epoch   4/35 | LR=3.46e-04 | TLoss=34.5759 | VLoss=50.0898 | AP@50=0.0001 | SliceAP=0.0396 | EMA_SliceAP=0.2170
+  Epoch   5/35 | LR=4.35e-04 | TLoss=27.4099 | VLoss=46.1951 | AP@50=0.0003 | SliceAP=0.0891 | EMA_SliceAP=0.1786
+  Epoch   6/35 | LR=5.24e-04 | TLoss=28.2371 | VLoss=41.6881 | AP@50=0.0034 | SliceAP=0.1287 | EMA_SliceAP=0.1636
+  Epoch   7/35 | LR=6.13e-04 | TLoss=24.9368 | VLoss=48.2688 | AP@50=0.0034 | SliceAP=0.3168 | EMA_SliceAP=0.2096
+  Epoch   8/35 | LR=7.03e-04 | TLoss=22.8682 | VLoss=46.4805 | AP@50=0.0344 | SliceAP=0.3960 | EMA_SliceAP=0.2655
+  Epoch   9/35 | LR=7.92e-04 | TLoss=22.4735 | VLoss=41.9017 | AP@50=0.0180 | SliceAP=0.3663 | EMA_SliceAP=0.2958
+  Epoch  10/35 | LR=7.89e-04 | TLoss=22.1534 | VLoss=43.7389 | AP@50=0.0664 | SliceAP=0.2772 | EMA_SliceAP=0.2902
+  [Pruned at epoch 10]
+
+[Trial 239] lr=5.97e-04  wd=1.70e-03  stride=10  bs=16  mosaic=0.42  ls=0.100  clahe=True  ssr=True  rbc=False  median=True(limit=5)  speckle=False(light)  cp_p=0.22
+ScanAwareSampler: 13 scans, 2306 total slices, stride=10 → ~236 slices/epoch (10% of training set per epoch)
+  Epoch   1/35 | LR=5.97e-05 | TLoss=405.4065 | VLoss=511.5547 | AP@50=0.0003 | SliceAP=0.1980 | EMA_SliceAP=0.1980
+  Epoch   2/35 | LR=1.27e-04 | TLoss=285.9067 | VLoss=274.5254 | AP@50=0.0001 | SliceAP=0.3861 | EMA_SliceAP=0.2545
+  Epoch   3/35 | LR=1.94e-04 | TLoss=128.8377 | VLoss=126.2563 | AP@50=0.0010 | SliceAP=0.4752 | EMA_SliceAP=0.3207
+  Epoch   4/35 | LR=2.61e-04 | TLoss=63.4960 | VLoss=63.7724 | AP@50=0.0001 | SliceAP=0.2277 | EMA_SliceAP=0.2928
+  Epoch   5/35 | LR=3.28e-04 | TLoss=38.6455 | VLoss=46.2061 | AP@50=0.0001 | SliceAP=0.0396 | EMA_SliceAP=0.2168
+  Epoch   6/35 | LR=3.95e-04 | TLoss=30.1084 | VLoss=38.2932 | AP@50=0.0008 | SliceAP=0.0594 | EMA_SliceAP=0.1696
+  Epoch   7/35 | LR=4.62e-04 | TLoss=29.1146 | VLoss=47.0150 | AP@50=0.0053 | SliceAP=0.2574 | EMA_SliceAP=0.1960
+  Epoch   8/35 | LR=5.30e-04 | TLoss=28.7468 | VLoss=37.8821 | AP@50=0.0560 | SliceAP=0.5743 | EMA_SliceAP=0.3094
+  Epoch   9/35 | LR=5.97e-04 | TLoss=29.4689 | VLoss=39.0554 | AP@50=0.0139 | SliceAP=0.2376 | EMA_SliceAP=0.2879
+  Epoch  10/35 | LR=5.95e-04 | TLoss=25.9380 | VLoss=39.0712 | AP@50=0.0975 | SliceAP=0.4752 | EMA_SliceAP=0.3441
+  [Pruned at epoch 10]
+
+[Trial 250] lr=7.05e-04  wd=7.36e-04  stride=10  bs=16  mosaic=0.40  ls=0.083  clahe=True  ssr=True  rbc=False  median=True(limit=5)  speckle=False(medium)  cp_p=0.48
+ScanAwareSampler: 13 scans, 2306 total slices, stride=10 → ~236 slices/epoch (10% of training set per epoch)
+  Epoch   1/35 | LR=7.05e-05 | TLoss=319.1551 | VLoss=333.5030 | AP@50=0.0002 | SliceAP=0.1881 | EMA_SliceAP=0.1881
+  Epoch   2/35 | LR=1.50e-04 | TLoss=172.9434 | VLoss=153.7280 | AP@50=0.0012 | SliceAP=0.5545 | EMA_SliceAP=0.2980
+  Epoch   3/35 | LR=2.29e-04 | TLoss=69.5910 | VLoss=70.8751 | AP@50=0.0001 | SliceAP=0.3267 | EMA_SliceAP=0.3066
+  Epoch   4/35 | LR=3.08e-04 | TLoss=40.1863 | VLoss=46.8578 | AP@50=0.0012 | SliceAP=0.2178 | EMA_SliceAP=0.2800
+  Epoch   5/35 | LR=3.88e-04 | TLoss=32.2834 | VLoss=41.3544 | AP@50=0.0072 | SliceAP=0.2376 | EMA_SliceAP=0.2673
+  Epoch   6/35 | LR=4.67e-04 | TLoss=30.5961 | VLoss=41.4927 | AP@50=0.0085 | SliceAP=0.2079 | EMA_SliceAP=0.2495
+  Epoch   7/35 | LR=5.46e-04 | TLoss=30.3371 | VLoss=38.5971 | AP@50=0.0161 | SliceAP=0.2178 | EMA_SliceAP=0.2400
+  Epoch   8/35 | LR=6.25e-04 | TLoss=27.5113 | VLoss=38.6374 | AP@50=0.2359 | SliceAP=0.5842 | EMA_SliceAP=0.3432
+  Epoch   9/35 | LR=7.05e-04 | TLoss=25.2744 | VLoss=37.7776 | AP@50=0.0644 | SliceAP=0.3267 | EMA_SliceAP=0.3383
+  Epoch  10/35 | LR=7.02e-04 | TLoss=25.3671 | VLoss=42.2792 | AP@50=0.0506 | SliceAP=0.5050 | EMA_SliceAP=0.3883
+  [Pruned at epoch 10]
+
+[Trial 264] lr=5.07e-04  wd=3.44e-03  stride=10  bs=8  mosaic=0.33  ls=0.093  clahe=True  ssr=True  rbc=False  median=True(limit=7)  speckle=False(medium)  cp_p=0.25
+ScanAwareSampler: 13 scans, 2306 total slices, stride=10 → ~236 slices/epoch (10% of training set per epoch)
+  Epoch   1/35 | LR=5.07e-05 | TLoss=383.6099 | VLoss=352.8401 | AP@50=0.0020 | SliceAP=0.4356 | EMA_SliceAP=0.4356
+  Epoch   2/35 | LR=1.08e-04 | TLoss=185.9396 | VLoss=157.7404 | AP@50=0.0002 | SliceAP=0.4653 | EMA_SliceAP=0.4446
+  Epoch   3/35 | LR=1.65e-04 | TLoss=72.8044 | VLoss=69.1496 | AP@50=0.0000 | SliceAP=0.1683 | EMA_SliceAP=0.3617
+  Epoch   4/35 | LR=2.22e-04 | TLoss=39.3575 | VLoss=48.1913 | AP@50=0.0002 | SliceAP=0.0594 | EMA_SliceAP=0.2710
+  Epoch   5/35 | LR=2.79e-04 | TLoss=35.7006 | VLoss=41.8118 | AP@50=0.0021 | SliceAP=0.1485 | EMA_SliceAP=0.2343
+  Epoch   6/35 | LR=3.36e-04 | TLoss=33.5372 | VLoss=45.2622 | AP@50=0.0033 | SliceAP=0.1485 | EMA_SliceAP=0.2085
+  Epoch   7/35 | LR=3.93e-04 | TLoss=33.0924 | VLoss=37.9251 | AP@50=0.0024 | SliceAP=0.1287 | EMA_SliceAP=0.1846
+  Epoch   8/35 | LR=4.50e-04 | TLoss=28.0304 | VLoss=35.2310 | AP@50=0.0092 | SliceAP=0.1881 | EMA_SliceAP=0.1856
+  Epoch   9/35 | LR=5.07e-04 | TLoss=26.9065 | VLoss=37.0729 | AP@50=0.0980 | SliceAP=0.5644 | EMA_SliceAP=0.2993
+  Epoch  10/35 | LR=5.06e-04 | TLoss=24.1779 | VLoss=34.5281 | AP@50=0.1934 | SliceAP=0.5545 | EMA_SliceAP=0.3758
+  [Early stop at epoch 10, best EMA SliceAP=0.4446]
+  [Checkpoints] top-3 saved → /fs01/home/dhaneshr/code/obj-det-test/checkpoints/hparam_v5/trial_0264/swa_manifest.yaml
+
+[Trial 273] lr=6.34e-04  wd=3.50e-02  stride=7  bs=8  mosaic=0.35  ls=0.079  clahe=True  ssr=True  rbc=False  median=True(limit=7)  speckle=False(medium)  cp_p=0.26
+ScanAwareSampler: 13 scans, 2306 total slices, stride=7 → ~336 slices/epoch (15% of training set per epoch)
+  Epoch   1/35 | LR=6.34e-05 | TLoss=314.6485 | VLoss=245.1365 | AP@50=0.0008 | SliceAP=0.5248 | EMA_SliceAP=0.5248
+  Epoch   2/35 | LR=1.35e-04 | TLoss=94.1778 | VLoss=71.5707 | AP@50=0.0003 | SliceAP=0.3861 | EMA_SliceAP=0.4832
+  Epoch   3/35 | LR=2.06e-04 | TLoss=41.5025 | VLoss=42.7809 | AP@50=0.0010 | SliceAP=0.1188 | EMA_SliceAP=0.3739
+  Epoch   4/35 | LR=2.78e-04 | TLoss=33.7490 | VLoss=46.2984 | AP@50=0.0005 | SliceAP=0.0792 | EMA_SliceAP=0.2855
+  Epoch   5/35 | LR=3.49e-04 | TLoss=31.3531 | VLoss=38.8334 | AP@50=0.0256 | SliceAP=0.3564 | EMA_SliceAP=0.3068
+  Epoch   6/35 | LR=4.20e-04 | TLoss=29.4565 | VLoss=37.7691 | AP@50=0.0035 | SliceAP=0.3267 | EMA_SliceAP=0.3127
+  Epoch   7/35 | LR=4.92e-04 | TLoss=24.8722 | VLoss=40.2809 | AP@50=0.3030 | SliceAP=0.5941 | EMA_SliceAP=0.3971
+  Epoch   8/35 | LR=5.63e-04 | TLoss=22.5915 | VLoss=37.4015 | AP@50=0.1437 | SliceAP=0.5050 | EMA_SliceAP=0.4295
+  Epoch   9/35 | LR=6.34e-04 | TLoss=20.8864 | VLoss=38.7039 | AP@50=0.2026 | SliceAP=0.5941 | EMA_SliceAP=0.4789
+  [Early stop at epoch 9, best EMA SliceAP=0.5248]
+  [Checkpoints] top-3 saved → /fs01/home/dhaneshr/code/obj-det-test/checkpoints/hparam_v5/trial_0273/swa_manifest.yaml
+
+[Trial 283] lr=6.48e-04  wd=3.35e-02  stride=10  bs=16  mosaic=0.47  ls=0.123  clahe=True  ssr=True  rbc=False  median=True(limit=5)  speckle=False(light)  cp_p=0.32
+ScanAwareSampler: 13 scans, 2306 total slices, stride=10 → ~236 slices/epoch (10% of training set per epoch)
+  Epoch   1/35 | LR=6.48e-05 | TLoss=348.9787 | VLoss=380.3287 | AP@50=0.0010 | SliceAP=0.1584 | EMA_SliceAP=0.1584
+  Epoch   2/35 | LR=1.38e-04 | TLoss=198.1538 | VLoss=189.5069 | AP@50=0.0007 | SliceAP=0.6535 | EMA_SliceAP=0.3069
+  Epoch   3/35 | LR=2.11e-04 | TLoss=82.1172 | VLoss=89.8349 | AP@50=0.0002 | SliceAP=0.4059 | EMA_SliceAP=0.3366
+  Epoch   4/35 | LR=2.83e-04 | TLoss=47.1464 | VLoss=54.8434 | AP@50=0.0006 | SliceAP=0.2376 | EMA_SliceAP=0.3069
+  Epoch   5/35 | LR=3.56e-04 | TLoss=31.2438 | VLoss=41.4565 | AP@50=0.0016 | SliceAP=0.1386 | EMA_SliceAP=0.2564
+  Epoch   6/35 | LR=4.29e-04 | TLoss=27.7510 | VLoss=41.2734 | AP@50=0.0081 | SliceAP=0.3267 | EMA_SliceAP=0.2775
+  Epoch   7/35 | LR=5.02e-04 | TLoss=26.3783 | VLoss=35.9508 | AP@50=0.0452 | SliceAP=0.4554 | EMA_SliceAP=0.3309
+  Epoch   8/35 | LR=5.75e-04 | TLoss=26.4914 | VLoss=42.5270 | AP@50=0.1257 | SliceAP=0.2673 | EMA_SliceAP=0.3118
+  Epoch   9/35 | LR=6.48e-04 | TLoss=25.7599 | VLoss=41.9946 | AP@50=0.0067 | SliceAP=0.1584 | EMA_SliceAP=0.2658
+  Epoch  10/35 | LR=6.46e-04 | TLoss=24.0142 | VLoss=46.3548 | AP@50=0.0570 | SliceAP=0.3663 | EMA_SliceAP=0.2960
+  [Pruned at epoch 10]
+
+[Trial 292] lr=4.32e-04  wd=2.46e-02  stride=10  bs=16  mosaic=0.67  ls=0.088  clahe=False  ssr=False  rbc=True  median=False(limit=5)  speckle=False(light)  cp_p=0.51
+ScanAwareSampler: 13 scans, 2306 total slices, stride=10 → ~236 slices/epoch (10% of training set per epoch)
+  Epoch   1/35 | LR=4.32e-05 | TLoss=339.5179 | VLoss=540.0297 | AP@50=0.0011 | SliceAP=0.1881 | EMA_SliceAP=0.1881
+  Epoch   2/35 | LR=9.19e-05 | TLoss=246.5818 | VLoss=359.9909 | AP@50=0.0001 | SliceAP=0.3465 | EMA_SliceAP=0.2356
+  Epoch   3/35 | LR=1.41e-04 | TLoss=132.2528 | VLoss=210.0240 | AP@50=0.0009 | SliceAP=0.3366 | EMA_SliceAP=0.2659
+  Epoch   4/35 | LR=1.89e-04 | TLoss=71.2939 | VLoss=107.3302 | AP@50=0.0001 | SliceAP=0.3366 | EMA_SliceAP=0.2871
+  Epoch   5/35 | LR=2.38e-04 | TLoss=39.2583 | VLoss=67.0851 | AP@50=0.0001 | SliceAP=0.2079 | EMA_SliceAP=0.2634
+  Epoch   6/35 | LR=2.86e-04 | TLoss=32.4121 | VLoss=50.5640 | AP@50=0.0004 | SliceAP=0.1881 | EMA_SliceAP=0.2408
+  Epoch   7/35 | LR=3.35e-04 | TLoss=26.5849 | VLoss=46.2099 | AP@50=0.0010 | SliceAP=0.1980 | EMA_SliceAP=0.2280
+  Epoch   8/35 | LR=3.84e-04 | TLoss=24.6710 | VLoss=45.6151 | AP@50=0.0006 | SliceAP=0.1584 | EMA_SliceAP=0.2071
+  Epoch   9/35 | LR=4.32e-04 | TLoss=22.9112 | VLoss=41.5864 | AP@50=0.0042 | SliceAP=0.1485 | EMA_SliceAP=0.1895
+  Epoch  10/35 | LR=4.31e-04 | TLoss=20.5831 | VLoss=43.6882 | AP@50=0.0054 | SliceAP=0.3564 | EMA_SliceAP=0.2396
+  Epoch  11/35 | LR=4.27e-04 | TLoss=21.4083 | VLoss=42.8994 | AP@50=0.0043 | SliceAP=0.2970 | EMA_SliceAP=0.2568
+  Epoch  12/35 | LR=4.20e-04 | TLoss=20.1224 | VLoss=39.4172 | AP@50=0.1179 | SliceAP=0.5842 | EMA_SliceAP=0.3550
+  Epoch  13/35 | LR=4.10e-04 | TLoss=17.1228 | VLoss=42.7037 | AP@50=0.0067 | SliceAP=0.3267 | EMA_SliceAP=0.3465
+  Epoch  14/35 | LR=3.98e-04 | TLoss=16.4455 | VLoss=43.6042 | AP@50=0.0235 | SliceAP=0.4851 | EMA_SliceAP=0.3881
+  Epoch  15/35 | LR=3.83e-04 | TLoss=14.2286 | VLoss=43.4211 | AP@50=0.0807 | SliceAP=0.5347 | EMA_SliceAP=0.4321
+  Epoch  16/35 | LR=3.66e-04 | TLoss=12.7885 | VLoss=40.4988 | AP@50=0.0549 | SliceAP=0.5743 | EMA_SliceAP=0.4747
+  Epoch  17/35 | LR=3.47e-04 | TLoss=11.6897 | VLoss=46.2080 | AP@50=0.0501 | SliceAP=0.5347 | EMA_SliceAP=0.4927
+  Epoch  18/35 | LR=3.27e-04 | TLoss=11.1227 | VLoss=37.6445 | AP@50=0.0552 | SliceAP=0.5842 | EMA_SliceAP=0.5201
+  Epoch  19/35 | LR=3.05e-04 | TLoss=10.2855 | VLoss=39.1573 | AP@50=0.1176 | SliceAP=0.6634 | EMA_SliceAP=0.5631
+  Epoch  20/35 | LR=2.82e-04 | TLoss=9.1771 | VLoss=39.4344 | AP@50=0.1256 | SliceAP=0.5347 | EMA_SliceAP=0.5546
+  Epoch  21/35 | LR=2.58e-04 | TLoss=9.4412 | VLoss=36.2057 | AP@50=0.1462 | SliceAP=0.6238 | EMA_SliceAP=0.5753
+  Epoch  22/35 | LR=2.34e-04 | TLoss=9.2489 | VLoss=37.4045 | AP@50=0.1526 | SliceAP=0.6238 | EMA_SliceAP=0.5899
+  Epoch  23/35 | LR=2.09e-04 | TLoss=8.3732 | VLoss=38.2794 | AP@50=0.1016 | SliceAP=0.5050 | EMA_SliceAP=0.5644
+  Epoch  24/35 | LR=1.85e-04 | TLoss=7.6626 | VLoss=36.2917 | AP@50=0.1049 | SliceAP=0.5941 | EMA_SliceAP=0.5733
+  Epoch  25/35 | LR=1.61e-04 | TLoss=7.4472 | VLoss=39.1642 | AP@50=0.1544 | SliceAP=0.5644 | EMA_SliceAP=0.5706
+  Epoch  26/35 | LR=1.38e-04 | TLoss=7.2995 | VLoss=37.9925 | AP@50=0.2041 | SliceAP=0.6436 | EMA_SliceAP=0.5925
+  Epoch  27/35 | LR=1.16e-04 | TLoss=6.9292 | VLoss=38.4097 | AP@50=0.1663 | SliceAP=0.5941 | EMA_SliceAP=0.5930
+  Epoch  28/35 | LR=9.51e-05 | TLoss=6.7229 | VLoss=38.8220 | AP@50=0.2022 | SliceAP=0.5842 | EMA_SliceAP=0.5903
+  Epoch  29/35 | LR=7.63e-05 | TLoss=6.1568 | VLoss=39.3293 | AP@50=0.1883 | SliceAP=0.5842 | EMA_SliceAP=0.5885
+  Epoch  30/35 | LR=5.94e-05 | TLoss=6.5641 | VLoss=36.9187 | AP@50=0.2435 | SliceAP=0.6040 | EMA_SliceAP=0.5931
+  [Pruned at epoch 30]
+
+[Trial 320] lr=1.58e-04  wd=1.99e-03  stride=5  bs=16  mosaic=0.69  ls=0.086  clahe=False  ssr=False  rbc=False  median=False(limit=5)  speckle=False(medium)  cp_p=0.53
+ScanAwareSampler: 13 scans, 2306 total slices, stride=5 → ~467 slices/epoch (20% of training set per epoch)
+  Epoch   1/35 | LR=1.58e-05 | TLoss=311.3387 | VLoss=482.9291 | AP@50=0.0000 | SliceAP=0.1881 | EMA_SliceAP=0.1881
+  Epoch   2/35 | LR=3.36e-05 | TLoss=236.5596 | VLoss=315.3176 | AP@50=0.0015 | SliceAP=0.5644 | EMA_SliceAP=0.3010
+  Epoch   3/35 | LR=5.14e-05 | TLoss=128.2620 | VLoss=199.3520 | AP@50=0.0002 | SliceAP=0.3465 | EMA_SliceAP=0.3147
+  Epoch   4/35 | LR=6.92e-05 | TLoss=65.4996 | VLoss=118.1092 | AP@50=0.0001 | SliceAP=0.3069 | EMA_SliceAP=0.3123
+  Epoch   5/35 | LR=8.70e-05 | TLoss=42.9566 | VLoss=74.7520 | AP@50=0.0002 | SliceAP=0.3168 | EMA_SliceAP=0.3137
+  Epoch   6/35 | LR=1.05e-04 | TLoss=32.4578 | VLoss=57.5543 | AP@50=0.0004 | SliceAP=0.2475 | EMA_SliceAP=0.2938
+  Epoch   7/35 | LR=1.23e-04 | TLoss=25.6934 | VLoss=51.6818 | AP@50=0.0002 | SliceAP=0.0891 | EMA_SliceAP=0.2324
+  Epoch   8/35 | LR=1.40e-04 | TLoss=22.4760 | VLoss=43.8429 | AP@50=0.0216 | SliceAP=0.3861 | EMA_SliceAP=0.2785
+  Epoch   9/35 | LR=1.58e-04 | TLoss=20.3497 | VLoss=42.6036 | AP@50=0.0410 | SliceAP=0.5050 | EMA_SliceAP=0.3465
+  Epoch  10/35 | LR=1.58e-04 | TLoss=17.8937 | VLoss=40.0274 | AP@50=0.0352 | SliceAP=0.5743 | EMA_SliceAP=0.4148
+  Epoch  11/35 | LR=1.56e-04 | TLoss=16.2309 | VLoss=41.4759 | AP@50=0.1244 | SliceAP=0.4257 | EMA_SliceAP=0.4181
+  Epoch  12/35 | LR=1.54e-04 | TLoss=13.2853 | VLoss=37.5950 | AP@50=0.1844 | SliceAP=0.5743 | EMA_SliceAP=0.4649
+  Epoch  13/35 | LR=1.50e-04 | TLoss=11.3560 | VLoss=40.1968 | AP@50=0.0914 | SliceAP=0.5842 | EMA_SliceAP=0.5007
+  Epoch  14/35 | LR=1.46e-04 | TLoss=10.7495 | VLoss=40.1493 | AP@50=0.2178 | SliceAP=0.6040 | EMA_SliceAP=0.5317
+  Epoch  15/35 | LR=1.41e-04 | TLoss=9.2221 | VLoss=43.1365 | AP@50=0.1271 | SliceAP=0.4455 | EMA_SliceAP=0.5058
+  Epoch  16/35 | LR=1.35e-04 | TLoss=9.0835 | VLoss=41.1733 | AP@50=0.1493 | SliceAP=0.5743 | EMA_SliceAP=0.5264
+  Epoch  17/35 | LR=1.28e-04 | TLoss=8.0835 | VLoss=41.6631 | AP@50=0.1063 | SliceAP=0.4356 | EMA_SliceAP=0.4991
+  Epoch  18/35 | LR=1.21e-04 | TLoss=7.2469 | VLoss=40.9876 | AP@50=0.1077 | SliceAP=0.5050 | EMA_SliceAP=0.5009
+  Epoch  19/35 | LR=1.13e-04 | TLoss=6.8445 | VLoss=38.3673 | AP@50=0.1561 | SliceAP=0.5743 | EMA_SliceAP=0.5229
+  Epoch  20/35 | LR=1.05e-04 | TLoss=6.6452 | VLoss=39.5084 | AP@50=0.1787 | SliceAP=0.5248 | EMA_SliceAP=0.5235
+  Epoch  21/35 | LR=9.69e-05 | TLoss=6.3458 | VLoss=40.6926 | AP@50=0.1237 | SliceAP=0.4950 | EMA_SliceAP=0.5149
+  Epoch  22/35 | LR=8.84e-05 | TLoss=5.7699 | VLoss=39.3473 | AP@50=0.1546 | SliceAP=0.5149 | EMA_SliceAP=0.5149
+  [Early stop at epoch 22, best EMA SliceAP=0.5317]
+  [Checkpoints] top-3 saved → /fs01/home/dhaneshr/code/obj-det-test/checkpoints/hparam_v5/trial_0320/swa_manifest.yaml
+
+[Trial 343] lr=6.88e-04  wd=2.47e-03  stride=10  bs=16  mosaic=0.66  ls=0.091  clahe=True  ssr=True  rbc=False  median=True(limit=5)  speckle=False(medium)  cp_p=0.27
+ScanAwareSampler: 13 scans, 2306 total slices, stride=10 → ~236 slices/epoch (10% of training set per epoch)
+  Epoch   1/35 | LR=6.88e-05 | TLoss=314.9467 | VLoss=408.2461 | AP@50=0.0003 | SliceAP=0.1782 | EMA_SliceAP=0.1782
+  Epoch   2/35 | LR=1.46e-04 | TLoss=160.8053 | VLoss=178.3564 | AP@50=0.0007 | SliceAP=0.5050 | EMA_SliceAP=0.2762
+  Epoch   3/35 | LR=2.24e-04 | TLoss=69.1720 | VLoss=82.8153 | AP@50=0.0000 | SliceAP=0.2574 | EMA_SliceAP=0.2706
+  Epoch   4/35 | LR=3.01e-04 | TLoss=39.2358 | VLoss=57.1670 | AP@50=0.0002 | SliceAP=0.1287 | EMA_SliceAP=0.2280
+  Epoch   5/35 | LR=3.78e-04 | TLoss=29.5120 | VLoss=43.3476 | AP@50=0.0029 | SliceAP=0.3663 | EMA_SliceAP=0.2695
+  Epoch   6/35 | LR=4.56e-04 | TLoss=27.6689 | VLoss=42.6170 | AP@50=0.0442 | SliceAP=0.3960 | EMA_SliceAP=0.3075
+  Epoch   7/35 | LR=5.33e-04 | TLoss=27.5490 | VLoss=39.9504 | AP@50=0.0360 | SliceAP=0.3366 | EMA_SliceAP=0.3162
+  Epoch   8/35 | LR=6.10e-04 | TLoss=24.3437 | VLoss=39.4433 | AP@50=0.0444 | SliceAP=0.6337 | EMA_SliceAP=0.4115
+  Epoch   9/35 | LR=6.88e-04 | TLoss=21.1766 | VLoss=42.7817 | AP@50=0.1501 | SliceAP=0.4752 | EMA_SliceAP=0.4306
+  Epoch  10/35 | LR=6.85e-04 | TLoss=20.4297 | VLoss=40.1363 | AP@50=0.0765 | SliceAP=0.5644 | EMA_SliceAP=0.4707
+  Epoch  11/35 | LR=6.79e-04 | TLoss=16.3316 | VLoss=38.5849 | AP@50=0.1354 | SliceAP=0.5842 | EMA_SliceAP=0.5048
+  Epoch  12/35 | LR=6.67e-04 | TLoss=16.3364 | VLoss=39.6899 | AP@50=0.1152 | SliceAP=0.4851 | EMA_SliceAP=0.4989
+  Epoch  13/35 | LR=6.52e-04 | TLoss=14.6630 | VLoss=38.2163 | AP@50=0.1960 | SliceAP=0.5644 | EMA_SliceAP=0.5185
+  Epoch  14/35 | LR=6.32e-04 | TLoss=13.3470 | VLoss=35.2301 | AP@50=0.2775 | SliceAP=0.6139 | EMA_SliceAP=0.5471
+  Epoch  15/35 | LR=6.08e-04 | TLoss=13.3159 | VLoss=37.6830 | AP@50=0.2333 | SliceAP=0.6832 | EMA_SliceAP=0.5879
+  Epoch  16/35 | LR=5.81e-04 | TLoss=12.2662 | VLoss=41.9448 | AP@50=0.1527 | SliceAP=0.4455 | EMA_SliceAP=0.5452
+  Epoch  17/35 | LR=5.51e-04 | TLoss=11.1326 | VLoss=37.5025 | AP@50=0.2776 | SliceAP=0.7426 | EMA_SliceAP=0.6044
+  Epoch  18/35 | LR=5.18e-04 | TLoss=10.3959 | VLoss=35.0777 | AP@50=0.2053 | SliceAP=0.6931 | EMA_SliceAP=0.6310
+  Epoch  19/35 | LR=4.83e-04 | TLoss=10.9838 | VLoss=38.0081 | AP@50=0.2435 | SliceAP=0.6634 | EMA_SliceAP=0.6407
+  Epoch  20/35 | LR=4.46e-04 | TLoss=10.5279 | VLoss=36.4903 | AP@50=0.3568 | SliceAP=0.7723 | EMA_SliceAP=0.6802
+  Epoch  21/35 | LR=4.08e-04 | TLoss=9.7010 | VLoss=38.6358 | AP@50=0.2116 | SliceAP=0.6634 | EMA_SliceAP=0.6751
+  Epoch  22/35 | LR=3.69e-04 | TLoss=10.1046 | VLoss=38.6854 | AP@50=0.2659 | SliceAP=0.6931 | EMA_SliceAP=0.6805
+  Epoch  23/35 | LR=3.29e-04 | TLoss=9.5686 | VLoss=35.9472 | AP@50=0.2718 | SliceAP=0.6832 | EMA_SliceAP=0.6813
+  Epoch  24/35 | LR=2.90e-04 | TLoss=8.3860 | VLoss=36.9951 | AP@50=0.2035 | SliceAP=0.6733 | EMA_SliceAP=0.6789
+  Epoch  25/35 | LR=2.52e-04 | TLoss=7.7160 | VLoss=36.0328 | AP@50=0.2788 | SliceAP=0.7426 | EMA_SliceAP=0.6980
+  Epoch  26/35 | LR=2.15e-04 | TLoss=8.1965 | VLoss=35.1260 | AP@50=0.3257 | SliceAP=0.7525 | EMA_SliceAP=0.7143
+  Epoch  27/35 | LR=1.79e-04 | TLoss=8.3049 | VLoss=33.4105 | AP@50=0.3065 | SliceAP=0.7327 | EMA_SliceAP=0.7198
+  Epoch  28/35 | LR=1.47e-04 | TLoss=8.5120 | VLoss=34.9423 | AP@50=0.3064 | SliceAP=0.7327 | EMA_SliceAP=0.7237
+  Epoch  29/35 | LR=1.16e-04 | TLoss=8.0011 | VLoss=36.1610 | AP@50=0.3036 | SliceAP=0.6733 | EMA_SliceAP=0.7086
+  Epoch  30/35 | LR=8.93e-05 | TLoss=7.1287 | VLoss=36.2608 | AP@50=0.2781 | SliceAP=0.6832 | EMA_SliceAP=0.7009
+  Epoch  31/35 | LR=6.57e-05 | TLoss=7.0956 | VLoss=35.5498 | AP@50=0.3230 | SliceAP=0.7129 | EMA_SliceAP=0.7045
+  Epoch  32/35 | LR=4.60e-05 | TLoss=7.1020 | VLoss=36.1381 | AP@50=0.3012 | SliceAP=0.6832 | EMA_SliceAP=0.6981
+  Epoch  33/35 | LR=3.04e-05 | TLoss=7.4271 | VLoss=36.1064 | AP@50=0.3081 | SliceAP=0.6832 | EMA_SliceAP=0.6936
+  Epoch  34/35 | LR=1.91e-05 | TLoss=7.5928 | VLoss=35.8302 | AP@50=0.3064 | SliceAP=0.6832 | EMA_SliceAP=0.6905
+  Epoch  35/35 | LR=1.23e-05 | TLoss=7.0010 | VLoss=35.7225 | AP@50=0.3126 | SliceAP=0.6931 | EMA_SliceAP=0.6913
+  [Early stop at epoch 35, best EMA SliceAP=0.7198]
+  [Checkpoints] top-3 saved → /fs01/home/dhaneshr/code/obj-det-test/checkpoints/hparam_v5/trial_0343/swa_manifest.yaml
+
+[Trial 381] lr=9.12e-04  wd=3.31e-04  stride=10  bs=32  mosaic=0.34  ls=0.097  clahe=True  ssr=True  rbc=False  median=True(limit=5)  speckle=False(light)  cp_p=0.58
+ScanAwareSampler: 13 scans, 2306 total slices, stride=10 → ~236 slices/epoch (10% of training set per epoch)
+  Epoch   1/35 | LR=9.12e-05 | TLoss=393.5691 | VLoss=466.3730 | AP@50=0.0000 | SliceAP=0.1980 | EMA_SliceAP=0.1980
+  Epoch   2/35 | LR=1.94e-04 | TLoss=271.3960 | VLoss=271.3313 | AP@50=0.0004 | SliceAP=0.1881 | EMA_SliceAP=0.1950
+  Epoch   3/35 | LR=2.97e-04 | TLoss=127.2821 | VLoss=138.1242 | AP@50=0.0003 | SliceAP=0.3465 | EMA_SliceAP=0.2405
+  Epoch   4/35 | LR=3.99e-04 | TLoss=68.3686 | VLoss=72.7382 | AP@50=0.0000 | SliceAP=0.2178 | EMA_SliceAP=0.2337
+  Epoch   5/35 | LR=5.02e-04 | TLoss=40.9780 | VLoss=45.8461 | AP@50=0.0005 | SliceAP=0.1485 | EMA_SliceAP=0.2081
+  Epoch   6/35 | LR=6.05e-04 | TLoss=34.5043 | VLoss=38.5599 | AP@50=0.0004 | SliceAP=0.1089 | EMA_SliceAP=0.1784
+  Epoch   7/35 | LR=7.07e-04 | TLoss=31.8944 | VLoss=38.9297 | AP@50=0.0007 | SliceAP=0.1089 | EMA_SliceAP=0.1575
+  Epoch   8/35 | LR=8.10e-04 | TLoss=31.9712 | VLoss=36.4421 | AP@50=0.0366 | SliceAP=0.6337 | EMA_SliceAP=0.3004
+  Epoch   9/35 | LR=9.12e-04 | TLoss=28.5136 | VLoss=38.6406 | AP@50=0.0001 | SliceAP=0.0198 | EMA_SliceAP=0.2162
+  Epoch  10/35 | LR=9.09e-04 | TLoss=27.8308 | VLoss=34.0436 | AP@50=0.1196 | SliceAP=0.3168 | EMA_SliceAP=0.2464
+  [Pruned at epoch 10]
+
+[Trial 392] lr=1.79e-03  wd=3.37e-04  stride=10  bs=16  mosaic=0.35  ls=0.094  clahe=True  ssr=True  rbc=False  median=True(limit=5)  speckle=False(light)  cp_p=0.20
+ScanAwareSampler: 13 scans, 2306 total slices, stride=10 → ~236 slices/epoch (10% of training set per epoch)
+  Epoch   1/35 | LR=1.79e-04 | TLoss=369.6132 | VLoss=303.3429 | AP@50=0.0004 | SliceAP=0.1881 | EMA_SliceAP=0.1881
+  Epoch   2/35 | LR=3.80e-04 | TLoss=117.2501 | VLoss=77.2573 | AP@50=0.0001 | SliceAP=0.3267 | EMA_SliceAP=0.2297
+  Epoch   3/35 | LR=5.81e-04 | TLoss=43.6278 | VLoss=39.1772 | AP@50=0.0004 | SliceAP=0.0495 | EMA_SliceAP=0.1756
+  Epoch   4/35 | LR=7.82e-04 | TLoss=36.3513 | VLoss=41.7864 | AP@50=0.0138 | SliceAP=0.2673 | EMA_SliceAP=0.2031
+  Epoch   5/35 | LR=9.83e-04 | TLoss=35.4097 | VLoss=39.6140 | AP@50=0.0802 | SliceAP=0.2574 | EMA_SliceAP=0.2194
+  Epoch   6/35 | LR=1.18e-03 | TLoss=31.1189 | VLoss=35.5197 | AP@50=0.0336 | SliceAP=0.1584 | EMA_SliceAP=0.2011
+  Epoch   7/35 | LR=1.39e-03 | TLoss=26.7316 | VLoss=39.6834 | AP@50=0.1307 | SliceAP=0.4455 | EMA_SliceAP=0.2745
+  Epoch   8/35 | LR=1.59e-03 | TLoss=25.3802 | VLoss=40.5245 | AP@50=0.0668 | SliceAP=0.6139 | EMA_SliceAP=0.3763
+  Epoch   9/35 | LR=1.79e-03 | TLoss=24.3516 | VLoss=43.0025 | AP@50=0.0356 | SliceAP=0.4059 | EMA_SliceAP=0.3852
+  Epoch  10/35 | LR=1.78e-03 | TLoss=24.3185 | VLoss=40.4320 | AP@50=0.1960 | SliceAP=0.7030 | EMA_SliceAP=0.4805
+  Epoch  11/35 | LR=1.76e-03 | TLoss=25.9783 | VLoss=43.0029 | AP@50=0.0919 | SliceAP=0.2970 | EMA_SliceAP=0.4255
+  Epoch  12/35 | LR=1.73e-03 | TLoss=21.8916 | VLoss=38.6886 | AP@50=0.2226 | SliceAP=0.5149 | EMA_SliceAP=0.4523
+  Epoch  13/35 | LR=1.69e-03 | TLoss=23.5011 | VLoss=40.4296 | AP@50=0.1032 | SliceAP=0.6733 | EMA_SliceAP=0.5186
+  Epoch  14/35 | LR=1.64e-03 | TLoss=18.6680 | VLoss=41.0681 | AP@50=0.2092 | SliceAP=0.5743 | EMA_SliceAP=0.5353
+  Epoch  15/35 | LR=1.58e-03 | TLoss=18.6401 | VLoss=30.5757 | AP@50=0.2707 | SliceAP=0.6535 | EMA_SliceAP=0.5707
+  Epoch  16/35 | LR=1.51e-03 | TLoss=17.3075 | VLoss=37.6613 | AP@50=0.1724 | SliceAP=0.6139 | EMA_SliceAP=0.5837
+  Epoch  17/35 | LR=1.43e-03 | TLoss=15.0941 | VLoss=39.3780 | AP@50=0.2762 | SliceAP=0.4752 | EMA_SliceAP=0.5511
+  Epoch  18/35 | LR=1.34e-03 | TLoss=15.3553 | VLoss=39.7065 | AP@50=0.2050 | SliceAP=0.6337 | EMA_SliceAP=0.5759
+  Epoch  19/35 | LR=1.25e-03 | TLoss=14.1712 | VLoss=40.6450 | AP@50=0.1478 | SliceAP=0.5644 | EMA_SliceAP=0.5724
+  Epoch  20/35 | LR=1.15e-03 | TLoss=13.2589 | VLoss=29.2953 | AP@50=0.3035 | SliceAP=0.5743 | EMA_SliceAP=0.5730
+  Epoch  21/35 | LR=1.05e-03 | TLoss=13.1305 | VLoss=34.1314 | AP@50=0.3033 | SliceAP=0.6733 | EMA_SliceAP=0.6031
+  Epoch  22/35 | LR=9.50e-04 | TLoss=11.8655 | VLoss=34.8627 | AP@50=0.2900 | SliceAP=0.6733 | EMA_SliceAP=0.6241
+  Epoch  23/35 | LR=8.47e-04 | TLoss=13.3910 | VLoss=33.4531 | AP@50=0.2788 | SliceAP=0.6832 | EMA_SliceAP=0.6418
+  Epoch  24/35 | LR=7.44e-04 | TLoss=11.4848 | VLoss=36.9157 | AP@50=0.2409 | SliceAP=0.6040 | EMA_SliceAP=0.6305
+  Epoch  25/35 | LR=6.44e-04 | TLoss=12.0075 | VLoss=34.8929 | AP@50=0.3193 | SliceAP=0.5743 | EMA_SliceAP=0.6136
+  Epoch  26/35 | LR=5.47e-04 | TLoss=10.6920 | VLoss=34.7817 | AP@50=0.2891 | SliceAP=0.7030 | EMA_SliceAP=0.6404
+  Epoch  27/35 | LR=4.54e-04 | TLoss=11.4168 | VLoss=34.3149 | AP@50=0.2964 | SliceAP=0.6535 | EMA_SliceAP=0.6443
+  Epoch  28/35 | LR=3.68e-04 | TLoss=10.5487 | VLoss=33.1876 | AP@50=0.2929 | SliceAP=0.6535 | EMA_SliceAP=0.6471
+  Epoch  29/35 | LR=2.89e-04 | TLoss=9.7960 | VLoss=30.9472 | AP@50=0.3844 | SliceAP=0.6931 | EMA_SliceAP=0.6609
+  Epoch  30/35 | LR=2.18e-04 | TLoss=9.7643 | VLoss=32.2475 | AP@50=0.3774 | SliceAP=0.6535 | EMA_SliceAP=0.6586
+  [Pruned at epoch 30]
+
+[Trial 418] lr=1.31e-03  wd=2.16e-04  stride=10  bs=8  mosaic=0.64  ls=0.092  clahe=False  ssr=True  rbc=False  median=True(limit=7)  speckle=True(heavy)  cp_p=0.61
+ScanAwareSampler: 13 scans, 2306 total slices, stride=10 → ~236 slices/epoch (10% of training set per epoch)
+  Epoch   1/35 | LR=1.31e-04 | TLoss=200.6098 | VLoss=185.8920 | AP@50=0.0003 | SliceAP=0.4752 | EMA_SliceAP=0.4752
+  Epoch   2/35 | LR=2.79e-04 | TLoss=51.2786 | VLoss=52.1233 | AP@50=0.0014 | SliceAP=0.2376 | EMA_SliceAP=0.4040
+  Epoch   3/35 | LR=4.27e-04 | TLoss=30.6056 | VLoss=43.4578 | AP@50=0.0023 | SliceAP=0.2970 | EMA_SliceAP=0.3719
+  Epoch   4/35 | LR=5.74e-04 | TLoss=32.2202 | VLoss=45.1678 | AP@50=0.0107 | SliceAP=0.4950 | EMA_SliceAP=0.4088
+  Epoch   5/35 | LR=7.22e-04 | TLoss=29.0763 | VLoss=42.6309 | AP@50=0.0394 | SliceAP=0.4356 | EMA_SliceAP=0.4169
+  Epoch   6/35 | LR=8.69e-04 | TLoss=25.7377 | VLoss=44.0616 | AP@50=0.0275 | SliceAP=0.3861 | EMA_SliceAP=0.4077
+  Epoch   7/35 | LR=1.02e-03 | TLoss=26.8582 | VLoss=36.9385 | AP@50=0.1472 | SliceAP=0.6238 | EMA_SliceAP=0.4725
+  Epoch   8/35 | LR=1.16e-03 | TLoss=22.7047 | VLoss=43.0232 | AP@50=0.2297 | SliceAP=0.6337 | EMA_SliceAP=0.5208
+  Epoch   9/35 | LR=1.31e-03 | TLoss=22.0151 | VLoss=39.8459 | AP@50=0.1616 | SliceAP=0.5941 | EMA_SliceAP=0.5428
+  Epoch  10/35 | LR=1.31e-03 | TLoss=17.9477 | VLoss=39.1648 | AP@50=0.1619 | SliceAP=0.6337 | EMA_SliceAP=0.5701
+  Epoch  11/35 | LR=1.29e-03 | TLoss=17.0407 | VLoss=39.3576 | AP@50=0.4029 | SliceAP=0.6832 | EMA_SliceAP=0.6040
+  Epoch  12/35 | LR=1.27e-03 | TLoss=15.1017 | VLoss=36.1693 | AP@50=0.2217 | SliceAP=0.6733 | EMA_SliceAP=0.6248
+  Epoch  13/35 | LR=1.24e-03 | TLoss=14.9958 | VLoss=37.9905 | AP@50=0.2117 | SliceAP=0.6436 | EMA_SliceAP=0.6304
+  Epoch  14/35 | LR=1.21e-03 | TLoss=15.3840 | VLoss=37.6191 | AP@50=0.2217 | SliceAP=0.5941 | EMA_SliceAP=0.6195
+  Epoch  15/35 | LR=1.16e-03 | TLoss=13.0151 | VLoss=39.6117 | AP@50=0.1860 | SliceAP=0.6436 | EMA_SliceAP=0.6267
+  Epoch  16/35 | LR=1.11e-03 | TLoss=13.0352 | VLoss=40.9246 | AP@50=0.2821 | SliceAP=0.6337 | EMA_SliceAP=0.6288
+  Epoch  17/35 | LR=1.05e-03 | TLoss=12.7794 | VLoss=37.0230 | AP@50=0.4199 | SliceAP=0.7228 | EMA_SliceAP=0.6570
+  Epoch  18/35 | LR=9.87e-04 | TLoss=11.8183 | VLoss=34.2017 | AP@50=0.3738 | SliceAP=0.6436 | EMA_SliceAP=0.6530
+  Epoch  19/35 | LR=9.19e-04 | TLoss=11.0887 | VLoss=36.2878 | AP@50=0.3182 | SliceAP=0.6634 | EMA_SliceAP=0.6561
+  Epoch  20/35 | LR=8.48e-04 | TLoss=10.3218 | VLoss=31.9005 | AP@50=0.2962 | SliceAP=0.6832 | EMA_SliceAP=0.6642
+  Epoch  21/35 | LR=7.74e-04 | TLoss=10.4699 | VLoss=36.5847 | AP@50=0.3023 | SliceAP=0.6832 | EMA_SliceAP=0.6699
+  Epoch  22/35 | LR=6.99e-04 | TLoss=10.4106 | VLoss=35.2616 | AP@50=0.3532 | SliceAP=0.6634 | EMA_SliceAP=0.6679
+  Epoch  23/35 | LR=6.23e-04 | TLoss=9.3558 | VLoss=37.9077 | AP@50=0.2812 | SliceAP=0.7030 | EMA_SliceAP=0.6784
+  Epoch  24/35 | LR=5.48e-04 | TLoss=9.0309 | VLoss=36.3076 | AP@50=0.3492 | SliceAP=0.7030 | EMA_SliceAP=0.6858
+  Epoch  25/35 | LR=4.74e-04 | TLoss=8.9417 | VLoss=38.1040 | AP@50=0.3625 | SliceAP=0.6931 | EMA_SliceAP=0.6880
+  Epoch  26/35 | LR=4.03e-04 | TLoss=8.2541 | VLoss=36.7086 | AP@50=0.3882 | SliceAP=0.7228 | EMA_SliceAP=0.6984
+  Epoch  27/35 | LR=3.36e-04 | TLoss=7.6174 | VLoss=37.0199 | AP@50=0.3283 | SliceAP=0.6832 | EMA_SliceAP=0.6938
+  Epoch  28/35 | LR=2.72e-04 | TLoss=8.6279 | VLoss=36.1169 | AP@50=0.4328 | SliceAP=0.7327 | EMA_SliceAP=0.7055
+  Epoch  29/35 | LR=2.14e-04 | TLoss=8.1769 | VLoss=36.0693 | AP@50=0.3890 | SliceAP=0.6832 | EMA_SliceAP=0.6988
+  Epoch  30/35 | LR=1.62e-04 | TLoss=7.6798 | VLoss=35.2454 | AP@50=0.3849 | SliceAP=0.7030 | EMA_SliceAP=0.7000
+  Epoch  31/35 | LR=1.17e-04 | TLoss=7.2960 | VLoss=36.7423 | AP@50=0.3640 | SliceAP=0.6832 | EMA_SliceAP=0.6950
+  Epoch  32/35 | LR=7.93e-05 | TLoss=7.7190 | VLoss=35.7008 | AP@50=0.4315 | SliceAP=0.7030 | EMA_SliceAP=0.6974
+  Epoch  33/35 | LR=4.93e-05 | TLoss=6.8591 | VLoss=36.0528 | AP@50=0.3922 | SliceAP=0.6931 | EMA_SliceAP=0.6961
+  Epoch  34/35 | LR=2.76e-05 | TLoss=6.9418 | VLoss=35.8009 | AP@50=0.4052 | SliceAP=0.6931 | EMA_SliceAP=0.6952
+  Epoch  35/35 | LR=1.44e-05 | TLoss=7.9518 | VLoss=35.6992 | AP@50=0.4239 | SliceAP=0.7030 | EMA_SliceAP=0.6975
+  [Checkpoints] top-3 saved → /fs01/home/dhaneshr/code/obj-det-test/checkpoints/hparam_v5/trial_0418/swa_manifest.yaml
+
+[Trial 451] lr=9.55e-04  wd=6.26e-04  stride=10  bs=16  mosaic=0.52  ls=0.076  clahe=False  ssr=False  rbc=True  median=False(limit=3)  speckle=True(heavy)  cp_p=0.65
+ScanAwareSampler: 13 scans, 2306 total slices, stride=10 → ~236 slices/epoch (10% of training set per epoch)
+  Epoch   1/35 | LR=9.55e-05 | TLoss=309.7521 | VLoss=390.2002 | AP@50=0.0004 | SliceAP=0.1881 | EMA_SliceAP=0.1881
+  Epoch   2/35 | LR=2.03e-04 | TLoss=140.3442 | VLoss=137.1499 | AP@50=0.0000 | SliceAP=0.3564 | EMA_SliceAP=0.2386
+  Epoch   3/35 | LR=3.10e-04 | TLoss=48.4522 | VLoss=55.5800 | AP@50=0.0002 | SliceAP=0.2079 | EMA_SliceAP=0.2294
+  Epoch   4/35 | LR=4.18e-04 | TLoss=32.2315 | VLoss=49.7872 | AP@50=0.0015 | SliceAP=0.2574 | EMA_SliceAP=0.2378
+  Epoch   5/35 | LR=5.25e-04 | TLoss=29.0880 | VLoss=44.2734 | AP@50=0.0079 | SliceAP=0.2376 | EMA_SliceAP=0.2378
+  Epoch   6/35 | LR=6.33e-04 | TLoss=27.7554 | VLoss=42.8739 | AP@50=0.0160 | SliceAP=0.3663 | EMA_SliceAP=0.2763
+  Epoch   7/35 | LR=7.40e-04 | TLoss=24.6933 | VLoss=42.4512 | AP@50=0.0660 | SliceAP=0.3465 | EMA_SliceAP=0.2974
+  Epoch   8/35 | LR=8.47e-04 | TLoss=24.0232 | VLoss=37.7966 | AP@50=0.0992 | SliceAP=0.3960 | EMA_SliceAP=0.3270
+  Epoch   9/35 | LR=9.55e-04 | TLoss=23.1059 | VLoss=44.2737 | AP@50=0.0576 | SliceAP=0.4257 | EMA_SliceAP=0.3566
+  Epoch  10/35 | LR=9.52e-04 | TLoss=21.0768 | VLoss=37.7986 | AP@50=0.1904 | SliceAP=0.6337 | EMA_SliceAP=0.4397
+  Epoch  11/35 | LR=9.42e-04 | TLoss=18.1779 | VLoss=37.5607 | AP@50=0.1025 | SliceAP=0.6733 | EMA_SliceAP=0.5098
+  Epoch  12/35 | LR=9.26e-04 | TLoss=16.6015 | VLoss=41.0351 | AP@50=0.1652 | SliceAP=0.4158 | EMA_SliceAP=0.4816
+  Epoch  13/35 | LR=9.05e-04 | TLoss=15.1314 | VLoss=38.7237 | AP@50=0.1157 | SliceAP=0.5842 | EMA_SliceAP=0.5124
+  Epoch  14/35 | LR=8.77e-04 | TLoss=13.2142 | VLoss=40.9997 | AP@50=0.2097 | SliceAP=0.6535 | EMA_SliceAP=0.5547
+  Epoch  15/35 | LR=8.44e-04 | TLoss=11.7781 | VLoss=36.6785 | AP@50=0.2507 | SliceAP=0.6535 | EMA_SliceAP=0.5843
+  Epoch  16/35 | LR=8.07e-04 | TLoss=10.8866 | VLoss=38.0507 | AP@50=0.1955 | SliceAP=0.6238 | EMA_SliceAP=0.5962
+  Epoch  17/35 | LR=7.65e-04 | TLoss=11.2443 | VLoss=35.5404 | AP@50=0.2688 | SliceAP=0.6634 | EMA_SliceAP=0.6163
+  Epoch  18/35 | LR=7.19e-04 | TLoss=10.0552 | VLoss=36.4678 | AP@50=0.1597 | SliceAP=0.6040 | EMA_SliceAP=0.6126
+  Epoch  19/35 | LR=6.70e-04 | TLoss=9.3370 | VLoss=38.8045 | AP@50=0.2730 | SliceAP=0.4950 | EMA_SliceAP=0.5773
+  Epoch  20/35 | LR=6.18e-04 | TLoss=9.3862 | VLoss=35.4174 | AP@50=0.4061 | SliceAP=0.6733 | EMA_SliceAP=0.6061
+  Epoch  21/35 | LR=5.65e-04 | TLoss=8.4706 | VLoss=35.7859 | AP@50=0.3748 | SliceAP=0.6337 | EMA_SliceAP=0.6144
+  Epoch  22/35 | LR=5.10e-04 | TLoss=7.8546 | VLoss=36.3578 | AP@50=0.3941 | SliceAP=0.7327 | EMA_SliceAP=0.6499
+  Epoch  23/35 | LR=4.55e-04 | TLoss=7.8166 | VLoss=35.1240 | AP@50=0.3318 | SliceAP=0.6436 | EMA_SliceAP=0.6480
+  Epoch  24/35 | LR=4.00e-04 | TLoss=6.9222 | VLoss=36.0649 | AP@50=0.3529 | SliceAP=0.6634 | EMA_SliceAP=0.6526
+  Epoch  25/35 | LR=3.47e-04 | TLoss=7.3800 | VLoss=36.1301 | AP@50=0.3297 | SliceAP=0.6931 | EMA_SliceAP=0.6647
+  Epoch  26/35 | LR=2.95e-04 | TLoss=6.6480 | VLoss=35.2224 | AP@50=0.3002 | SliceAP=0.6535 | EMA_SliceAP=0.6614
+  Epoch  27/35 | LR=2.46e-04 | TLoss=6.0712 | VLoss=35.8051 | AP@50=0.3958 | SliceAP=0.6832 | EMA_SliceAP=0.6679
+  Epoch  28/35 | LR=2.00e-04 | TLoss=6.0313 | VLoss=36.0313 | AP@50=0.3561 | SliceAP=0.6634 | EMA_SliceAP=0.6665
+  Epoch  29/35 | LR=1.58e-04 | TLoss=5.9254 | VLoss=36.1627 | AP@50=0.4247 | SliceAP=0.6634 | EMA_SliceAP=0.6656
+  Epoch  30/35 | LR=1.21e-04 | TLoss=5.4057 | VLoss=35.9305 | AP@50=0.4172 | SliceAP=0.6832 | EMA_SliceAP=0.6709
+  Epoch  31/35 | LR=8.77e-05 | TLoss=5.3213 | VLoss=35.6009 | AP@50=0.4479 | SliceAP=0.6931 | EMA_SliceAP=0.6775
+  Epoch  32/35 | LR=6.03e-05 | TLoss=5.4106 | VLoss=35.5309 | AP@50=0.4579 | SliceAP=0.7129 | EMA_SliceAP=0.6881
+  Epoch  33/35 | LR=3.85e-05 | TLoss=5.4358 | VLoss=35.4156 | AP@50=0.4453 | SliceAP=0.7030 | EMA_SliceAP=0.6926
+  Epoch  34/35 | LR=2.27e-05 | TLoss=5.1785 | VLoss=35.5977 | AP@50=0.4313 | SliceAP=0.6931 | EMA_SliceAP=0.6927
+  Epoch  35/35 | LR=1.32e-05 | TLoss=5.3419 | VLoss=35.5990 | AP@50=0.4344 | SliceAP=0.6832 | EMA_SliceAP=0.6899
+  [Checkpoints] top-3 saved → /fs01/home/dhaneshr/code/obj-det-test/checkpoints/hparam_v5/trial_0451/swa_manifest.yaml
+
+[Trial 477] lr=1.07e-03  wd=6.27e-04  stride=10  bs=16  mosaic=0.40  ls=0.116  clahe=False  ssr=True  rbc=False  median=True(limit=5)  speckle=True(light)  cp_p=0.67
+ScanAwareSampler: 13 scans, 2306 total slices, stride=10 → ~236 slices/epoch (10% of training set per epoch)
+  Epoch   1/35 | LR=1.07e-04 | TLoss=305.9005 | VLoss=323.4794 | AP@50=0.0000 | SliceAP=0.1881 | EMA_SliceAP=0.1881
+  Epoch   2/35 | LR=2.26e-04 | TLoss=128.7811 | VLoss=118.3800 | AP@50=0.0005 | SliceAP=0.4356 | EMA_SliceAP=0.2624
+  Epoch   3/35 | LR=3.46e-04 | TLoss=51.5756 | VLoss=49.9361 | AP@50=0.0005 | SliceAP=0.1683 | EMA_SliceAP=0.2342
+  Epoch   4/35 | LR=4.66e-04 | TLoss=34.4988 | VLoss=39.9093 | AP@50=0.0071 | SliceAP=0.3663 | EMA_SliceAP=0.2738
+  Epoch   5/35 | LR=5.86e-04 | TLoss=31.9843 | VLoss=44.1757 | AP@50=0.0006 | SliceAP=0.0693 | EMA_SliceAP=0.2125
+  Epoch   6/35 | LR=7.06e-04 | TLoss=29.4283 | VLoss=37.3912 | AP@50=0.0124 | SliceAP=0.3861 | EMA_SliceAP=0.2646
+  Epoch   7/35 | LR=8.26e-04 | TLoss=27.2537 | VLoss=37.3840 | AP@50=0.1546 | SliceAP=0.6436 | EMA_SliceAP=0.3783
+  Epoch   8/35 | LR=9.46e-04 | TLoss=27.1294 | VLoss=37.0542 | AP@50=0.1028 | SliceAP=0.7228 | EMA_SliceAP=0.4816
+  Epoch   9/35 | LR=1.07e-03 | TLoss=25.3129 | VLoss=33.2446 | AP@50=0.0239 | SliceAP=0.6139 | EMA_SliceAP=0.5213
+  Epoch  10/35 | LR=1.06e-03 | TLoss=23.2410 | VLoss=38.0860 | AP@50=0.2223 | SliceAP=0.5743 | EMA_SliceAP=0.5372
+  Epoch  11/35 | LR=1.05e-03 | TLoss=21.9520 | VLoss=33.1190 | AP@50=0.2655 | SliceAP=0.6337 | EMA_SliceAP=0.5661
+  Epoch  12/35 | LR=1.03e-03 | TLoss=19.5783 | VLoss=35.1666 | AP@50=0.1968 | SliceAP=0.6238 | EMA_SliceAP=0.5834
+  Epoch  13/35 | LR=1.01e-03 | TLoss=16.8408 | VLoss=36.7473 | AP@50=0.3672 | SliceAP=0.6436 | EMA_SliceAP=0.6015
+  Epoch  14/35 | LR=9.79e-04 | TLoss=16.9317 | VLoss=33.9158 | AP@50=0.2037 | SliceAP=0.5446 | EMA_SliceAP=0.5844
+  Epoch  15/35 | LR=9.42e-04 | TLoss=15.7121 | VLoss=34.6299 | AP@50=0.2030 | SliceAP=0.6832 | EMA_SliceAP=0.6140
+  Epoch  16/35 | LR=9.00e-04 | TLoss=15.5277 | VLoss=35.7674 | AP@50=0.3852 | SliceAP=0.7030 | EMA_SliceAP=0.6407
+  Epoch  17/35 | LR=8.53e-04 | TLoss=13.9875 | VLoss=35.6600 | AP@50=0.2610 | SliceAP=0.5941 | EMA_SliceAP=0.6267
+  Epoch  18/35 | LR=8.02e-04 | TLoss=14.4940 | VLoss=33.9116 | AP@50=0.3615 | SliceAP=0.6535 | EMA_SliceAP=0.6347
+  Epoch  19/35 | LR=7.47e-04 | TLoss=13.3534 | VLoss=35.6645 | AP@50=0.1960 | SliceAP=0.6337 | EMA_SliceAP=0.6344
+  Epoch  20/35 | LR=6.89e-04 | TLoss=12.2149 | VLoss=35.0078 | AP@50=0.3753 | SliceAP=0.6832 | EMA_SliceAP=0.6490
+  Epoch  21/35 | LR=6.29e-04 | TLoss=12.1739 | VLoss=27.9298 | AP@50=0.4601 | SliceAP=0.7723 | EMA_SliceAP=0.6860
+  Epoch  22/35 | LR=5.68e-04 | TLoss=11.5390 | VLoss=34.7818 | AP@50=0.3926 | SliceAP=0.6634 | EMA_SliceAP=0.6792
+  Epoch  23/35 | LR=5.07e-04 | TLoss=11.3521 | VLoss=31.8350 | AP@50=0.4267 | SliceAP=0.6634 | EMA_SliceAP=0.6745
+  Epoch  24/35 | LR=4.46e-04 | TLoss=10.7854 | VLoss=32.1221 | AP@50=0.4160 | SliceAP=0.6931 | EMA_SliceAP=0.6800
+  Epoch  25/35 | LR=3.86e-04 | TLoss=10.2376 | VLoss=32.3882 | AP@50=0.3859 | SliceAP=0.7030 | EMA_SliceAP=0.6869
+  Epoch  26/35 | LR=3.29e-04 | TLoss=9.6492 | VLoss=34.5593 | AP@50=0.2961 | SliceAP=0.6535 | EMA_SliceAP=0.6769
+  Epoch  27/35 | LR=2.74e-04 | TLoss=9.7690 | VLoss=31.4391 | AP@50=0.3411 | SliceAP=0.7129 | EMA_SliceAP=0.6877
+  Epoch  28/35 | LR=2.23e-04 | TLoss=9.7477 | VLoss=31.7744 | AP@50=0.4136 | SliceAP=0.6733 | EMA_SliceAP=0.6834
+  Epoch  29/35 | LR=1.76e-04 | TLoss=9.6294 | VLoss=30.3664 | AP@50=0.4223 | SliceAP=0.6733 | EMA_SliceAP=0.6803
+  [Early stop at epoch 29, best EMA SliceAP=0.6860]
+  [Checkpoints] top-3 saved → /fs01/home/dhaneshr/code/obj-det-test/checkpoints/hparam_v5/trial_0477/swa_manifest.yaml
+
+[Trial 494] lr=5.65e-04  wd=2.50e-03  stride=10  bs=32  mosaic=0.51  ls=0.083  clahe=False  ssr=True  rbc=False  median=True(limit=5)  speckle=False(heavy)  cp_p=0.40
+ScanAwareSampler: 13 scans, 2306 total slices, stride=10 → ~236 slices/epoch (10% of training set per epoch)
+  Epoch   1/35 | LR=5.65e-05 | TLoss=371.4779 | VLoss=535.6493 | AP@50=0.0000 | SliceAP=0.1881 | EMA_SliceAP=0.1881
+  Epoch   2/35 | LR=1.20e-04 | TLoss=315.3693 | VLoss=382.6864 | AP@50=0.0001 | SliceAP=0.1782 | EMA_SliceAP=0.1851
+  Epoch   3/35 | LR=1.84e-04 | TLoss=203.9124 | VLoss=237.0160 | AP@50=0.0026 | SliceAP=0.5644 | EMA_SliceAP=0.2989
+  Epoch   4/35 | LR=2.47e-04 | TLoss=114.0572 | VLoss=133.2921 | AP@50=0.0016 | SliceAP=0.6040 | EMA_SliceAP=0.3904
+  Epoch   5/35 | LR=3.11e-04 | TLoss=63.2628 | VLoss=76.0990 | AP@50=0.0001 | SliceAP=0.2574 | EMA_SliceAP=0.3505
+  Epoch   6/35 | LR=3.74e-04 | TLoss=41.2332 | VLoss=49.3998 | AP@50=0.0007 | SliceAP=0.2277 | EMA_SliceAP=0.3137
+  Epoch   7/35 | LR=4.38e-04 | TLoss=33.2542 | VLoss=43.9577 | AP@50=0.0056 | SliceAP=0.1584 | EMA_SliceAP=0.2671
+  Epoch   8/35 | LR=5.01e-04 | TLoss=29.6301 | VLoss=38.8237 | AP@50=0.0000 | SliceAP=0.0000 | EMA_SliceAP=0.1870
+  Epoch   9/35 | LR=5.65e-04 | TLoss=28.5113 | VLoss=41.8101 | AP@50=0.0012 | SliceAP=0.1188 | EMA_SliceAP=0.1665
+  Epoch  10/35 | LR=5.63e-04 | TLoss=26.5011 | VLoss=40.5630 | AP@50=0.0052 | SliceAP=0.3960 | EMA_SliceAP=0.2354
+  [Pruned at epoch 10]
+
+=== Worker done | Completed: 173 | Pruned: 229 ===
+Best EMA SliceAP@50 across all workers: 0.7500
+Best params: {'learning_rate': 0.0008429170022484867, 'weight_decay': 0.003959664482397866, 'mosaic_prob': 0.3236212685407541, 'label_smooth': 0.0785569963656005, 'copy_paste_p': 0.4936612542488167, 'slice_stride': 10, 'batch_size': 16, 'use_clahe': False, 'use_shift_scale_rotate': True, 'use_brightness_contrast': False, 'use_median_blur': True, 'median_blur_limit': 3, 'use_speckle_noise': False, 'speckle_level': 'light'}
+
+Saving top-5 configs to train/config/
+  Rank  1 | SliceAP=0.7500 | {'learning_rate': 0.0008429170022484867, 'weight_decay': 0.003959664482397866, 'mosaic_prob': 0.3236212685407541, 'label_smooth': 0.0785569963656005, 'copy_paste_p': 0.4936612542488167, 'slice_stride': 10, 'batch_size': 16, 'use_clahe': False, 'use_shift_scale_rotate': True, 'use_brightness_contrast': False, 'use_median_blur': True, 'median_blur_limit': 3, 'use_speckle_noise': False, 'speckle_level': 'light'} → hparam_v5_rank01_sliceap0.7500.yaml
+  Rank  2 | SliceAP=0.7354 | {'learning_rate': 0.0003986356095300661, 'weight_decay': 0.0008184536335034803, 'mosaic_prob': 0.39925159231236523, 'label_smooth': 0.08656560788058495, 'copy_paste_p': 0.2607812711893872, 'slice_stride': 10, 'batch_size': 16, 'use_clahe': True, 'use_shift_scale_rotate': True, 'use_brightness_contrast': False, 'use_median_blur': True, 'median_blur_limit': 5, 'use_speckle_noise': False, 'speckle_level': 'medium'} → hparam_v5_rank02_sliceap0.7354.yaml
+  Rank  3 | SliceAP=0.7226 | {'learning_rate': 0.0006111637950915517, 'weight_decay': 0.0013113903481051876, 'mosaic_prob': 0.3811807846071478, 'label_smooth': 0.10324127742588578, 'copy_paste_p': 0.32400213637436137, 'slice_stride': 10, 'batch_size': 8, 'use_clahe': True, 'use_shift_scale_rotate': True, 'use_brightness_contrast': False, 'use_median_blur': True, 'median_blur_limit': 7, 'use_speckle_noise': False, 'speckle_level': 'medium'} → hparam_v5_rank03_sliceap0.7226.yaml
+  Rank  4 | SliceAP=0.7200 | {'learning_rate': 0.0008707839533447586, 'weight_decay': 0.0005757261670218325, 'mosaic_prob': 0.6726633168632645, 'label_smooth': 0.08888718601656813, 'copy_paste_p': 0.21558603956491457, 'slice_stride': 10, 'batch_size': 16, 'use_clahe': True, 'use_shift_scale_rotate': True, 'use_brightness_contrast': False, 'use_median_blur': True, 'median_blur_limit': 5, 'use_speckle_noise': False, 'speckle_level': 'medium'} → hparam_v5_rank04_sliceap0.7200.yaml
+  Rank  5 | SliceAP=0.7198 | {'learning_rate': 0.0006877116756460217, 'weight_decay': 0.002467099835798404, 'mosaic_prob': 0.6606509236713316, 'label_smooth': 0.09067286402370975, 'copy_paste_p': 0.2653717931025774, 'slice_stride': 10, 'batch_size': 16, 'use_clahe': True, 'use_shift_scale_rotate': True, 'use_brightness_contrast': False, 'use_median_blur': True, 'median_blur_limit': 5, 'use_speckle_noise': False, 'speckle_level': 'medium'} → hparam_v5_rank05_sliceap0.7198.yaml
+
+Best config (EMA SliceAP@50=0.7500) → train/config/best_hyperparams_v5.yaml
+Task 11 completed at: Wed Mar 18 12:47:16 AM EDT 2026

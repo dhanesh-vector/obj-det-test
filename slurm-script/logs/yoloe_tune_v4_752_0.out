@@ -1,0 +1,14 @@
+Job array    : 752, task 0
+Node         : bn033
+Started at   : Tue Mar 17 02:39:17 PM EDT 2026
+Config       : train/config/default.yaml
+Study        : yoloe_hparam_search_v4 @ sqlite:////fs01/home/dhaneshr/code/obj-det-test/optuna_studies/yoloe_hparam_search_v4.db
+Trials       : 15 (this worker)
+Checkpoints  : top-3 per trial → /fs01/home/dhaneshr/code/obj-det-test/checkpoints/hparam_v4
+Study name   : yoloe_hparam_search_v4
+Storage      : sqlite:////fs01/home/dhaneshr/code/obj-det-test/optuna_studies/yoloe_hparam_search_v4.db
+Trials       : 15 (this worker)
+Epochs/trial : 50 (max, EMA early stopping patience=15)
+EMA alpha    : 0.3
+Checkpoints  : top-3 per trial → /fs01/home/dhaneshr/code/obj-det-test/checkpoints/hparam_v4
+Task 0 completed at: Tue Mar 17 02:39:38 PM EDT 2026

@@ -17,6 +17,7 @@ from model.yoloe import build_yoloe, YOLOEWithLoss
 from data.dataset import UltrasoundDataset, collate_fn
 from data.sampler import ScanAwareSampler
 from utils.metrics import decode_predictions, Evaluator
+from utils.plots import plot_validation_summary
 
 def parse_args():
     parser = configargparse.ArgParser(default_config_files=['train/config/default.yaml'], ignore_unknown_config_file_keys=True)
@@ -33,8 +34,9 @@ def parse_args():
     parser.add('--device', type=str, default='cuda' if torch.cuda.is_available() else 'cpu', help='Device (cuda/cpu)')
     parser.add('--checkpoints_dir', type=str, default='checkpoints', help='Directory to save checkpoints')
     parser.add('--results_dir', type=str, default='results', help='Directory to save results')
-    parser.add('--early_stopping_patience', type=int, default=10, help='Epochs to wait for AP@50 improvement before stopping (0 to disable)')
-    parser.add('--early_stopping_min_delta', type=float, default=0.001, help='Minimum AP@50 increase to count as progress')
+    parser.add('--early_stopping_patience', type=int, default=20, help='Epochs without EMA SliceAP@50 improvement before stopping (0 to disable)')
+    parser.add('--early_stopping_min_delta', type=float, default=0.005, help='Minimum EMA SliceAP@50 increase to count as progress')
+    parser.add('--ema_alpha', type=float, default=0.3, help='EMA smoothing factor for SliceAP@50 used as early-stopping criterion (matches tune_hyperparams_v5.py)')
     parser.add('--label_smooth', type=float, default=0.0, help='Label smoothing for positive targets (e.g. 0.1 sets target to 0.9)')
     parser.add('--slice_stride', type=int, default=1, help='ScanAwareSampler window size: sample 1 slice per N consecutive slices per scan per epoch. 1 = all slices (standard shuffle). Recommended: 5-10 for dense ultrasound volumes.')
     parser.add('--mosaic_prob', type=float, default=0.0, help='Probability of replacing a training sample with a 2×2 cross-scan mosaic. 0.0 disables mosaic (default). Recommended: 0.5.')
@@ -129,7 +131,7 @@ def validate(model, dataloader, device):
             evaluator.update(batch_preds, device_targets)
 
     parsed_results = evaluator.compute()
-    return total_loss / len(dataloader), parsed_results
+    return total_loss / len(dataloader), parsed_results, evaluator
 
 def main():
     args = parse_args()
@@ -256,24 +258,34 @@ def main():
         "metrics": {
             "train_loss": [],
             "val_loss": [],
+            "map_35": [],
             "map_50": [],
             "map_75": [],
             "map": [],
             "mar_100": [],
             "precision": [],
             "recall": [],
+            "f1": [],
             "slice_ap_50": [],
+            "slice_ap_75": [],
+            "ema_slice_ap_50": [],
+            "precision_at_recall80": [],
+            "recall_at_precision80": [],
             "epoch_times": []
         },
         "best_epoch": -1,
         "best_ap_50": -1.0,
+        "best_slice_ap_ema": -1.0,
         "checkpoint_path": best_checkpoint_path
     }
     
     print(f"Starting training for {args.epochs} epochs...")
+    print(f"Early-stopping criterion: EMA SliceAP@50 (alpha={args.ema_alpha}, "
+          f"patience={args.early_stopping_patience}, min_delta={args.early_stopping_min_delta})")
     start_train_time = time.time()
 
     early_stopping_counter = 0
+    ema_slice_ap = None   # initialised on first epoch (same as tune_hyperparams_v5.py)
 
     for epoch in range(1, args.epochs + 1):
         epoch_start = time.time()
@@ -283,34 +295,54 @@ def main():
 
         # Train and Validate
         train_loss = train_one_epoch(model, train_loader, optimizer, device)
-        val_loss, map_metrics = validate(model, val_loader, device)
-        
+        val_loss, map_metrics, last_evaluator = validate(model, val_loader, device)
+
+        # EMA of SliceAP@50 — matches tune_hyperparams_v5.py exactly
+        raw_slice_ap = map_metrics['slice_ap_50']
+        if ema_slice_ap is None:
+            ema_slice_ap = raw_slice_ap
+        else:
+            ema_slice_ap = args.ema_alpha * raw_slice_ap + (1.0 - args.ema_alpha) * ema_slice_ap
+
         # Step the learning rate scheduler
         current_lr = scheduler.get_last_lr()[0]
         scheduler.step()
-        
+
         epoch_time = time.time() - epoch_start
-        
+
         print(f"Epoch [{epoch}/{args.epochs}] Time: {epoch_time:.2f}s | LR: {current_lr:.6f} | "
-              f"Train Loss: {train_loss:.4f} | Val Loss: {val_loss:.4f} | "
-              f"AP@50: {map_metrics['map_50']:.4f} | SliceAP@50: {map_metrics['slice_ap_50']:.4f} | "
-              f"Prec: {map_metrics['precision']:.4f} | "
-              f"Recall: {map_metrics['recall']:.4f} | Recall@100: {map_metrics['mar_100']:.4f}")
-              
+              f"Train Loss: {train_loss:.4f} | Val Loss: {val_loss:.4f}")
+        print(f"  mAP@35: {map_metrics['map_35']:.4f} | mAP@50: {map_metrics['map_50']:.4f} | "
+              f"mAP@75: {map_metrics['map_75']:.4f} | mAP@50:95: {map_metrics['map']:.4f}")
+        print(f"  SliceAP@50: {raw_slice_ap:.4f} | EMA_SliceAP@50: {ema_slice_ap:.4f} | "
+              f"SliceAP@75: {map_metrics['slice_ap_75']:.4f}")
+        print(f"  Prec: {map_metrics['precision']:.4f} | Recall: {map_metrics['recall']:.4f} | "
+              f"F1: {map_metrics['f1']:.4f} | Recall@100: {map_metrics['mar_100']:.4f}")
+        print(f"  P@R=0.8: {map_metrics['precision_at_recall80']:.4f} | "
+              f"R@P=0.8: {map_metrics['recall_at_precision80']:.4f}")
+
         # Record metrics
         training_info["metrics"]["train_loss"].append(train_loss)
         training_info["metrics"]["val_loss"].append(val_loss)
+        training_info["metrics"]["map_35"].append(map_metrics['map_35'])
         training_info["metrics"]["map_50"].append(map_metrics['map_50'])
         training_info["metrics"]["map_75"].append(map_metrics['map_75'])
         training_info["metrics"]["map"].append(map_metrics['map'])
         training_info["metrics"]["mar_100"].append(map_metrics['mar_100'])
         training_info["metrics"]["precision"].append(map_metrics['precision'])
         training_info["metrics"]["recall"].append(map_metrics['recall'])
-        training_info["metrics"]["slice_ap_50"].append(map_metrics['slice_ap_50'])
+        training_info["metrics"]["f1"].append(map_metrics['f1'])
+        training_info["metrics"]["slice_ap_50"].append(raw_slice_ap)
+        training_info["metrics"]["ema_slice_ap_50"].append(ema_slice_ap)
+        training_info["metrics"]["slice_ap_75"].append(map_metrics['slice_ap_75'])
+        training_info["metrics"]["precision_at_recall80"].append(map_metrics['precision_at_recall80'])
+        training_info["metrics"]["recall_at_precision80"].append(map_metrics['recall_at_precision80'])
         training_info["metrics"]["epoch_times"].append(epoch_time)
-        
-        # Save best model and drive early stopping — both keyed on AP@50
-        if map_metrics['map_50'] > training_info["best_ap_50"] + args.early_stopping_min_delta:
+
+        # Save best model and drive early stopping — both keyed on EMA SliceAP@50
+        # (consistent with tune_hyperparams_v5.py)
+        if ema_slice_ap > training_info["best_slice_ap_ema"] + args.early_stopping_min_delta:
+            training_info["best_slice_ap_ema"] = ema_slice_ap
             training_info["best_ap_50"] = map_metrics['map_50']
             training_info["best_epoch"] = epoch
             early_stopping_counter = 0
@@ -320,16 +352,29 @@ def main():
                 'model_state_dict': model.state_dict(),
                 'optimizer_state_dict': optimizer.state_dict(),
                 'val_loss': val_loss,
+                'map_35': map_metrics['map_35'],
                 'ap_50': map_metrics['map_50'],
+                'ap_75': map_metrics['map_75'],
+                'map': map_metrics['map'],
+                'slice_ap_50': raw_slice_ap,
+                'ema_slice_ap_50': ema_slice_ap,
+                'slice_ap_75': map_metrics['slice_ap_75'],
+                'precision': map_metrics['precision'],
+                'recall': map_metrics['recall'],
+                'f1': map_metrics['f1'],
                 'recall_100': map_metrics['mar_100'],
+                'precision_at_recall80': map_metrics['precision_at_recall80'],
+                'recall_at_precision80': map_metrics['recall_at_precision80'],
                 'config': vars(args)
             }
             torch.save(checkpoint, best_checkpoint_path)
-            print(f"--> Saved new best model with AP@50: {map_metrics['map_50']:.4f} (Val Loss: {val_loss:.4f})")
+            print(f"--> Saved new best model  EMA SliceAP@50: {ema_slice_ap:.4f} "
+                  f"| AP@50: {map_metrics['map_50']:.4f} (Val Loss: {val_loss:.4f})")
         else:
             early_stopping_counter += 1
             if args.early_stopping_patience > 0 and early_stopping_counter >= args.early_stopping_patience:
-                print(f"Early stopping triggered: AP@50 did not improve for {args.early_stopping_patience} epochs.")
+                print(f"Early stopping triggered: EMA SliceAP@50 did not improve by "
+                      f"{args.early_stopping_min_delta} for {args.early_stopping_patience} epochs.")
                 with open(progress_file, 'w') as f:
                     json.dump(training_info, f, indent=4)
                 break
@@ -345,9 +390,14 @@ def main():
     # Final save of the progress file
     with open(progress_file, 'w') as f:
         json.dump(training_info, f, indent=4)
-        
+
+    # Save validation diagnostic plots using the last epoch's evaluator
+    plots_path = progress_file.replace('.json', '_plots.png')
+    plot_validation_summary(last_evaluator, training_info, plots_path)
+
     print("Training complete!")
-    print(f"Best AP@50: {training_info['best_ap_50']:.4f} at Epoch {training_info['best_epoch']}")
+    print(f"Best EMA SliceAP@50: {training_info['best_slice_ap_ema']:.4f} at Epoch {training_info['best_epoch']}")
+    print(f"Corresponding AP@50: {training_info['best_ap_50']:.4f}")
     print(f"Run summary saved to {progress_file}")
     
 if __name__ == "__main__":

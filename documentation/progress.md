@@ -251,8 +251,197 @@ However, a complementary question is: *does the model fire on the right slices a
 
 **Current status:** In progress — running with the speckle + copy-paste combined config. Expected benefit: higher instance diversity per epoch especially for rare lesion sizes; model forced to detect lesions across varied tissue backgrounds.
 
+### 18. Why AP@50 Is an Unstable HPO Metric — and Why SliceAP@50 Replaces It
+
+#### The instability problem
+
+AP@50 (box-level mean average precision at IoU ≥ 0.5) exhibited single-epoch swings of ±0.10–0.15 in v3 HPO logs with no corresponding change in validation loss. Trial 201, for example, moved from 0.27 to 0.54 and back to 0.39 across three consecutive epochs while val loss barely moved (29.6 → 33.5 → 30.4). This makes it an unreliable stopping signal and corrupts Optuna's pruner: a configuration that would have reached 0.52 by epoch 30 can get killed at epoch 10 because it happened to produce 0.08 on a single bad checkpoint.
+
+Two root causes were identified:
+
+**1. Small effective sample size.**
+Box-level AP@50 uses `torchmetrics MeanAveragePrecision`, which pools all predicted and GT boxes across the full validation set and builds a single PR curve over those boxes. The 357-slice validation set does not contain 357 independent GT boxes — the number of annotated lesion instances is substantially smaller (lesion-sparse ultrasound volumes), so the PR curve is built from far fewer samples than 357. A single misdetected lesion or a single spurious high-confidence false positive shifts the entire curve.
+
+**2. Validation set data split: not scan-level holdout.**
+Inspection of the data directory revealed that all 6 validation scan IDs (CEM004A3, CEM005A1, CEM006A1, CEM007A1, CEM013A2, CEM015A2) also appear in the training set. More critically, for two scans (CEM013A2 and CEM015A2) the validation slice indices fall entirely within the training slice index range — the validation slices are sandwiched between neighbouring training slices from the same scan. In 3D ultrasound, adjacent slices are near-identical (1 mm spacing). This means the model has seen frames adjacent to every validation slice during training, introducing within-scan correlation that makes the metric sensitive to scan-specific confidence calibration rather than true generalization.
+
+The practical consequence: small changes in logit scale (caused by LR schedule progression or weight decay during training) shift the confidence of predictions on familiar scan neighbourhoods unpredictably, producing large AP swings that are not informative about generalization.
+
+#### Why SliceAP@50 is more stable
+
+`SliceAP@50` (implemented in `utils/metrics.py :: Evaluator._per_slice_ap`) treats each of the 357 validation slices as one binary sample:
+
+- **Score:** maximum prediction confidence in that slice (0.0 if no predictions)
+- **Positive:** slice has ≥1 GT box
+- **Hit (TP):** any predicted box has IoU ≥ 0.5 with any GT box
+
+The PR curve has exactly 357 points — the full validation set. Box-level AP@50 can have far fewer effective points when GT instances are sparse.
+
+The stabilization comes from two effects:
+
+1. **More samples:** 357 binary classification events are more stable than ~N_boxes events where N_boxes ≪ 357. Variance of a proportion scales as $1/n$; doubling the effective sample count halves the variance.
+
+2. **Coarser question asked:** SliceAP asks "did you find anything in this slice?" rather than "did you find every box at the right IoU?" The binary hit criterion (`(iou >= 0.5).any()`) absorbs minor box placement variation — a box that shifts by a few pixels between epochs is still a hit. This removes the per-epoch jitter from near-threshold box quality variation.
+
+The metric also has direct clinical relevance for this application: the primary screening task is flagging suspicious slices for radiologist review (binary per-slice decision), not precisely localizing every lesion instance. SliceAP@50 directly measures this.
+
+**Observed stability:** In the same v3 training runs, `slice_ap_50` hovered in the 0.60–0.72 range in later epochs while `map_50` oscillated 0.40–0.55 over the same epochs. The signal-to-noise ratio is substantially higher.
+
+#### Remaining caveats
+
+SliceAP@50 is more lenient: a very large imprecise box that incidentally overlaps a GT box at IoU ≥ 0.5 is still a hit. Two configs with similar SliceAP@50 could differ meaningfully in box quality. For HPO ranking purposes (which config is better, not how precisely it localizes), this is an acceptable trade-off. Final model evaluation should still report both SliceAP@50 and AP@50.
+
+The val-set data split issue (shared scan IDs) is a separate problem that affects both metrics. The correct fix is a scan-level resplit; this does not change the relative merit of SliceAP@50 vs AP@50 as HPO objectives.
+
+---
+
+### 19. Hyperparameter Optimization v4 (`train/tune_hyperparams_v4.py`)
+
+#### Summary of changes from v3
+
+| Component | v3 | v4 |
+|---|---|---|
+| Optuna objective | Raw AP@50 | EMA SliceAP@50 |
+| Pruner reported metric | Raw AP@50 | Raw SliceAP@50 (not EMA) |
+| Early stopping criterion | Raw AP@50 | EMA SliceAP@50 |
+| Pruner type | `MedianPruner` | `HyperbandPruner` |
+| Checkpoint saving | None | Top-3 per trial by EMA SliceAP@50 |
+| Output best config | `best_hyperparams_v3.yaml` | `best_hyperparams_v4.yaml` |
+
+#### EMA smoothing (α = 0.3)
+
+A per-trial exponential moving average is applied to `slice_ap_50` at every epoch:
+
+```
+ema_t = 0.3 × slice_ap_t  +  0.7 × ema_{t-1}
+```
+
+The EMA is warm-started at epoch 1 (set to the raw value, no lag from zero). With α = 0.3 the effective half-life is ~2 epochs — enough to absorb the ±0.10 single-epoch swings visible in the v3 logs while tracking real trends on the timescale of 5–10 epochs.
+
+The EMA is used as:
+- **The trial objective returned to Optuna** (what the study maximises and uses for config ranking)
+- **The early stopping signal** (counter resets only when EMA improves by ≥ `min_delta`)
+
+The raw `slice_ap_50` (not EMA) is reported to the **pruner** via `trial.report()`. This is intentional: the HyperbandPruner's rung comparisons should reflect the model's actual state at a specific epoch, not a lagged average that would make a slowly-converging trial look better than a fast one at early rungs.
+
+#### HyperbandPruner
+
+Replaces `MedianPruner` for two reasons:
+
+1. `MedianPruner` compares a trial's metric against the global median at the same epoch. When trials are dispatched in parallel across 20 SLURM workers, the "same epoch" comparison is often across trials that are at very different phases of convergence, and the global median itself is noisy during the first 8–20 trials before enough data accumulates.
+
+2. `HyperbandPruner` groups trials into brackets and uses successive halving within each bracket. Trials are only compared to others that started with similar budgets. This is more robust to the delayed-onset convergence in this dataset (most configs produce near-zero AP before epoch 8).
+
+Configuration:
+- `min_resource=10` — no pruning before epoch 10 (past the warmup LR ramp)
+- `max_resource=50` — matches `--epochs`
+- `reduction_factor=3` — rungs at epochs 10, 30, 50; keeps top ⅓ at each rung
+
+Known limitation: Hyperband's bracket structure assumes workers run trials sequentially within brackets. With 20 asynchronous SLURM workers sharing one SQLite study, bracket assignment can be disrupted. If erratic early pruning is observed in v4 logs, this is the cause. MedianPruner was more robust to this kind of distributed asynchrony, at the cost of the comparison noise described above.
+
+#### Top-K checkpoint saving (`TopKCheckpointManager`)
+
+Each trial now saves up to 3 model checkpoints during training, managed by `TopKCheckpointManager` using a min-heap. At every epoch:
+
+1. The current model weights are saved to `checkpoints/hparam_v4/trial_<N>/epoch<E>_sliceap<V>.pt`
+2. The new checkpoint is pushed onto the heap (keyed by EMA SliceAP@50)
+3. If the heap exceeds K=3 entries, the checkpoint with the lowest EMA SliceAP@50 is popped and its file deleted
+
+This keeps exactly the top-3 best checkpoints alive at all times without accumulating files. On pruning, `cleanup()` deletes all checkpoint files for that trial to prevent disk bloat.
+
+At the end of each completed trial, `write_manifest()` produces `swa_manifest.yaml` listing the surviving checkpoints:
+
+```yaml
+trial_number: 42
+trial_params: {learning_rate: 4.8e-04, ...}
+checkpoints:
+  - path: "checkpoints/hparam_v4/trial_0042/epoch014_sliceap0.6823.pt"
+    epoch: 14
+    slice_ap50: 0.671234
+    ema_slice_ap50: 0.682300
+  - ...
+```
+
+Only the base YOLOE model weights (`YOLOEWithLoss.model.state_dict()`) are saved per checkpoint — not the loss wrapper — keeping each file to ~25 MB and making them directly loadable by `build_yoloe()` for inference or SWA averaging.
+
+**Disk budget:** 300 trials × 3 checkpoints × ~25 MB ≈ 22 GB on NFS. This is manageable; pruned trial checkpoints are deleted immediately.
+
+#### SWA weight averaging (post-study)
+
+After the study completes, the top trial manifests can be used to perform stochastic weight averaging across the best checkpoints:
+
+```python
+import torch, yaml, glob
+from model.yoloe import build_yoloe
+
+# Load manifests for your chosen top trials
+manifest_paths = ["checkpoints/hparam_v4/trial_0042/swa_manifest.yaml", ...]
+state_dicts = []
+for p in manifest_paths:
+    m = yaml.safe_load(open(p))
+    for ckpt in m["checkpoints"]:
+        sd = torch.load(ckpt["path"], map_location="cpu")["model_state_dict"]
+        state_dicts.append(sd)
+
+# Average weights
+avg_sd = {k: sum(sd[k] for sd in state_dicts) / len(state_dicts) for k in state_dicts[0]}
+model = build_yoloe(model_size="s", num_classes=1)
+model.load_state_dict(avg_sd)
+```
+
+Averaging across checkpoints from different epochs of the same trial (or across top trials) has been shown to improve generalization in noisy-metric regimes by smoothing out checkpoint-level variance. Saving the top-3 per trial makes this option available without requiring a separate full-training SWA run.
+
+---
+
+### 20. Hyperparameter Optimization v5 (`train/tune_hyperparams_v5.py`)
+
+#### Motivation — overfitting analysis of v4 (job 752)
+
+Post-hoc analysis of the 300-trial v4 run identified three consistent overfitting signals across virtually all completed trials:
+
+1. **Train/val loss gap triples by end of training.** The gap at epoch ~5 is ~8–14; by the final epoch it reaches ~23–30. Train loss keeps falling while val loss plateaus, indicating the model is memorising scan-specific features of the 13 training patients.
+
+2. **Val loss bottoms early.** Val loss hits its minimum between epochs 16 and 30 in nearly every trial, then drifts up by +1–7 units. Epochs 35–50 provide no SliceAP@50 gain and only deepen the train/val gap.
+
+3. **Weight decay saturates at the search space boundary.** Both the v3 and v4 best trials converged to `wd=7.97e-03`, immediately below the old upper bound of `1e-2`. When a hyperparameter search saturates at a boundary, the true optimum lies beyond it.
+
+#### Search space changes
+
+| Parameter | v4 range | v5 range | Rationale |
+|---|---|---|---|
+| `weight_decay` | `[1e-4, 1e-2]` log | `[1e-4, 5e-2]` log | Best wd in v3 and v4 both hit the old ceiling; extends regularisation headroom 5× |
+| `mosaic_prob` | `[0.1, 0.5]` | `[0.3, 0.8]` | Cross-scan mosaic is the strongest anti-overfitting augmentation; v4 best (0.39) was near the old ceiling; raising it forces more aggressive patient-mixing |
+| `copy_paste_p` | `[0.0, 0.7]` | `[0.2, 0.7]` | v4 best used 0.11 — well below effective range; with only 13 scans, copy-paste is the only source of novel lesion instances; floor of 0.2 ensures every trial uses it |
+
+All other search space parameters are unchanged from v4.
+
+#### Training budget changes
+
+| Parameter | v4 | v5 | Rationale |
+|---|---|---|---|
+| `--epochs` | 50 | 35 | Val loss bottoms at ep 16–30; ep 35–50 only deepens overfitting. Saves ~30% GPU time per trial, enabling more trials in the same wall time. |
+| `--early-stopping-patience` | 15 | 8 | EMA smoothing (α=0.3, half-life ~2 ep) already absorbs single-epoch dips; 15-epoch patience was equivalent to ~30 raw epochs of tolerance — too permissive. |
+
+#### Unchanged from v4
+
+- Objective: EMA SliceAP@50 (α=0.3), warm-started at epoch 1
+- Pruner: `HyperbandPruner` (`min_resource=10`, `max_resource=35`, `reduction_factor=3`)
+  - Note: `max_resource` updated from 50 → 35 to match new epoch budget; rungs now at epochs 10 and 35
+- Sampler: `TPESampler`
+- Checkpoint saving: `TopKCheckpointManager`, top-3 per trial, `swa_manifest.yaml` for SWA
+- Copy-paste: `TissueAwareCopyPaste` always instantiated (floor > 0), fixed structural params from base config
+
+#### Files
+
+- `train/tune_hyperparams_v5.py` — tuning script
+- `slurm-script/tune_hyperparams_v5.sh` — SLURM array job (20 workers × 15 trials = 300 total)
+- Outputs: `train/config/hparam_v5_rank*.yaml`, `train/config/best_hyperparams_v5.yaml`
+- Checkpoints: `checkpoints/hparam_v5/trial_<N>/`
+
+---
+
 ### Next Steps
-- Evaluate run results with MedianBlur + MultiplicativeNoise + TissueAwareCopyPaste.
-- Compare against PU-Loss baseline (AP@50 = 0.557) to isolate contribution of speckle augmentations and copy-paste.
-- If val loss continues diverging after epoch ~10, consider increasing `weight_decay` further or reducing `epochs` + relying on best-AP checkpoint.
-- Pseudo-labeling on unlabeled data is a viable next step if AP plateaus — run best checkpoint on unlabeled images, keep high-confidence detections as new training labels, retrain.
+- Run v5 HPO (job submission: `sbatch slurm-script/tune_hyperparams_v5.sh`).
+- Compare best_hyperparams_v5.yaml against v4 best (EMA SliceAP@50 = 0.7280).
+- Perform SWA averaging over top-3 checkpoints of the best 3–5 v4 trials (already available).
+- Consider scan-level resplit (hold out 2–3 full scans) to get a clean cross-patient validation metric before any final model selection.

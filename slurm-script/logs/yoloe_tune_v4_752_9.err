@@ -1,0 +1,18 @@
+[I 2026-03-17 14:39:45,729] Using an existing study with name 'yoloe_hparam_search_v4' instead of creating a new one.
+/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/albumentations/core/validation.py:114: UserWarning: ShiftScaleRotate is a special case of Affine transform. Please use Affine transform instead.
+  original_init(self, **validated_kwargs)
+[I 2026-03-17 14:57:22,851] Trial 8 finished with value: 0.7053635538374724 and parameters: {'learning_rate': 0.00043284502212938834, 'weight_decay': 0.007969454818643935, 'mosaic_prob': 0.39279757672456206, 'label_smooth': 0.08979877262955549, 'copy_paste_p': 0.10921304830970556, 'slice_stride': 10, 'batch_size': 16, 'use_clahe': True, 'use_shift_scale_rotate': True, 'use_brightness_contrast': False, 'use_median_blur': True, 'median_blur_limit': 5, 'use_speckle_noise': False, 'speckle_level': 'medium'}. Best is trial 8 with value: 0.7053635538374724.
+[I 2026-03-17 15:10:38,573] Trial 45 pruned. 
+[I 2026-03-17 15:14:36,160] Trial 72 pruned. 
+[I 2026-03-17 15:18:08,918] Trial 79 pruned. 
+[I 2026-03-17 15:29:13,298] Trial 83 pruned. 
+[I 2026-03-17 15:32:46,244] Trial 106 pruned. 
+[I 2026-03-17 15:36:45,588] Trial 119 pruned. 
+[I 2026-03-17 15:51:02,025] Trial 125 pruned. 
+[I 2026-03-17 16:01:57,476] Trial 148 pruned. 
+[I 2026-03-17 16:17:25,233] Trial 168 finished with value: 0.6454497059431317 and parameters: {'learning_rate': 0.0031210331213689696, 'weight_decay': 0.007462808635760221, 'mosaic_prob': 0.36345829987552386, 'label_smooth': 0.10173660202501227, 'copy_paste_p': 0.3770222365024629, 'slice_stride': 10, 'batch_size': 16, 'use_clahe': False, 'use_shift_scale_rotate': True, 'use_brightness_contrast': True, 'use_median_blur': True, 'median_blur_limit': 5, 'use_speckle_noise': True, 'speckle_level': 'heavy'}. Best is trial 14 with value: 0.7280141285840982.
+[I 2026-03-17 16:22:15,585] Trial 194 pruned. 
+[I 2026-03-17 16:27:32,193] Trial 204 pruned. 
+[I 2026-03-17 16:37:26,428] Trial 210 pruned. 
+[I 2026-03-17 16:48:47,794] Trial 229 pruned. 
+[I 2026-03-17 17:02:49,062] Trial 246 pruned. 

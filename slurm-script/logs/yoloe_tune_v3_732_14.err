@@ -1,0 +1,19 @@
+/cm/local/apps/slurm/var/spool/job00747/slurm_script: /cvmfs/soft.computecanada.ca/custom/software/lmod/lmod/init/bash: Too many levels of symbolic links
+[I 2026-03-17 10:46:47,034] Using an existing study with name 'yoloe_hparam_search_v3' instead of creating a new one.
+/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/albumentations/core/validation.py:114: UserWarning: ShiftScaleRotate is a special case of Affine transform. Please use Affine transform instead.
+  original_init(self, **validated_kwargs)
+[I 2026-03-17 11:10:34,482] Trial 13 finished with value: 0.5395092368125916 and parameters: {'learning_rate': 0.00043284502212938834, 'weight_decay': 0.007969454818643935, 'slice_stride': 5, 'batch_size': 32, 'mosaic_prob': 0.34044600469728353, 'label_smooth': 0.10621088666940683, 'use_clahe': False, 'use_shift_scale_rotate': True, 'use_brightness_contrast': False, 'use_median_blur': False, 'median_blur_limit': 7, 'use_speckle_noise': False, 'speckle_level': 'heavy', 'copy_paste_p': 0.1397716475108518}. Best is trial 13 with value: 0.5395092368125916.
+[I 2026-03-17 11:15:06,169] Trial 27 pruned. 
+[I 2026-03-17 11:18:59,937] Trial 43 pruned. 
+[I 2026-03-17 11:24:28,995] Trial 63 pruned. 
+[I 2026-03-17 11:30:09,997] Trial 74 pruned. 
+[I 2026-03-17 11:37:33,815] Trial 86 pruned. 
+[I 2026-03-17 11:43:48,846] Trial 100 pruned. 
+[I 2026-03-17 11:54:00,513] Trial 114 pruned. 
+[I 2026-03-17 12:06:33,132] Trial 133 pruned. 
+[I 2026-03-17 12:13:22,761] Trial 150 pruned. 
+[I 2026-03-17 12:19:41,094] Trial 161 pruned. 
+[I 2026-03-17 12:23:35,801] Trial 177 pruned. 
+[I 2026-03-17 12:44:27,736] Trial 187 finished with value: 0.4580349326133728 and parameters: {'learning_rate': 0.0005099520685867564, 'weight_decay': 0.00033267221782611826, 'slice_stride': 5, 'batch_size': 16, 'mosaic_prob': 0.16593048134924018, 'label_smooth': 0.10154902072027243, 'use_clahe': False, 'use_shift_scale_rotate': True, 'use_brightness_contrast': False, 'use_median_blur': False, 'median_blur_limit': 7, 'use_speckle_noise': False, 'speckle_level': 'heavy', 'copy_paste_p': 0.13351430337781128}. Best is trial 8 with value: 0.6186953783035278.
+[I 2026-03-17 12:50:41,062] Trial 221 pruned. 
+[I 2026-03-17 12:57:22,337] Trial 231 pruned. 

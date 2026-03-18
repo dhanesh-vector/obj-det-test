@@ -403,6 +403,52 @@
   \end{columns}
 \end{frame}
 
+% Speaker note — Scan-Aware Slice Sampling
+\note{
+\textbf{Inter-slice redundancy and its effect on training}
+
+\medskip
+Ultrasound volumes are acquired by sweeping a transducer continuously across tissue.
+At typical clinical acquisition rates the physical distance between adjacent slices is
+on the order of 0.5--1\,mm.
+At this spacing, the probe has moved so little between frames that the tissue cross-section
+is almost identical: the same anatomical structures appear at the same pixel coordinates,
+with differences limited to minor speckle fluctuation from micro-vibration and small changes
+in acoustic shadowing.
+
+\medskip
+\textbf{Why this matters for SGD:}
+Each mini-batch gradient update is supposed to represent an independent draw from the data
+distribution.
+When consecutive slices of the same scan occupy the same batch — or even adjacent batches —
+the model effectively sees the same image twice in rapid succession.
+The gradient from the second copy nearly cancels any corrective signal from the first,
+because the loss has already shifted the weights in exactly the direction that second image
+would request.
+Concretely, with 2306 slices spread across 50 consecutive-slice runs, naive sequential
+sampling means roughly 46 nearly-identical frames follow each other before a scan boundary
+is crossed — up to a $\sim$10$\times$ effective reduction in gradient diversity per epoch.
+
+\medskip
+\textbf{Downstream effects observed:}
+\begin{itemize}
+  \item Over-fitting to scan-level texture (speckle patterns, gain settings) rather than lesion morphology.
+  \item Artificially low training loss that does not transfer to held-out scans — the validation curve diverges from training loss earlier than expected.
+  \item The model learns to suppress predictions in regions that are consistently unannotated \emph{across an entire run}, reinforcing false-negative bias beyond what the labelling rate alone would predict.
+\end{itemize}
+
+\medskip
+\textbf{The fix — ScanAwareSampler:}
+Slices are partitioned into non-overlapping windows of width \texttt{stride} within each scan.
+One slice is drawn at random from each window per epoch; the selected slices are then globally
+shuffled before entering the DataLoader.
+This guarantees a minimum physical separation of \texttt{stride} $\times$ slice-thickness
+between any two frames from the same scan that could appear in the same batch,
+while still exposing the model to every region of every scan over a sufficient number of epochs.
+Stride\,=\,10 reduces per-epoch slice count from 2306 to $\sim$230 — a 10$\times$ diversity gain
+at the cost of needing more epochs to achieve full coverage.
+}
+
 % ── SLIDE 7 — Mosaic ─────────────────────────────────────────────────────────
 \begin{frame}{Cross-Scan Mosaic Augmentation}
   \begin{columns}[T]

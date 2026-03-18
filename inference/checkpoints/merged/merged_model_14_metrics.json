@@ -1,0 +1,58 @@
+{
+  "trial_number": 14,
+  "best_single": {
+    "checkpoint": "/fs01/home/dhaneshr/code/obj-det-test/checkpoints/hparam_v4/trial_0014/epoch034_sliceap0.7280.pt",
+    "epoch": 34,
+    "ema_slice_ap50_train": 0.728014,
+    "metrics": {
+      "map": 0.17970295250415802,
+      "map_50": 0.41196924448013306,
+      "map_75": 0.09172127395868301,
+      "map_small": 0.2628738582134247,
+      "map_medium": 0.21915069222450256,
+      "map_large": 0.0,
+      "mar_1": 0.24873949587345123,
+      "mar_10": 0.3635854423046112,
+      "mar_100": 0.3635854423046112,
+      "mar_small": 0.5508474707603455,
+      "mar_medium": 0.4193965494632721,
+      "mar_large": 0.0,
+      "map_per_class": -1.0,
+      "mar_100_per_class": -1.0,
+      "classes": 0,
+      "precision": 0.349609375,
+      "recall": 0.5014005602240896,
+      "f1": 0.41196777905638665,
+      "slice_ap_50": 0.7524752475247529
+    }
+  },
+  "swa_merged": {
+    "checkpoint": "checkpoints/merged/merged_model_14.pt",
+    "source_checkpoints": [
+      "/fs01/home/dhaneshr/code/obj-det-test/checkpoints/hparam_v4/trial_0014/epoch034_sliceap0.7280.pt",
+      "/fs01/home/dhaneshr/code/obj-det-test/checkpoints/hparam_v4/trial_0014/epoch035_sliceap0.7205.pt",
+      "/fs01/home/dhaneshr/code/obj-det-test/checkpoints/hparam_v4/trial_0014/epoch033_sliceap0.7175.pt"
+    ],
+    "metrics": {
+      "map": 0.21954640746116638,
+      "map_50": 0.41278472542762756,
+      "map_75": 0.19251511991024017,
+      "map_small": 0.26427796483039856,
+      "map_medium": 0.27773264050483704,
+      "map_large": 0.0,
+      "mar_1": 0.29467788338661194,
+      "mar_10": 0.36778712272644043,
+      "mar_100": 0.36918768286705017,
+      "mar_small": 0.5237287878990173,
+      "mar_medium": 0.4349137842655182,
+      "mar_large": 0.0,
+      "map_per_class": -1.0,
+      "mar_100_per_class": -1.0,
+      "classes": 0,
+      "precision": 0.32451499118165783,
+      "recall": 0.5154061624649859,
+      "f1": 0.39826839826839827,
+      "slice_ap_50": 0.6534653465346538
+    }
+  }
+}
