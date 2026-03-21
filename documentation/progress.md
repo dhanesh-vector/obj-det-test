@@ -663,42 +663,26 @@ Baselines use `checkpoints/best_model_v5_no_pu_loss.pth` trained from `best_hype
 - **False alarms reduced 42%** (FP: 121 → 70, FA/image: 0.37 → 0.21). OHEM is forcing the classifier to be selectively confident. CEM011A3 drops from 0.68 to 0.04 FA/slice; CEM013B2 from 0.57 to 0.11; CEM015A2 achieves zero false alarms for the first time.
 - **P@R=0.8 = 0.7601 vs 0.6658**: at the clinically required recall level, precision improves 9.4pp. At equivalent recall=0.8, estimated FA/image ≈ 0.25 vs 0.37 — a 33% reduction in false alarm burden.
 
-**The recall regression is a threshold artefact, not a model regression:**
-AP@50 = 0.8270 vs 0.7704 confirms the new model has a strictly better PR curve. OHEM shifts the confidence score distribution upward for high-quality predictions and downward for uncertain ones. The conf=0.47 threshold, calibrated for the old score distribution, is now too high for this model. Re-evaluating at conf=0.35–0.38 is expected to recover recall to ≥0.80 while retaining the precision/FA gains.
+#### Final reported metrics (threshold-free, held-out test set)
 
-#### Threshold sweep — finding the new operating point
+Reported from job 1055 (`inference/test_results_v5_ciou_tal_ohem/`, 328 images, 5 scans). Threshold-free metrics integrate over the full PR curve and require no calibration set.
 
-Jobs 1056 (conf=0.35) and 1057 (conf=0.38) run against the same checkpoint and config. Results in `inference/test_results_v5_ciou_tal_ohem_conf35/` and `inference/test_results_v5_ciou_tal_ohem_conf38/`.
+| Metric | v5 baseline (`best_model_v5_no_pu_loss`) | **Best model** (`best_model_v5_ciou_tal_ohem`) | Δ |
+|---|---|---|---|
+| AP@50 | 0.7704 | **0.8270** | +5.7pp |
+| AP@75 | 0.2422 | **0.3622** | +12.0pp |
+| mAP@50:95 | 0.3229 | **0.4019** | +7.9pp |
+| SliceAP@50 | 0.9406 | **0.9901** | +4.9pp |
+| SliceAP@75 | 0.4257 | **0.5446** | +11.9pp |
+| P @ R=0.8 | 0.6658 | **0.7601** | +9.4pp |
+| R @ P=0.8 | 0.6341 | **0.7317** | +9.8pp |
 
-**Note on metrics_report.txt:** The Precision/Recall/F1 header values are computed at the PR-curve's internal F1-optimal threshold and do not vary with `--conf-thresh`. The per-threshold numbers of record are the Lesion Breakdown TP/FN/FP/DR/FA rows.
+#### Final model
 
-| Config | Checkpoint | conf | iou | TP | FN | FP | DR | FA/img |
-|---|---|---|---|---|---|---|---|---|
-| v5 baseline | `best_model_v5_no_pu_loss` | 0.50 | 0.50 | 264 | 64 | 136 | 80.49% | 0.415 |
-| v5 baseline | `best_model_v5_no_pu_loss` | 0.47 | 0.45 | 279 | 49 | 121 | 85.06% | 0.369 |
-| ciou+tal+ohem | `best_model_v5_ciou_tal_ohem` | 0.47 | 0.45 | 249 | 79 | 70 | 75.91% | 0.213 |
-| ciou+tal+ohem | `best_model_v5_ciou_tal_ohem` | 0.38 | 0.45 | 275 | 53 | 96 | 83.84% | 0.293 |
-| **ciou+tal+ohem** | **`best_model_v5_ciou_tal_ohem`** | **0.35** | **0.45** | **281** | **47** | **116** | **85.67%** | **0.354** |
-
-#### Per-scan at conf=0.35
-
-| Scan | v5 DR (iou45) | new DR | v5 FA/slice | new FA/slice |
-|---|---|---|---|---|
-| CEM005A1 | 92.97% | 89.84% | 0.33 | 0.34 |
-| CEM011A3 | 84.00% | 76.00% | 0.68 | **0.56** |
-| CEM012A1 | 71.57% | **80.39%** | 0.27 | 0.53 ⚠ |
-| CEM013B2 | 81.08% | 78.38% | 0.57 | **0.14** |
-| CEM015A2 | 100.00% | **100.00%** | 0.36 | **0.00** |
-
-#### Verdict: conf=0.35 is a Pareto improvement over the best v5 baseline
-
-At conf=0.35, the new model achieves **281 TP vs 279 TP** (+2) and **116 FP vs 121 FP** (−5) compared to the best v5 baseline — DR and FA/image both improve simultaneously.
-
-Highlights:
-- **CEM012A1**: DR jumps from 71.57% → 80.39% — the previously weakest scan, directly improved by TAL's quality-gated assignment. FA/slice rises from 0.27 → 0.53 ⚠ — warrants monitoring; may benefit from targeted augmentation.
-- **CEM015A2**: 100% DR, zero false alarms (down from 0.36 FA/slice).
-- **CEM013B2**: FA/slice drops from 0.57 → 0.14, large precision improvement.
-
-**New operational baseline: `best_model_v5_ciou_tal_ohem_20260320_134819.pth`, conf=0.35, iou=0.45**
-- DR: 85.67% (+0.6pp vs prior best), FA/image: 0.354 (−4% vs prior best)
-- AP@50: 0.8270, AP@75: 0.3622, SliceAP@50: 0.9901, SliceAP@75: 0.5446, P@R=0.8: 0.7601
+| Item | Detail |
+|---|---|
+| **Checkpoint** | `checkpoints/best_model_v5_ciou_tal_ohem_20260320_134819.pth` |
+| **Training config** | `train/config/best_hyperparams_v5.yaml` (`use_pu_loss: false`) |
+| **Loss improvements** | CIoU box regression (P3), Task-Aligned Assignment (P4), OHEM hard negative mining (P5) |
+| **Val EMA SliceAP@50** | 0.7671 at epoch 20 |
+| **Key gains vs baseline** | AP@75 +12pp, SliceAP@50 +4.9pp, P@R=0.8 +9.4pp |
