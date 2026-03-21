@@ -1,7 +1,7 @@
 =================================================================
   YOLOE Test Set Evaluation Report
 =================================================================
-  Checkpoint  : /h/dhaneshr/code/obj-det-test/checkpoints/best_model_20260318_124730.pth
+  Checkpoint  : /h/dhaneshr/code/obj-det-test/checkpoints/best_model_v5_no_pu_loss.pth
   Config      : n/a
   use_pu_loss : False
   model_size  : s

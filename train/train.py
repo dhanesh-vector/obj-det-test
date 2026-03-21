@@ -41,6 +41,7 @@ def parse_args():
     parser.add('--slice_stride', type=int, default=1, help='ScanAwareSampler window size: sample 1 slice per N consecutive slices per scan per epoch. 1 = all slices (standard shuffle). Recommended: 5-10 for dense ultrasound volumes.')
     parser.add('--mosaic_prob', type=float, default=0.0, help='Probability of replacing a training sample with a 2×2 cross-scan mosaic. 0.0 disables mosaic (default). Recommended: 0.5.')
     parser.add('--seed', type=int, default=42, help='Global random seed for reproducibility.')
+    parser.add('--run_tag', type=str, default='', help='Optional label appended to checkpoint/results filenames before the timestamp (e.g. v5_p3p4p5).')
     parser.add('--warmup_epochs', type=int, default=8, help='Number of linear warmup epochs before cosine decay.')
     parser.add('--use_median_blur', action='store_true', help='Add MedianBlur augmentation (speckle-aware, better than GaussianBlur for ultrasound).')
     parser.add('--median_blur_limit', type=int, default=5, help='Max kernel size for MedianBlur (must be odd). Default: 5.')
@@ -248,8 +249,9 @@ def main():
 
     # Track metrics for JSON report
     run_timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    progress_file = os.path.join(args.results_dir, f"training_run_{run_timestamp}.json")
-    best_checkpoint_path = os.path.join(args.checkpoints_dir, f"best_model_{run_timestamp}.pth")
+    run_id = f"{args.run_tag}_{run_timestamp}" if args.run_tag else run_timestamp
+    progress_file = os.path.join(args.results_dir, f"training_run_{run_id}.json")
+    best_checkpoint_path = os.path.join(args.checkpoints_dir, f"best_model_{run_id}.pth")
     
     training_info = {
         "timestamp_start": datetime.now().isoformat(),

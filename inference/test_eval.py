@@ -57,8 +57,9 @@ plt.rcParams.update({
 
 # ── Constants ──────────────────────────────────────────────────────────────────
 CONF_THRESH_EVAL  = 0.05   # low threshold → pass all candidates to Evaluator
-CONF_THRESH_FIXED = 0.50   # fixed threshold for TP/FP/FN box-level breakdown
-IOU_THRESH        = 0.50   # IoU threshold for matching
+# CONF_THRESH_FIXED and IOU_THRESH are set from CLI args in main()
+CONF_THRESH_FIXED = 0.50   # default; overridden by --conf-thresh
+IOU_THRESH        = 0.50   # default; overridden by --iou-thresh
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -244,7 +245,8 @@ def _savefig(fig, path: Path, name: str):
     print(f"  Saved: {name}")
 
 
-def plot_metrics_summary(metrics: dict, out_dir: Path):
+def plot_metrics_summary(metrics: dict, out_dir: Path,
+                         conf_thresh: float = 0.50, iou_thresh: float = 0.50):
     keys = [
         ("map_50",                  "AP@50"),
         ("map_75",                  "AP@75"),
@@ -252,9 +254,9 @@ def plot_metrics_summary(metrics: dict, out_dir: Path):
         ("map_35",                  "AP@35"),
         ("slice_ap_50",             "SliceAP@50"),
         ("slice_ap_75",             "SliceAP@75"),
-        ("precision",               "Precision\n(conf≥0.5)"),
-        ("recall",                  "Recall\n(conf≥0.5)"),
-        ("f1",                      "F1\n(conf≥0.5)"),
+        ("precision",               f"Precision\n(conf≥{conf_thresh})"),
+        ("recall",                  f"Recall\n(conf≥{conf_thresh})"),
+        ("f1",                      f"F1\n(conf≥{conf_thresh})"),
         ("precision_at_recall80",   "P @ R=0.8"),
         ("recall_at_precision80",   "R @ P=0.8"),
     ]
@@ -281,8 +283,9 @@ def plot_metrics_summary(metrics: dict, out_dir: Path):
     _savefig(fig, out_dir, "plot_01_metrics_summary.png")
 
 
-def plot_pr_curve(evaluator: Evaluator, metrics: dict, out_dir: Path):
-    prec, rec, scores = evaluator.pr_curve_data(iou_thresh=0.5)
+def plot_pr_curve(evaluator: Evaluator, metrics: dict, out_dir: Path,
+                  conf_thresh: float = 0.50, iou_thresh: float = 0.50):
+    prec, rec, scores = evaluator.pr_curve_data(iou_thresh=iou_thresh)
 
     order  = np.argsort(rec)
     rec_s  = rec[order]
@@ -307,26 +310,27 @@ def plot_pr_curve(evaluator: Evaluator, metrics: dict, out_dir: Path):
         ax.scatter([r_at_p80], [0.8], s=80, color="darkorange", zorder=5,
                    label=f"R @ P=0.8 = {r_at_p80:.3f}")
 
-    # Mark operating point at conf=0.5
+    # Mark operating point at fixed conf threshold
     p05 = metrics.get("precision", None)
     r05 = metrics.get("recall",    None)
     if p05 is not None and r05 is not None:
         ax.scatter([r05], [p05], s=100, color="seagreen", marker="D", zorder=6,
-                   label=f"conf≥0.5  P={p05:.3f}  R={r05:.3f}")
+                   label=f"conf≥{conf_thresh}  P={p05:.3f}  R={r05:.3f}")
 
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 1.05)
     ax.set_xlabel("Recall")
     ax.set_ylabel("Precision")
-    ax.set_title("Precision-Recall Curve (IoU = 0.5) — Test Set",
+    ax.set_title(f"Precision-Recall Curve (IoU = {iou_thresh}) — Test Set",
                  fontsize=11, fontweight="bold")
     ax.legend(loc="upper right", fontsize=9)
     fig.tight_layout()
     _savefig(fig, out_dir, "plot_02_pr_curve.png")
 
 
-def plot_score_distribution(evaluator: Evaluator, out_dir: Path):
-    tp_scores, fp_scores = evaluator.score_distributions(iou_thresh=0.5)
+def plot_score_distribution(evaluator: Evaluator, out_dir: Path,
+                            conf_thresh: float = 0.50, iou_thresh: float = 0.50):
+    tp_scores, fp_scores = evaluator.score_distributions(iou_thresh=iou_thresh)
 
     fig, ax = plt.subplots(figsize=(8, 5))
     bins = np.linspace(0, 1, 31)
@@ -338,8 +342,8 @@ def plot_score_distribution(evaluator: Evaluator, out_dir: Path):
         ax.hist(fp_scores, bins=bins, color="tomato", alpha=0.7,
                 label=f"False Positives (n={len(fp_scores)})", density=True)
 
-    ax.axvline(CONF_THRESH_FIXED, color="black", ls="--", lw=1.5,
-               label=f"Threshold = {CONF_THRESH_FIXED}")
+    ax.axvline(conf_thresh, color="black", ls="--", lw=1.5,
+               label=f"Threshold = {conf_thresh}")
     ax.set_xlabel("Confidence Score")
     ax.set_ylabel("Density")
     ax.set_title("TP vs FP Confidence Score Distribution — Test Set",
@@ -519,21 +523,23 @@ def plot_predictions_grid(dataset, all_preds, all_targets, per_image,
         axes[row_i, 0].set_ylabel(title, fontsize=9, fontweight="bold", rotation=90,
                                    labelpad=6)
 
-    # Unified legend from first non-empty panel
-    for ax in axes.flat:
-        handles, labels = ax.get_legend_handles_labels()
-        if handles:
-            fig.legend(handles, labels, loc="lower center",
-                       ncol=4, fontsize=9, frameon=True,
-                       bbox_to_anchor=(0.5, -0.01))
-            break
+    # Fixed legend — built manually so all 4 entries always appear regardless
+    # of which box types happen to be present in the first plotted panel.
+    legend_handles = [
+        patches.Patch(edgecolor="limegreen",  facecolor="none", lw=2, ls="-",
+                      label="GT lesion — detected (TP)"),
+        patches.Patch(edgecolor="yellow",     facecolor="none", lw=2, ls="--",
+                      label="GT lesion — missed (FN)"),
+        patches.Patch(edgecolor="royalblue",  facecolor="none", lw=2, ls="-",
+                      label="Prediction — true positive (TP)"),
+        patches.Patch(edgecolor="tomato",     facecolor="none", lw=2, ls="-",
+                      label="Prediction — false alarm (FP)"),
+    ]
+    fig.legend(handles=legend_handles, loc="lower center",
+               ncol=4, fontsize=9, frameon=True,
+               bbox_to_anchor=(0.5, -0.01))
 
-    fig.suptitle(
-        "Test Set Predictions\n"
-        "green solid = GT detected · green dashed = GT missed · "
-        "blue = pred TP · red = pred FP",
-        fontsize=11, fontweight="bold",
-    )
+    fig.suptitle("Test Set Predictions", fontsize=11, fontweight="bold")
     fig.tight_layout(rect=[0, 0.04, 1, 1])
     _savefig(fig, out_dir, "plot_05_predictions_grid.png")
 
@@ -878,6 +884,10 @@ def parse_args():
     p.add_argument("--num-workers",  type=int, default=4)
     p.add_argument("--n-cols",       type=int, default=4,
                    help="Columns in the prediction grid")
+    p.add_argument("--conf-thresh", type=float, default=0.50,
+                   help="Confidence threshold for fixed-threshold TP/FP/FN breakdown (default: 0.50)")
+    p.add_argument("--iou-thresh",  type=float, default=0.50,
+                   help="IoU threshold for TP/FP/FN matching (default: 0.50)")
     p.add_argument("--out-dir", default=None,
                    help="Output directory (default: inference/test_results/)")
     return p.parse_args()
@@ -904,6 +914,13 @@ def main():
     num_classes = cfg.get("num_classes", 1)
     use_pu_loss = cfg.get("use_pu_loss", False)
     batch_size  = args.batch_size or cfg.get("batch_size", 16)
+
+    # ── Thresholds (override module-level defaults) ────────────────────────────
+    global CONF_THRESH_FIXED, IOU_THRESH
+    CONF_THRESH_FIXED = args.conf_thresh
+    IOU_THRESH        = args.iou_thresh
+    print(f"Conf thresh (fixed): {CONF_THRESH_FIXED}")
+    print(f"IoU  thresh        : {IOU_THRESH}")
 
     # ── Output directory ───────────────────────────────────────────────────────
     if args.out_dir:
@@ -975,9 +992,12 @@ def main():
 
     # ── Plots ──────────────────────────────────────────────────────────────────
     print("\nGenerating plots ...")
-    plot_metrics_summary(metrics, out_dir)
-    plot_pr_curve(evaluator, metrics, out_dir)
-    plot_score_distribution(evaluator, out_dir)
+    plot_metrics_summary(metrics, out_dir,
+                         conf_thresh=CONF_THRESH_FIXED, iou_thresh=IOU_THRESH)
+    plot_pr_curve(evaluator, metrics, out_dir,
+                  conf_thresh=CONF_THRESH_FIXED, iou_thresh=IOU_THRESH)
+    plot_score_distribution(evaluator, out_dir,
+                            conf_thresh=CONF_THRESH_FIXED, iou_thresh=IOU_THRESH)
     plot_lesion_breakdown(totals, per_image, out_dir)
     plot_predictions_grid(dataset, all_preds, all_targets, per_image,
                           out_dir, n_cols=args.n_cols)

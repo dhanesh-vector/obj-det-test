@@ -3,20 +3,20 @@ model_size: s
 num_classes: 1
 batch_size: 16
 epochs: 100
-learning_rate: 0.0008429170022484867
-weight_decay: 0.003959664482397866
+learning_rate: 0.0004095482789400656
+weight_decay: 0.00013102820392778454
 num_workers: 8
 use_pu_loss: false
 device: cuda
 early_stopping_patience: 20
 early_stopping_min_delta: 0.001
-label_smooth: 0.0785569963656005
-slice_stride: 10
+label_smooth: 0.07409627285130531
+slice_stride: 7
 warmup_epochs: 8
-mosaic_prob: 0.3236212685407541
+mosaic_prob: 0.5458267320380163
 copy_paste:
   enabled: true
-  p: 0.4937
+  p: 0.3007
   std_tol: 25.0
   max_pastes: 2
 augmentations:
@@ -32,3 +32,11 @@ augmentations:
 - MedianBlur:
     blur_limit: 3
     p: 0.3
+- MedianBlur:
+    blur_limit: 5
+    p: 0.3
+- MultiplicativeNoise:
+    multiplier:
+    - 0.8
+    - 1.2
+    p: 0.4
