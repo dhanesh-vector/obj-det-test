@@ -1,0 +1,563 @@
+Job started at: Fri Mar 20 08:38:44 PM EDT 2026
+Running on node: bn001
+Validation threshold sweep — checkpoint: /fs01/home/dhaneshr/code/obj-det-test/checkpoints/best_model_v5_ciou_tal_ohem_20260320_134819.pth
+
+--- conf=0.25 ---
+Device: cuda
+Config    : train/config/best_hyperparams_v5.yaml
+  use_pu_loss : False
+  model_size  : s
+Conf thresh (fixed): 0.25
+IoU  thresh        : 0.45
+Output dir: /fs01/home/dhaneshr/code/obj-det-test/inference/val_sweep_v5_ciou_tal_ohem/conf025
+Dataset   : val split — 357 images  (no augmentations)
+Loaded checkpoint : /fs01/home/dhaneshr/code/obj-det-test/checkpoints/best_model_v5_ciou_tal_ohem_20260320_134819.pth
+  model_size      : s
+  use_pu_loss     : False
+  Trained to epoch: 20
+  Saved val AP@50 : 0.2171
+  Saved SliceAP   : 0.7723
+
+Running inference on 357 images ...
+  Done.
+
+Computing metrics ...
+
+Grouping results by scan ...
+  Found 6 scans: ['CEM004A3', 'CEM005A1', 'CEM006A1', 'CEM007A1', 'CEM013A2', 'CEM015A2']
+
+  Metrics JSON: /fs01/home/dhaneshr/code/obj-det-test/inference/val_sweep_v5_ciou_tal_ohem/conf025/metrics.json
+=================================================================
+  YOLOE Test Set Evaluation Report
+=================================================================
+  Checkpoint  : /fs01/home/dhaneshr/code/obj-det-test/checkpoints/best_model_v5_ciou_tal_ohem_20260320_134819.pth
+  Config      : train/config/best_hyperparams_v5.yaml
+  use_pu_loss : False
+  model_size  : s
+  Split       : val  (357 images)
+  Conf thresh : 0.25 (fixed-threshold metrics)
+  IoU thresh  : 0.45
+=================================================================
+
+── Standard Detection Metrics ──────────────────────────────
+  AP@35              : 0.2931
+  AP@50              : 0.2171
+  AP@75              : 0.0458
+  mAP@50:95          : 0.0779
+
+── Slice-Level Metrics ──────────────────────────────────────
+  SliceAP@50         : 0.7723
+  SliceAP@75         : 0.2079
+
+── Fixed Threshold Metrics (conf ≥ 0.25) ─────────────────
+  Precision          : 0.3567
+  Recall             : 0.3417
+  F1                 : 0.3491
+
+── Operating Points ─────────────────────────────────────────
+  P @ R=0.8          : 0.0000
+  R @ P=0.8          : 0.0000
+
+── Overall Lesion Breakdown (conf ≥ 0.25) ─────────────
+  Total GT lesions   : 357
+  Detected (TP)      : 183
+  Missed   (FN)      : 174
+  False alarms (FP)  : 473
+  Detection rate     : 0.5126
+  Miss rate          : 0.4874
+  False alarms/image : 1.3249
+
+── Per-Scan Breakdown ───────────────────────────────────────
+  Scan           Slices    GT    TP    FN    FP   DetRate  MissRate  FA/slice
+  ---------------------------------------------------------------
+  CEM004A3           75    75    27    48    92    0.3600    0.6400    1.2267
+  CEM005A1           65    65    34    31   146    0.5231    0.4769    2.2462
+  CEM006A1          147   147    62    85   147    0.4218    0.5782    1.0000
+  CEM007A1           15    15    15     0    13    1.0000    0.0000    0.8667
+  CEM013A2           36    36    28     8    68    0.7778    0.2222    1.8889
+  CEM015A2           19    19    17     2     7    0.8947    0.1053    0.3684
+  ---------------------------------------------------------------
+
+  Note: GT / TP / FN counts are at the annotation (box) level.
+  One 3-D lesion may appear as GT boxes in multiple consecutive slices.
+=================================================================
+
+  Report saved: /fs01/home/dhaneshr/code/obj-det-test/inference/val_sweep_v5_ciou_tal_ohem/conf025/metrics_report.txt
+
+Generating plots ...
+  Saved: plot_01_metrics_summary.png
+  Saved: plot_02_pr_curve.png
+  Saved: plot_03_score_dist.png
+  Saved: plot_04_lesion_breakdown.png
+  Saved: plot_05_predictions_grid.png
+  Saved: plot_06_per_scan_breakdown.png
+  Saved: plot_07_scan_slice_heatmap.png
+
+All outputs saved to: /fs01/home/dhaneshr/code/obj-det-test/inference/val_sweep_v5_ciou_tal_ohem/conf025
+
+--- conf=0.30 ---
+Device: cuda
+Config    : train/config/best_hyperparams_v5.yaml
+  use_pu_loss : False
+  model_size  : s
+Conf thresh (fixed): 0.3
+IoU  thresh        : 0.45
+Output dir: /fs01/home/dhaneshr/code/obj-det-test/inference/val_sweep_v5_ciou_tal_ohem/conf030
+Dataset   : val split — 357 images  (no augmentations)
+Loaded checkpoint : /fs01/home/dhaneshr/code/obj-det-test/checkpoints/best_model_v5_ciou_tal_ohem_20260320_134819.pth
+  model_size      : s
+  use_pu_loss     : False
+  Trained to epoch: 20
+  Saved val AP@50 : 0.2171
+  Saved SliceAP   : 0.7723
+
+Running inference on 357 images ...
+  Done.
+
+Computing metrics ...
+
+Grouping results by scan ...
+  Found 6 scans: ['CEM004A3', 'CEM005A1', 'CEM006A1', 'CEM007A1', 'CEM013A2', 'CEM015A2']
+
+  Metrics JSON: /fs01/home/dhaneshr/code/obj-det-test/inference/val_sweep_v5_ciou_tal_ohem/conf030/metrics.json
+=================================================================
+  YOLOE Test Set Evaluation Report
+=================================================================
+  Checkpoint  : /fs01/home/dhaneshr/code/obj-det-test/checkpoints/best_model_v5_ciou_tal_ohem_20260320_134819.pth
+  Config      : train/config/best_hyperparams_v5.yaml
+  use_pu_loss : False
+  model_size  : s
+  Split       : val  (357 images)
+  Conf thresh : 0.3 (fixed-threshold metrics)
+  IoU thresh  : 0.45
+=================================================================
+
+── Standard Detection Metrics ──────────────────────────────
+  AP@35              : 0.2931
+  AP@50              : 0.2171
+  AP@75              : 0.0458
+  mAP@50:95          : 0.0779
+
+── Slice-Level Metrics ──────────────────────────────────────
+  SliceAP@50         : 0.7723
+  SliceAP@75         : 0.2079
+
+── Fixed Threshold Metrics (conf ≥ 0.3) ─────────────────
+  Precision          : 0.3567
+  Recall             : 0.3417
+  F1                 : 0.3491
+
+── Operating Points ─────────────────────────────────────────
+  P @ R=0.8          : 0.0000
+  R @ P=0.8          : 0.0000
+
+── Overall Lesion Breakdown (conf ≥ 0.3) ─────────────
+  Total GT lesions   : 357
+  Detected (TP)      : 173
+  Missed   (FN)      : 184
+  False alarms (FP)  : 375
+  Detection rate     : 0.4846
+  Miss rate          : 0.5154
+  False alarms/image : 1.0504
+
+── Per-Scan Breakdown ───────────────────────────────────────
+  Scan           Slices    GT    TP    FN    FP   DetRate  MissRate  FA/slice
+  ---------------------------------------------------------------
+  CEM004A3           75    75    25    50    75    0.3333    0.6667    1.0000
+  CEM005A1           65    65    26    39   120    0.4000    0.6000    1.8462
+  CEM006A1          147   147    62    85   114    0.4218    0.5782    0.7755
+  CEM007A1           15    15    15     0     4    1.0000    0.0000    0.2667
+  CEM013A2           36    36    28     8    55    0.7778    0.2222    1.5278
+  CEM015A2           19    19    17     2     7    0.8947    0.1053    0.3684
+  ---------------------------------------------------------------
+
+  Note: GT / TP / FN counts are at the annotation (box) level.
+  One 3-D lesion may appear as GT boxes in multiple consecutive slices.
+=================================================================
+
+  Report saved: /fs01/home/dhaneshr/code/obj-det-test/inference/val_sweep_v5_ciou_tal_ohem/conf030/metrics_report.txt
+
+Generating plots ...
+  Saved: plot_01_metrics_summary.png
+  Saved: plot_02_pr_curve.png
+  Saved: plot_03_score_dist.png
+  Saved: plot_04_lesion_breakdown.png
+  Saved: plot_05_predictions_grid.png
+  Saved: plot_06_per_scan_breakdown.png
+  Saved: plot_07_scan_slice_heatmap.png
+
+All outputs saved to: /fs01/home/dhaneshr/code/obj-det-test/inference/val_sweep_v5_ciou_tal_ohem/conf030
+
+--- conf=0.35 ---
+Device: cuda
+Config    : train/config/best_hyperparams_v5.yaml
+  use_pu_loss : False
+  model_size  : s
+Conf thresh (fixed): 0.35
+IoU  thresh        : 0.45
+Output dir: /fs01/home/dhaneshr/code/obj-det-test/inference/val_sweep_v5_ciou_tal_ohem/conf035
+Dataset   : val split — 357 images  (no augmentations)
+Loaded checkpoint : /fs01/home/dhaneshr/code/obj-det-test/checkpoints/best_model_v5_ciou_tal_ohem_20260320_134819.pth
+  model_size      : s
+  use_pu_loss     : False
+  Trained to epoch: 20
+  Saved val AP@50 : 0.2171
+  Saved SliceAP   : 0.7723
+
+Running inference on 357 images ...
+  Done.
+
+Computing metrics ...
+
+Grouping results by scan ...
+  Found 6 scans: ['CEM004A3', 'CEM005A1', 'CEM006A1', 'CEM007A1', 'CEM013A2', 'CEM015A2']
+
+  Metrics JSON: /fs01/home/dhaneshr/code/obj-det-test/inference/val_sweep_v5_ciou_tal_ohem/conf035/metrics.json
+=================================================================
+  YOLOE Test Set Evaluation Report
+=================================================================
+  Checkpoint  : /fs01/home/dhaneshr/code/obj-det-test/checkpoints/best_model_v5_ciou_tal_ohem_20260320_134819.pth
+  Config      : train/config/best_hyperparams_v5.yaml
+  use_pu_loss : False
+  model_size  : s
+  Split       : val  (357 images)
+  Conf thresh : 0.35 (fixed-threshold metrics)
+  IoU thresh  : 0.45
+=================================================================
+
+── Standard Detection Metrics ──────────────────────────────
+  AP@35              : 0.2931
+  AP@50              : 0.2171
+  AP@75              : 0.0458
+  mAP@50:95          : 0.0779
+
+── Slice-Level Metrics ──────────────────────────────────────
+  SliceAP@50         : 0.7723
+  SliceAP@75         : 0.2079
+
+── Fixed Threshold Metrics (conf ≥ 0.35) ─────────────────
+  Precision          : 0.3567
+  Recall             : 0.3417
+  F1                 : 0.3491
+
+── Operating Points ─────────────────────────────────────────
+  P @ R=0.8          : 0.0000
+  R @ P=0.8          : 0.0000
+
+── Overall Lesion Breakdown (conf ≥ 0.35) ─────────────
+  Total GT lesions   : 357
+  Detected (TP)      : 159
+  Missed   (FN)      : 198
+  False alarms (FP)  : 300
+  Detection rate     : 0.4454
+  Miss rate          : 0.5546
+  False alarms/image : 0.8403
+
+── Per-Scan Breakdown ───────────────────────────────────────
+  Scan           Slices    GT    TP    FN    FP   DetRate  MissRate  FA/slice
+  ---------------------------------------------------------------
+  CEM004A3           75    75    22    53    54    0.2933    0.7067    0.7200
+  CEM005A1           65    65    16    49    99    0.2462    0.7538    1.5231
+  CEM006A1          147   147    62    85    95    0.4218    0.5782    0.6463
+  CEM007A1           15    15    15     0     0    1.0000    0.0000    0.0000
+  CEM013A2           36    36    27     9    45    0.7500    0.2500    1.2500
+  CEM015A2           19    19    17     2     7    0.8947    0.1053    0.3684
+  ---------------------------------------------------------------
+
+  Note: GT / TP / FN counts are at the annotation (box) level.
+  One 3-D lesion may appear as GT boxes in multiple consecutive slices.
+=================================================================
+
+  Report saved: /fs01/home/dhaneshr/code/obj-det-test/inference/val_sweep_v5_ciou_tal_ohem/conf035/metrics_report.txt
+
+Generating plots ...
+  Saved: plot_01_metrics_summary.png
+  Saved: plot_02_pr_curve.png
+  Saved: plot_03_score_dist.png
+  Saved: plot_04_lesion_breakdown.png
+  Saved: plot_05_predictions_grid.png
+  Saved: plot_06_per_scan_breakdown.png
+  Saved: plot_07_scan_slice_heatmap.png
+
+All outputs saved to: /fs01/home/dhaneshr/code/obj-det-test/inference/val_sweep_v5_ciou_tal_ohem/conf035
+
+--- conf=0.38 ---
+Device: cuda
+Config    : train/config/best_hyperparams_v5.yaml
+  use_pu_loss : False
+  model_size  : s
+Conf thresh (fixed): 0.38
+IoU  thresh        : 0.45
+Output dir: /fs01/home/dhaneshr/code/obj-det-test/inference/val_sweep_v5_ciou_tal_ohem/conf038
+Dataset   : val split — 357 images  (no augmentations)
+Loaded checkpoint : /fs01/home/dhaneshr/code/obj-det-test/checkpoints/best_model_v5_ciou_tal_ohem_20260320_134819.pth
+  model_size      : s
+  use_pu_loss     : False
+  Trained to epoch: 20
+  Saved val AP@50 : 0.2171
+  Saved SliceAP   : 0.7723
+
+Running inference on 357 images ...
+  Done.
+
+Computing metrics ...
+
+Grouping results by scan ...
+  Found 6 scans: ['CEM004A3', 'CEM005A1', 'CEM006A1', 'CEM007A1', 'CEM013A2', 'CEM015A2']
+
+  Metrics JSON: /fs01/home/dhaneshr/code/obj-det-test/inference/val_sweep_v5_ciou_tal_ohem/conf038/metrics.json
+=================================================================
+  YOLOE Test Set Evaluation Report
+=================================================================
+  Checkpoint  : /fs01/home/dhaneshr/code/obj-det-test/checkpoints/best_model_v5_ciou_tal_ohem_20260320_134819.pth
+  Config      : train/config/best_hyperparams_v5.yaml
+  use_pu_loss : False
+  model_size  : s
+  Split       : val  (357 images)
+  Conf thresh : 0.38 (fixed-threshold metrics)
+  IoU thresh  : 0.45
+=================================================================
+
+── Standard Detection Metrics ──────────────────────────────
+  AP@35              : 0.2931
+  AP@50              : 0.2171
+  AP@75              : 0.0458
+  mAP@50:95          : 0.0779
+
+── Slice-Level Metrics ──────────────────────────────────────
+  SliceAP@50         : 0.7723
+  SliceAP@75         : 0.2079
+
+── Fixed Threshold Metrics (conf ≥ 0.38) ─────────────────
+  Precision          : 0.3567
+  Recall             : 0.3417
+  F1                 : 0.3491
+
+── Operating Points ─────────────────────────────────────────
+  P @ R=0.8          : 0.0000
+  R @ P=0.8          : 0.0000
+
+── Overall Lesion Breakdown (conf ≥ 0.38) ─────────────
+  Total GT lesions   : 357
+  Detected (TP)      : 153
+  Missed   (FN)      : 204
+  False alarms (FP)  : 277
+  Detection rate     : 0.4286
+  Miss rate          : 0.5714
+  False alarms/image : 0.7759
+
+── Per-Scan Breakdown ───────────────────────────────────────
+  Scan           Slices    GT    TP    FN    FP   DetRate  MissRate  FA/slice
+  ---------------------------------------------------------------
+  CEM004A3           75    75    21    54    48    0.2800    0.7200    0.6400
+  CEM005A1           65    65    13    52    92    0.2000    0.8000    1.4154
+  CEM006A1          147   147    62    85    90    0.4218    0.5782    0.6122
+  CEM007A1           15    15    15     0     0    1.0000    0.0000    0.0000
+  CEM013A2           36    36    25    11    41    0.6944    0.3056    1.1389
+  CEM015A2           19    19    17     2     6    0.8947    0.1053    0.3158
+  ---------------------------------------------------------------
+
+  Note: GT / TP / FN counts are at the annotation (box) level.
+  One 3-D lesion may appear as GT boxes in multiple consecutive slices.
+=================================================================
+
+  Report saved: /fs01/home/dhaneshr/code/obj-det-test/inference/val_sweep_v5_ciou_tal_ohem/conf038/metrics_report.txt
+
+Generating plots ...
+  Saved: plot_01_metrics_summary.png
+  Saved: plot_02_pr_curve.png
+  Saved: plot_03_score_dist.png
+  Saved: plot_04_lesion_breakdown.png
+  Saved: plot_05_predictions_grid.png
+  Saved: plot_06_per_scan_breakdown.png
+  Saved: plot_07_scan_slice_heatmap.png
+
+All outputs saved to: /fs01/home/dhaneshr/code/obj-det-test/inference/val_sweep_v5_ciou_tal_ohem/conf038
+
+--- conf=0.42 ---
+Device: cuda
+Config    : train/config/best_hyperparams_v5.yaml
+  use_pu_loss : False
+  model_size  : s
+Conf thresh (fixed): 0.42
+IoU  thresh        : 0.45
+Output dir: /fs01/home/dhaneshr/code/obj-det-test/inference/val_sweep_v5_ciou_tal_ohem/conf042
+Dataset   : val split — 357 images  (no augmentations)
+Loaded checkpoint : /fs01/home/dhaneshr/code/obj-det-test/checkpoints/best_model_v5_ciou_tal_ohem_20260320_134819.pth
+  model_size      : s
+  use_pu_loss     : False
+  Trained to epoch: 20
+  Saved val AP@50 : 0.2171
+  Saved SliceAP   : 0.7723
+
+Running inference on 357 images ...
+  Done.
+
+Computing metrics ...
+
+Grouping results by scan ...
+  Found 6 scans: ['CEM004A3', 'CEM005A1', 'CEM006A1', 'CEM007A1', 'CEM013A2', 'CEM015A2']
+
+  Metrics JSON: /fs01/home/dhaneshr/code/obj-det-test/inference/val_sweep_v5_ciou_tal_ohem/conf042/metrics.json
+=================================================================
+  YOLOE Test Set Evaluation Report
+=================================================================
+  Checkpoint  : /fs01/home/dhaneshr/code/obj-det-test/checkpoints/best_model_v5_ciou_tal_ohem_20260320_134819.pth
+  Config      : train/config/best_hyperparams_v5.yaml
+  use_pu_loss : False
+  model_size  : s
+  Split       : val  (357 images)
+  Conf thresh : 0.42 (fixed-threshold metrics)
+  IoU thresh  : 0.45
+=================================================================
+
+── Standard Detection Metrics ──────────────────────────────
+  AP@35              : 0.2931
+  AP@50              : 0.2171
+  AP@75              : 0.0458
+  mAP@50:95          : 0.0779
+
+── Slice-Level Metrics ──────────────────────────────────────
+  SliceAP@50         : 0.7723
+  SliceAP@75         : 0.2079
+
+── Fixed Threshold Metrics (conf ≥ 0.42) ─────────────────
+  Precision          : 0.3567
+  Recall             : 0.3417
+  F1                 : 0.3491
+
+── Operating Points ─────────────────────────────────────────
+  P @ R=0.8          : 0.0000
+  R @ P=0.8          : 0.0000
+
+── Overall Lesion Breakdown (conf ≥ 0.42) ─────────────
+  Total GT lesions   : 357
+  Detected (TP)      : 153
+  Missed   (FN)      : 204
+  False alarms (FP)  : 253
+  Detection rate     : 0.4286
+  Miss rate          : 0.5714
+  False alarms/image : 0.7087
+
+── Per-Scan Breakdown ───────────────────────────────────────
+  Scan           Slices    GT    TP    FN    FP   DetRate  MissRate  FA/slice
+  ---------------------------------------------------------------
+  CEM004A3           75    75    21    54    46    0.2800    0.7200    0.6133
+  CEM005A1           65    65    13    52    78    0.2000    0.8000    1.2000
+  CEM006A1          147   147    62    85    85    0.4218    0.5782    0.5782
+  CEM007A1           15    15    15     0     0    1.0000    0.0000    0.0000
+  CEM013A2           36    36    25    11    39    0.6944    0.3056    1.0833
+  CEM015A2           19    19    17     2     5    0.8947    0.1053    0.2632
+  ---------------------------------------------------------------
+
+  Note: GT / TP / FN counts are at the annotation (box) level.
+  One 3-D lesion may appear as GT boxes in multiple consecutive slices.
+=================================================================
+
+  Report saved: /fs01/home/dhaneshr/code/obj-det-test/inference/val_sweep_v5_ciou_tal_ohem/conf042/metrics_report.txt
+
+Generating plots ...
+  Saved: plot_01_metrics_summary.png
+  Saved: plot_02_pr_curve.png
+  Saved: plot_03_score_dist.png
+  Saved: plot_04_lesion_breakdown.png
+  Saved: plot_05_predictions_grid.png
+  Saved: plot_06_per_scan_breakdown.png
+  Saved: plot_07_scan_slice_heatmap.png
+
+All outputs saved to: /fs01/home/dhaneshr/code/obj-det-test/inference/val_sweep_v5_ciou_tal_ohem/conf042
+
+--- conf=0.47 ---
+Device: cuda
+Config    : train/config/best_hyperparams_v5.yaml
+  use_pu_loss : False
+  model_size  : s
+Conf thresh (fixed): 0.47
+IoU  thresh        : 0.45
+Output dir: /fs01/home/dhaneshr/code/obj-det-test/inference/val_sweep_v5_ciou_tal_ohem/conf047
+Dataset   : val split — 357 images  (no augmentations)
+Loaded checkpoint : /fs01/home/dhaneshr/code/obj-det-test/checkpoints/best_model_v5_ciou_tal_ohem_20260320_134819.pth
+  model_size      : s
+  use_pu_loss     : False
+  Trained to epoch: 20
+  Saved val AP@50 : 0.2171
+  Saved SliceAP   : 0.7723
+
+Running inference on 357 images ...
+  Done.
+
+Computing metrics ...
+
+Grouping results by scan ...
+  Found 6 scans: ['CEM004A3', 'CEM005A1', 'CEM006A1', 'CEM007A1', 'CEM013A2', 'CEM015A2']
+
+  Metrics JSON: /fs01/home/dhaneshr/code/obj-det-test/inference/val_sweep_v5_ciou_tal_ohem/conf047/metrics.json
+=================================================================
+  YOLOE Test Set Evaluation Report
+=================================================================
+  Checkpoint  : /fs01/home/dhaneshr/code/obj-det-test/checkpoints/best_model_v5_ciou_tal_ohem_20260320_134819.pth
+  Config      : train/config/best_hyperparams_v5.yaml
+  use_pu_loss : False
+  model_size  : s
+  Split       : val  (357 images)
+  Conf thresh : 0.47 (fixed-threshold metrics)
+  IoU thresh  : 0.45
+=================================================================
+
+── Standard Detection Metrics ──────────────────────────────
+  AP@35              : 0.2931
+  AP@50              : 0.2171
+  AP@75              : 0.0458
+  mAP@50:95          : 0.0779
+
+── Slice-Level Metrics ──────────────────────────────────────
+  SliceAP@50         : 0.7723
+  SliceAP@75         : 0.2079
+
+── Fixed Threshold Metrics (conf ≥ 0.47) ─────────────────
+  Precision          : 0.3567
+  Recall             : 0.3417
+  F1                 : 0.3491
+
+── Operating Points ─────────────────────────────────────────
+  P @ R=0.8          : 0.0000
+  R @ P=0.8          : 0.0000
+
+── Overall Lesion Breakdown (conf ≥ 0.47) ─────────────
+  Total GT lesions   : 357
+  Detected (TP)      : 150
+  Missed   (FN)      : 207
+  False alarms (FP)  : 211
+  Detection rate     : 0.4202
+  Miss rate          : 0.5798
+  False alarms/image : 0.5910
+
+── Per-Scan Breakdown ───────────────────────────────────────
+  Scan           Slices    GT    TP    FN    FP   DetRate  MissRate  FA/slice
+  ---------------------------------------------------------------
+  CEM004A3           75    75    21    54    38    0.2800    0.7200    0.5067
+  CEM005A1           65    65    12    53    71    0.1846    0.8154    1.0923
+  CEM006A1          147   147    62    85    72    0.4218    0.5782    0.4898
+  CEM007A1           15    15    15     0     0    1.0000    0.0000    0.0000
+  CEM013A2           36    36    23    13    27    0.6389    0.3611    0.7500
+  CEM015A2           19    19    17     2     3    0.8947    0.1053    0.1579
+  ---------------------------------------------------------------
+
+  Note: GT / TP / FN counts are at the annotation (box) level.
+  One 3-D lesion may appear as GT boxes in multiple consecutive slices.
+=================================================================
+
+  Report saved: /fs01/home/dhaneshr/code/obj-det-test/inference/val_sweep_v5_ciou_tal_ohem/conf047/metrics_report.txt
+
+Generating plots ...
+  Saved: plot_01_metrics_summary.png
+  Saved: plot_02_pr_curve.png
+  Saved: plot_03_score_dist.png
+  Saved: plot_04_lesion_breakdown.png
+  Saved: plot_05_predictions_grid.png
+  Saved: plot_06_per_scan_breakdown.png
+  Saved: plot_07_scan_slice_heatmap.png
+
+All outputs saved to: /fs01/home/dhaneshr/code/obj-det-test/inference/val_sweep_v5_ciou_tal_ohem/conf047
+
+Sweep complete at: Fri Mar 20 08:47:13 PM EDT 2026

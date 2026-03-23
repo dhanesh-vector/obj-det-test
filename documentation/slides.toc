@@ -5,3 +5,5 @@
 \beamer@sectionintoc {5}{Metrics \& Reproducibility}{3}{0}{5}
 \beamer@sectionintoc {6}{Hyperparameter Optimisation}{3}{0}{6}
 \beamer@sectionintoc {7}{Baseline vs PU Loss — Full Training Comparison}{3}{0}{7}
+\beamer@sectionintoc {8}{Phase 1 — Loss Improvements: CIoU + TAL + OHEM}{3}{0}{8}
+\beamer@sectionintoc {9}{Phase 1 — Loss Improvements: CIoU + TAL + OHEM}{29}{0}{9}

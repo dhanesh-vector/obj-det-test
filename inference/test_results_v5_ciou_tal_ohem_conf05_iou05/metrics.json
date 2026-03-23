@@ -1,0 +1,100 @@
+{
+  "metrics": {
+    "map": 0.401874303817749,
+    "map_50": 0.8270046710968018,
+    "map_75": 0.362237811088562,
+    "map_small": 0.5549015998840332,
+    "map_medium": 0.4689936935901642,
+    "map_large": 0.2643015384674072,
+    "mar_1": 0.46737805008888245,
+    "mar_10": 0.5414634346961975,
+    "mar_100": 0.5457317233085632,
+    "mar_small": 0.6840000152587891,
+    "mar_medium": 0.5856410264968872,
+    "mar_large": 0.4416666626930237,
+    "map_per_class": -1.0,
+    "mar_100_per_class": -1.0,
+    "classes": 0,
+    "map_35": 0.8350899815559387,
+    "precision": 0.7967213114754098,
+    "recall": 0.7408536585365854,
+    "f1": 0.7677725118483412,
+    "slice_ap_50": 0.9900990099009908,
+    "slice_ap_75": 0.5445544554455448,
+    "precision_at_recall80": 0.7601156069364162,
+    "recall_at_precision80": 0.7317073170731707
+  },
+  "lesion_breakdown": {
+    "total_gt_lesions": 328,
+    "detected_tp": 243,
+    "missed_fn": 85,
+    "false_alarms_fp": 62,
+    "detection_rate": 0.7408536585365854,
+    "miss_rate": 0.25914634146341464,
+    "false_alarm_per_img": 0.18902439024390244,
+    "conf_thresh": 0.5,
+    "iou_thresh": 0.5
+  },
+  "per_scan": {
+    "CEM005A1": {
+      "n_slices": 128,
+      "n_gt": 128,
+      "tp": 88,
+      "fn": 40,
+      "fp": 29,
+      "n_positive_slices": 128,
+      "n_detected_slices": 88,
+      "detection_rate": 0.6875,
+      "miss_rate": 0.3125,
+      "false_alarms_per_slice": 0.2265625
+    },
+    "CEM011A3": {
+      "n_slices": 25,
+      "n_gt": 25,
+      "tp": 17,
+      "fn": 8,
+      "fp": 0,
+      "n_positive_slices": 25,
+      "n_detected_slices": 17,
+      "detection_rate": 0.68,
+      "miss_rate": 0.32,
+      "false_alarms_per_slice": 0.0
+    },
+    "CEM012A1": {
+      "n_slices": 102,
+      "n_gt": 102,
+      "tp": 75,
+      "fn": 27,
+      "fp": 31,
+      "n_positive_slices": 102,
+      "n_detected_slices": 75,
+      "detection_rate": 0.7352941176470589,
+      "miss_rate": 0.2647058823529412,
+      "false_alarms_per_slice": 0.30392156862745096
+    },
+    "CEM013B2": {
+      "n_slices": 37,
+      "n_gt": 37,
+      "tp": 27,
+      "fn": 10,
+      "fp": 2,
+      "n_positive_slices": 37,
+      "n_detected_slices": 27,
+      "detection_rate": 0.7297297297297297,
+      "miss_rate": 0.2702702702702703,
+      "false_alarms_per_slice": 0.05405405405405406
+    },
+    "CEM015A2": {
+      "n_slices": 36,
+      "n_gt": 36,
+      "tp": 36,
+      "fn": 0,
+      "fp": 0,
+      "n_positive_slices": 36,
+      "n_detected_slices": 36,
+      "detection_rate": 1.0,
+      "miss_rate": 0.0,
+      "false_alarms_per_slice": 0.0
+    }
+  }
+}
