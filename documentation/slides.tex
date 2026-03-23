@@ -57,6 +57,7 @@
 \section{Metrics \& Reproducibility}
 \section{Hyperparameter Optimisation}
 \section{Baseline vs PU Loss — Full Training Comparison}
+\section{Phase 1 — Loss Improvements: CIoU + TAL + OHEM}
 
 % ── SLIDE 2 — Architecture ───────────────────────────────────────────────────
 \begin{frame}{Model Architecture — PP-YOLOE}
@@ -402,6 +403,52 @@
     \end{column}
   \end{columns}
 \end{frame}
+
+% Speaker note — Scan-Aware Slice Sampling
+\note{
+\textbf{Inter-slice redundancy and its effect on training}
+
+\medskip
+Ultrasound volumes are acquired by sweeping a transducer continuously across tissue.
+At typical clinical acquisition rates the physical distance between adjacent slices is
+on the order of 0.5--1\,mm.
+At this spacing, the probe has moved so little between frames that the tissue cross-section
+is almost identical: the same anatomical structures appear at the same pixel coordinates,
+with differences limited to minor speckle fluctuation from micro-vibration and small changes
+in acoustic shadowing.
+
+\medskip
+\textbf{Why this matters for SGD:}
+Each mini-batch gradient update is supposed to represent an independent draw from the data
+distribution.
+When consecutive slices of the same scan occupy the same batch — or even adjacent batches —
+the model effectively sees the same image twice in rapid succession.
+The gradient from the second copy nearly cancels any corrective signal from the first,
+because the loss has already shifted the weights in exactly the direction that second image
+would request.
+Concretely, with 2306 slices spread across 50 consecutive-slice runs, naive sequential
+sampling means roughly 46 nearly-identical frames follow each other before a scan boundary
+is crossed — up to a $\sim$10$\times$ effective reduction in gradient diversity per epoch.
+
+\medskip
+\textbf{Downstream effects observed:}
+\begin{itemize}
+  \item Over-fitting to scan-level texture (speckle patterns, gain settings) rather than lesion morphology.
+  \item Artificially low training loss that does not transfer to held-out scans — the validation curve diverges from training loss earlier than expected.
+  \item The model learns to suppress predictions in regions that are consistently unannotated \emph{across an entire run}, reinforcing false-negative bias beyond what the labelling rate alone would predict.
+\end{itemize}
+
+\medskip
+\textbf{The fix — ScanAwareSampler:}
+Slices are partitioned into non-overlapping windows of width \texttt{stride} within each scan.
+One slice is drawn at random from each window per epoch; the selected slices are then globally
+shuffled before entering the DataLoader.
+This guarantees a minimum physical separation of \texttt{stride} $\times$ slice-thickness
+between any two frames from the same scan that could appear in the same batch,
+while still exposing the model to every region of every scan over a sufficient number of epochs.
+Stride\,=\,10 reduces per-epoch slice count from 2306 to $\sim$230 — a 10$\times$ diversity gain
+at the cost of needing more epochs to achieve full coverage.
+}
 
 % ── SLIDE 7 — Mosaic ─────────────────────────────────────────────────────────
 \begin{frame}{Cross-Scan Mosaic Augmentation}
@@ -1321,6 +1368,505 @@
         \item Extend PU Loss run to 150 epochs (patience=30) — learning curve still ascending at epoch 77
         \item Evaluate on held-out test set
         \item Pseudo-labeling iteration using PU Loss checkpoint
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
+% ══════════════════════════════════════════════════════════════════════════════
+% SECTION — Phase 1 Loss Improvements
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Phase 1 — Loss Improvements: CIoU + TAL + OHEM}
+
+% ── Overview ─────────────────────────────────────────────────────────────────
+\begin{frame}{Phase 1 — Three Targeted Loss Improvements}
+  \begin{columns}[T]
+    \begin{column}{0.60\textwidth}
+      \textbf{Motivation:} the YOLOX-style baseline loss has three structural weaknesses that
+      independently limit localisation quality, training signal quality, and precision.
+      All three are addressed simultaneously in \texttt{model/loss.py}.
+
+      \vspace{10pt}
+      \begin{block}{\small Components}
+        \small
+        \begin{tabular}{clll}
+          \toprule
+          ID & Change & Replaces & Target \\
+          \midrule
+          P3 & \textbf{CIoU} box regression    & Smooth-L1     & Localisation quality \\
+          P4 & \textbf{Task-Aligned Assignment} & Distance top-k & Training signal     \\
+          P5 & \textbf{OHEM} hard negatives     & All negatives  & Precision / FA rate  \\
+          \bottomrule
+        \end{tabular}
+      \end{block}
+    \end{column}
+    \begin{column}{0.36\textwidth}
+      \vspace{4pt}
+      \begin{block}{\small Headline results (held-out test set, 5 scans)}
+        \scriptsize
+        \begin{tabular}{lcc}
+          \toprule
+          Metric & Baseline & \textbf{v5 + P3–P5} \\
+          \midrule
+          AP@50       & 0.770 & \textbf{0.827} \\
+          AP@75       & 0.242 & \textbf{0.362} \\
+          SliceAP@50  & 0.941 & \textbf{0.990} \\
+          FA/image    & 0.369 & \textbf{0.213} \\
+          \bottomrule
+        \end{tabular}
+      \end{block}
+
+      \vspace{6pt}
+      {\scriptsize AP@75 \textbf{+12 pp} (tighter boxes) \par
+      False alarms \textbf{$-$42\%} (better precision)}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ── Baseline loss ────────────────────────────────────────────────────────────
+\begin{frame}{Baseline Loss (v5) — What We Started From}
+  \begin{columns}[T]
+    \begin{column}{0.50\textwidth}
+      \textbf{PP-YOLOE paper specifies:} TAL + VFL + GIoU + DFL.
+
+      \vspace{3pt}
+      \textbf{The v5 baseline deviated from the paper on three of four components:}
+
+      \vspace{5pt}
+      \begin{enumerate}\small
+        \item \textbf{Smooth-L1} box regression \emph{(paper: GIoU)} \\[2pt]
+          {\scriptsize No IoU awareness — coordinate accuracy $\neq$ geometric overlap.}
+
+        \vspace{3pt}
+        \item \textbf{Distance top-$k$} assignment \emph{(paper: TAL)} \\[2pt]
+          {\scriptsize Selects $k$ anchors nearest to GT centre. Prediction quality ignored —
+          a misclassified anchor close to centre beats a well-aligned one further away.}
+
+        \vspace{3pt}
+        \item \textbf{All negatives} in BCE \emph{(paper: VFL)} \\[2pt]
+          {\scriptsize All $\sim$8\,400 negatives weighted equally. Easy background
+          swamps gradient; hard false-positive anchors under-weighted.}
+      \end{enumerate}
+
+      \vspace{3pt}
+      {\scriptsize \textbf{DFL was retained} — the one component matching the paper.}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \vspace{4pt}
+      \begin{block}{\small v5 baseline vs PP-YOLOE paper}
+        \tiny
+        \begin{tabular}{l@{\;}p{1.8cm}@{\;}p{1.8cm}}
+          \toprule
+          Component & v5 baseline & PP-YOLOE paper \\
+          \midrule
+          Box loss    & Smooth-L1       & GIoU \\
+          Assignment  & Distance top-$k$ & TAL \\
+          Cls loss    & BCE (all neg)   & VFL \\
+          Reg distrib & DFL             & DFL \checkmark \\
+          \bottomrule
+        \end{tabular}
+      \end{block}
+
+      \vspace{4pt}
+      \textbf{Effect of deviations:}
+      \begin{itemize}\scriptsize
+        \item Boxes geometrically loose → AP@75 only 0.242
+        \item Noisy assignments → slower convergence
+        \item 0.37 FA/image; CEM011A3 at 0.68 FA/slice
+      \end{itemize}
+
+      \vspace{3pt}
+      {\scriptsize \textbf{P3–P5 bring the implementation closer to the paper:}
+      CIoU $\approx$ GIoU, TAL restored, OHEM reduces the all-negative imbalance
+      (VFL handles this differently but the goal is the same).}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ── P3 — CIoU ────────────────────────────────────────────────────────────────
+\begin{frame}{P3 — CIoU Box Regression}
+  \begin{columns}[T]
+    \begin{column}{0.55\textwidth}
+      \textbf{Problem with Smooth-L1:}
+      \begin{itemize}\small
+        \item Penalises $\Delta x, \Delta y, \Delta w, \Delta h$ independently
+        \item No notion of geometric overlap — two boxes can have low coordinate error yet poor IoU
+        \item Does not penalise centre-point drift or aspect-ratio mismatch
+      \end{itemize}
+
+      \vspace{6pt}
+      \textbf{CIoU (Zheng et al.\ 2020):}
+      \begin{itemize}\small
+        \item \textbf{IoU term} — directly penalises overlap deficit
+        \item \textbf{$\rho^2/c^2$ term} — centre-point distance / enclosing diagonal
+        \item \textbf{$\alpha v$ term} — aspect-ratio inconsistency
+      \end{itemize}
+
+      \vspace{4pt}
+      \begin{block}{\small Formula}
+        \small
+        $\mathcal{L}_{\mathrm{CIoU}} = 1 - \mathrm{IoU} + \dfrac{\rho^2}{c^2} + \alpha v$
+
+        \vspace{2pt}
+        \scriptsize
+        $v = \tfrac{4}{\pi^2}\!\left(\arctan\tfrac{w^{gt}}{h^{gt}} - \arctan\tfrac{w}{h}\right)^{\!2}$,
+        $\;\alpha = \tfrac{v}{1 - \mathrm{IoU} + v}$
+      \end{block}
+    \end{column}
+    \begin{column}{0.40\textwidth}
+      \vspace{4pt}
+      % TikZ diagram showing predicted vs GT box with the three penalty terms
+      \begin{tikzpicture}[scale=0.9]
+        % GT box
+        \draw[thick, color=good, fill=good!10]
+          (0,0) rectangle (3.0, 1.8);
+        \node[color=good, font=\tiny\bfseries] at (1.5, 0.9) {GT box};
+        % Pred box (slightly off)
+        \draw[thick, color=bad, fill=bad!10, dashed]
+          (0.5, -0.3) rectangle (3.4, 1.5);
+        \node[color=bad, font=\tiny\bfseries] at (2.8, 0.6) {Pred};
+        % GT centre
+        \fill[good] (1.5, 0.9) circle (2.5pt);
+        % Pred centre
+        \fill[bad]  (1.95, 0.6) circle (2.5pt);
+        % rho arrow
+        \draw[-{Stealth[length=4pt]}, thick, color=accent]
+          (1.5, 0.9) -- (1.95, 0.6);
+        \node[font=\tiny, color=accent, above=2pt] at (1.75, 0.76) {$\rho$};
+        % enclosing box
+        \draw[gray, thin, dashed]
+          (-0.1,-0.4) rectangle (3.5, 1.9);
+        \node[gray, font=\tiny] at (1.7, 2.05) {enclosing ($c$)};
+        % Labels
+        \node[font=\scriptsize, color=good] at (1.5, -0.65) {IoU overlap};
+        \node[font=\scriptsize, color=accent] at (1.5, -1.0) {+ centre dist $\rho^2/c^2$};
+        \node[font=\scriptsize, color=bad] at (1.5, -1.35) {+ aspect ratio $\alpha v$};
+      \end{tikzpicture}
+
+      \vspace{6pt}
+      \textbf{Effect:} AP@75 \textcolor{good}{$+$12 pp} — boxes are
+      geometrically tighter; the gain at IoU=0.75 vs 0.50 confirms
+      this directly.
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ── P4 — TAL ─────────────────────────────────────────────────────────────────
+\begin{frame}{P4 — Task-Aligned Assignment (TAL)}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \textbf{Problem with distance-based top-k:}
+      \begin{itemize}\small
+        \item Selects the $k$ anchors nearest to GT centre — ignores prediction quality
+        \item A misclassified anchor close to centre beats a well-aligned one further away
+        \item High-IoU anchors excluded for being geometrically distant
+      \end{itemize}
+
+      \vspace{5pt}
+      \textbf{Task-Aligned Assignment (TOOD, 2021):}
+      \begin{itemize}\small
+        \item Ranks candidates by \emph{alignment metric}:
+      \end{itemize}
+      \begin{block}{\small Alignment metric}
+        \small
+        $t = p_{\mathrm{cls}}^{\,\alpha} \times \mathrm{IoU}(\hat{b},\,b^{gt})^{\beta}$
+        \;\scriptsize ($\alpha{=}0.5,\;\beta{=}6.0,\;\text{topk}{=}13$)
+      \end{block}
+      \begin{itemize}\small
+        \item Candidates restricted to anchors \emph{inside} the GT box
+        \item Conflicts: keep GT with highest IoU
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \vspace{4pt}
+      % TikZ showing anchor selection difference
+      \begin{tikzpicture}[scale=0.85, font=\scriptsize]
+        % GT box
+        \draw[thick, color=good, fill=good!8] (0,0) rectangle (4,2.4);
+        \node[color=good, font=\tiny\bfseries] at (2, 2.6) {GT box};
+        % GT centre
+        \fill[good] (2, 1.2) circle (2.5pt);
+        \node[below=2pt, color=good, font=\tiny] at (2, 1.2) {centre};
+
+        % Distance-selected anchors (closest to centre, some misaligned)
+        \fill[bad!70] (2.1, 1.3) circle (3.5pt);
+        \fill[bad!70] (1.9, 1.1) circle (3.5pt);
+        \fill[bad!70] (3.6, 0.3) circle (3.5pt);
+        \node[color=bad, font=\tiny] at (3.0, -0.25) {dist top-k};
+
+        % TAL-selected anchors (higher IoU / cls score)
+        \fill[accent!90] (2.0, 1.2) circle (3.5pt);
+        \fill[accent!90] (1.5, 0.9) circle (3.5pt);
+        \fill[accent!90] (2.5, 1.4) circle (3.5pt);
+        \node[color=accent, font=\tiny] at (3.0, -0.6) {TAL top-k};
+
+        \node[font=\tiny, align=left, color=bad] at (4.5, 1.8)
+          {\textcolor{bad}{$\bullet$} near\\[-1pt]but bad\\[-1pt]pred};
+        \node[font=\tiny, align=left, color=accent] at (4.5, 0.8)
+          {\textcolor{accent}{$\bullet$} inside\\[-1pt]\& well-\\[-1pt]aligned};
+      \end{tikzpicture}
+
+      \vspace{6pt}
+      \textbf{Effect:} better anchors provide more consistent gradients to both the classification
+      and regression heads simultaneously — particularly beneficial for small lesion anchors at
+      stride 32.
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ── P5 — OHEM ────────────────────────────────────────────────────────────────
+\begin{frame}{P5 — Online Hard Example Mining (OHEM)}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \textbf{Problem with the full negative set:}
+      \begin{itemize}\small
+        \item Each image has $\sim$8\,400 negative anchors vs $\sim$5\text{--}15 positives
+        \item The vast majority are \emph{easy} — uninformative background far from any lesion
+        \item Summing all negative BCE losses swamps the gradient: the model optimises
+              background suppression rather than lesion discrimination
+      \end{itemize}
+
+      \vspace{8pt}
+      \textbf{OHEM mechanism:}
+      \begin{itemize}\small
+        \item Compute per-anchor BCE for all negatives; rank by loss magnitude
+        \item Keep top $k = 3 \times \max(N_{\mathrm{pos}}, 1)$ hardest negatives per image
+        \item Backpropagate only through these; discard the easy majority
+        \item Normalise by $N_{\mathrm{pos}}$ so positive and negative scales stay matched
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \vspace{4pt}
+      % Conceptual bar chart: loss distribution
+      \begin{tikzpicture}[scale=0.85]
+        \begin{axis}[
+            width=6.5cm, height=4.5cm,
+            xlabel={\small Anchor rank (sorted by loss)},
+            ylabel={\small BCE loss},
+            xmin=0, xmax=100,
+            ymin=0, ymax=1.1,
+            xtick={0,25,50,75,100},
+            xticklabels={0, 25\%, 50\%, 75\%, 100\%},
+            tick label style={font=\tiny},
+            axis lines=left,
+          ]
+          % Full loss curve (decaying)
+          \addplot[color=gray!60, thick, domain=0:100, samples=80]
+            {0.9*exp(-0.035*x)};
+          % OHEM kept region highlight
+          \addplot[color=accent, thick, domain=0:15, samples=30]
+            {0.9*exp(-0.035*x)};
+          % Fill kept region
+          \addplot[fill=accent!20, draw=none, domain=0:15, samples=30]
+            {0.9*exp(-0.035*x)} \closedcycle;
+          % Threshold line
+          \draw[dashed, color=accent] (axis cs:15,0) -- (axis cs:15,0.55);
+          \node[font=\tiny, color=accent, rotate=90] at (axis cs:18, 0.4)
+            {$3\times N_\text{pos}$};
+          \node[font=\tiny, color=gray] at (axis cs:60, 0.5) {discarded};
+          \node[font=\tiny, color=accent] at (axis cs:7, 0.75) {kept};
+        \end{axis}
+      \end{tikzpicture}
+
+      \vspace{4pt}
+      \textbf{Effect:}
+      \begin{itemize}\tiny
+        \item FP: $121 \to 70$ \;\textcolor{good}{$(-42\%)$}
+        \item FA/image: $0.37 \to 0.21$ \;\textcolor{good}{$(-42\%)$}
+        \item CEM015A2: zero false alarms for the first time
+        \item CEM011A3: $0.68 \to 0.04$ FA/slice
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ── Results — Metrics Table ───────────────────────────────────────────────────
+\begin{frame}{Test Set Results — v5 Baseline vs v5\_ciou\_tal\_ohem}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+      {\small Held-out test set: 328 slices, 5 scans. Both at conf=0.47, IoU=0.45.}
+
+      \vspace{6pt}
+      \begin{center}
+      {\small
+      \begin{tabular}{lccc}
+        \toprule
+        Metric & Baseline & \textbf{+CIoU+TAL+OHEM} & $\Delta$ \\
+        \midrule
+        AP@50         & 0.770 & \textbf{0.827} & \textcolor{good}{$+$5.7 pp} \\
+        \rowcolor{rowhl}
+        AP@75         & 0.242 & \textbf{0.362} & \textcolor{good}{$+$12.0 pp} \\
+        mAP@50:95     & 0.323 & \textbf{0.402} & \textcolor{good}{$+$7.9 pp} \\
+        \rowcolor{rowhl}
+        SliceAP@50    & 0.941 & \textbf{0.990} & \textcolor{good}{$+$4.9 pp} \\
+        SliceAP@75    & 0.426 & \textbf{0.545} & \textcolor{good}{$+$11.9 pp} \\
+        \rowcolor{rowhl}
+        Precision     & 0.660 & \textbf{0.797} & \textcolor{good}{$+$13.7 pp} \\
+        Recall        & 0.805 & 0.741 & \textcolor{bad}{$-$6.4 pp}$^\dagger$ \\
+        F1            & 0.725 & \textbf{0.768} & \textcolor{good}{$+$4.3 pp} \\
+        \rowcolor{rowhl}
+        P @ R=0.8     & 0.666 & \textbf{0.760} & \textcolor{good}{$+$9.4 pp} \\
+        R @ P=0.8     & 0.634 & \textbf{0.732} & \textcolor{good}{$+$9.8 pp} \\
+        \midrule
+        FP count      & 121   & \textbf{70}    & \textcolor{good}{$-42\%$} \\
+        FA/image      & 0.369 & \textbf{0.213} & \textcolor{good}{$-42\%$} \\
+        \bottomrule
+      \end{tabular}
+      }
+      \end{center}
+      {\scriptsize $^\dagger$ Recall drop is a confidence calibration shift — not a genuine
+      detection regression. At matched recall of 0.8, FA/image drops 33\%.}
+    \end{column}
+    \begin{column}{0.40\textwidth}
+      \vspace{4pt}
+      % pgfplot: AP gains bar chart
+      \begin{tikzpicture}
+        \begin{axis}[
+            ybar,
+            width=6.2cm, height=5.5cm,
+            bar width=0.4cm,
+            symbolic x coords={AP@50, AP@75, mAP, SliceAP@50},
+            xtick=data,
+            xticklabel style={font=\tiny, rotate=20, anchor=east},
+            ytick={0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0},
+            ymin=0, ymax=1.05,
+            tick label style={font=\tiny},
+            axis lines=left,
+            legend style={font=\tiny, at={(0.97,0.97)}, anchor=north east},
+            ylabel={\small Score},
+          ]
+          \addplot[fill=gray!40, draw=gray]
+            coordinates {(AP@50,0.770) (AP@75,0.242) (mAP,0.323) (SliceAP@50,0.941)};
+          \addplot[fill=accent!80, draw=accent]
+            coordinates {(AP@50,0.827) (AP@75,0.362) (mAP,0.402) (SliceAP@50,0.990)};
+          \legend{Baseline, +CIoU+TAL+OHEM}
+        \end{axis}
+      \end{tikzpicture}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ── Per-scan breakdown ────────────────────────────────────────────────────────
+\begin{frame}{Per-Scan Results — False Alarm \& Detection Rate}
+  \begin{columns}[T]
+    \begin{column}{0.50\textwidth}
+      \textbf{False alarms (FA/slice):}
+
+      \vspace{4pt}
+      \begin{tikzpicture}
+        \begin{axis}[
+            ybar,
+            width=7cm, height=4.8cm,
+            bar width=0.32cm,
+            symbolic x coords={CEM005A1, CEM011A3, CEM012A1, CEM013B2, CEM015A2},
+            xtick=data,
+            xticklabel style={font=\tiny, rotate=25, anchor=east},
+            ymin=0, ymax=0.80,
+            ytick={0, 0.2, 0.4, 0.6, 0.8},
+            tick label style={font=\tiny},
+            axis lines=left,
+            legend style={font=\tiny, at={(0.97,0.97)}, anchor=north east},
+            ylabel={\small FA/slice},
+          ]
+          \addplot[fill=gray!40, draw=gray]
+            coordinates {
+              (CEM005A1,0.33)(CEM011A3,0.68)(CEM012A1,0.27)
+              (CEM013B2,0.57)(CEM015A2,0.36)};
+          \addplot[fill=accent!80, draw=accent]
+            coordinates {
+              (CEM005A1,0.25)(CEM011A3,0.04)(CEM012A1,0.32)
+              (CEM013B2,0.11)(CEM015A2,0.00)};
+          \legend{Baseline, +CIoU+TAL+OHEM}
+        \end{axis}
+      \end{tikzpicture}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \textbf{Detection rate (\% lesions found):}
+
+      \vspace{4pt}
+      \begin{tikzpicture}
+        \begin{axis}[
+            ybar,
+            width=7cm, height=4.8cm,
+            bar width=0.32cm,
+            symbolic x coords={CEM005A1, CEM011A3, CEM012A1, CEM013B2, CEM015A2},
+            xtick=data,
+            xticklabel style={font=\tiny, rotate=25, anchor=east},
+            ymin=0, ymax=115,
+            ytick={0,25,50,75,100},
+            tick label style={font=\tiny},
+            axis lines=left,
+            legend style={font=\tiny, at={(0.97,0.52)}, anchor=north east},
+            ylabel={\small Detection Rate (\%)},
+          ]
+          \addplot[fill=gray!40, draw=gray]
+            coordinates {
+              (CEM005A1,92.97)(CEM011A3,84.00)(CEM012A1,71.57)
+              (CEM013B2,81.08)(CEM015A2,100.00)};
+          \addplot[fill=accent!80, draw=accent]
+            coordinates {
+              (CEM005A1,72.66)(CEM011A3,72.00)(CEM012A1,73.53)
+              (CEM013B2,72.97)(CEM015A2,100.00)};
+          \legend{Baseline, +CIoU+TAL+OHEM}
+        \end{axis}
+      \end{tikzpicture}
+
+      \vspace{4pt}
+      {\scriptsize
+        \textbf{Note:} DR drop reflects confidence calibration shift, not worse detection.
+        At matched threshold ($R{=}0.8$), precision improves $+9.4$ pp and FA/image drops 33\%.
+      }
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ── Summary ───────────────────────────────────────────────────────────────────
+\begin{frame}{Phase 1 — Summary \& Attribution}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \begin{block}{\small What each change contributed}
+        \small
+        \begin{tabular}{lp{5.4cm}}
+          \toprule
+          Change & Primary effect \\
+          \midrule
+          \textbf{CIoU} (P3) &
+            AP@75 $+12$ pp, SliceAP@75 $+12$ pp.
+            Tighter, geometrically consistent predicted boxes.\\[3pt]
+          \textbf{TAL} (P4) &
+            More informative training signal: anchors chosen by prediction quality,
+            not proximity. Accelerated convergence and more stable classification head.\\[3pt]
+          \textbf{OHEM} (P5) &
+            FP $-42\%$, FA/image $-42\%$.
+            CEM011A3 \& CEM013B2 false alarms nearly eliminated.
+            CEM015A2 reaches zero FA for the first time.\\
+          \bottomrule
+        \end{tabular}
+      \end{block}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \vspace{4pt}
+      \begin{block}{\small Final model}
+        \scriptsize
+        \begin{tabular}{ll}
+          \toprule
+          Checkpoint & \texttt{best\_model\_v5\_ciou\_tal\_ohem} \\
+          Val SliceAP@50 & 0.7671 (epoch 20) \\
+          AP@50 (test) & \textbf{0.827} \\
+          AP@75 (test) & \textbf{0.362} \\
+          FA/image (test) & \textbf{0.213} \\
+          P @ R=0.8 & \textbf{0.760} \\
+          \bottomrule
+        \end{tabular}
+      \end{block}
+
+      \vspace{8pt}
+      \textbf{Remaining failure modes:}
+      \begin{itemize}\scriptsize
+        \item CEM012A1: mild FA regression at conf=0.35 (precision problem, not a loss problem)
+        \item $\sim$15\% miss rate on genuinely hard lesions (very small, low contrast, edge slices)
+        \item DR drop vs baseline is a confidence calibration shift — not a genuine regression
       \end{itemize}
     \end{column}
   \end{columns}

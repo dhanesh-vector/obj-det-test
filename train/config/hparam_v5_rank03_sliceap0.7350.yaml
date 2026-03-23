@@ -1,0 +1,39 @@
+data_dir: /projects/tenomix/ml-share/training/07/data
+model_size: s
+num_classes: 1
+batch_size: 8
+epochs: 100
+learning_rate: 0.0004186064867053193
+weight_decay: 0.000813822714897863
+num_workers: 8
+use_pu_loss: true
+device: cuda
+early_stopping_patience: 20
+early_stopping_min_delta: 0.001
+label_smooth: 0.08547387715582948
+slice_stride: 7
+warmup_epochs: 8
+mosaic_prob: 0.4917453770038845
+copy_paste:
+  enabled: true
+  p: 0.6852
+  std_tol: 25.0
+  max_pastes: 2
+augmentations:
+- HorizontalFlip:
+    p: 0.5
+- VerticalFlip:
+    p: 0.5
+- ShiftScaleRotate:
+    shift_limit: 0.08
+    scale_limit: 0.2
+    rotate_limit: 15
+    p: 0.4
+- MedianBlur:
+    blur_limit: 3
+    p: 0.3
+- MedianBlur:
+    blur_limit: 7
+    p: 0.3
+_optuna_trial_number: 211
+_optuna_slice_ap50: 0.73501

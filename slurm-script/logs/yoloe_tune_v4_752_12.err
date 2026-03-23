@@ -1,0 +1,18 @@
+[I 2026-03-17 14:39:48,689] Using an existing study with name 'yoloe_hparam_search_v4' instead of creating a new one.
+/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/albumentations/core/validation.py:114: UserWarning: ShiftScaleRotate is a special case of Affine transform. Please use Affine transform instead.
+  original_init(self, **validated_kwargs)
+[I 2026-03-17 14:43:49,975] Trial 11 pruned. 
+[I 2026-03-17 14:47:14,434] Trial 20 pruned. 
+[I 2026-03-17 14:58:50,224] Trial 23 pruned. 
+[I 2026-03-17 15:03:04,096] Trial 50 pruned. 
+[I 2026-03-17 15:07:49,923] Trial 55 pruned. 
+[I 2026-03-17 15:12:11,638] Trial 61 pruned. 
+[I 2026-03-17 15:25:13,509] Trial 75 finished with value: 0.6289464348912658 and parameters: {'learning_rate': 0.0028118872210255064, 'weight_decay': 0.0028418704336566633, 'mosaic_prob': 0.3707798064582288, 'label_smooth': 0.07886228038687776, 'copy_paste_p': 0.06831708379146467, 'slice_stride': 10, 'batch_size': 16, 'use_clahe': True, 'use_shift_scale_rotate': True, 'use_brightness_contrast': False, 'use_median_blur': True, 'median_blur_limit': 5, 'use_speckle_noise': False, 'speckle_level': 'medium'}. Best is trial 14 with value: 0.7280141285840982.
+[I 2026-03-17 15:29:34,849] Trial 100 pruned. 
+[I 2026-03-17 15:33:32,718] Trial 108 pruned. 
+[I 2026-03-17 15:46:31,435] Trial 122 pruned. 
+[I 2026-03-17 16:03:08,631] Trial 140 finished with value: 0.7138679172688668 and parameters: {'learning_rate': 0.00497966347957706, 'weight_decay': 0.0010727894064751, 'mosaic_prob': 0.2481789990358817, 'label_smooth': 0.11124543885915171, 'copy_paste_p': 0.04553340859454867, 'slice_stride': 10, 'batch_size': 8, 'use_clahe': True, 'use_shift_scale_rotate': True, 'use_brightness_contrast': False, 'use_median_blur': True, 'median_blur_limit': 3, 'use_speckle_noise': False, 'speckle_level': 'medium'}. Best is trial 14 with value: 0.7280141285840982.
+[I 2026-03-17 16:06:38,742] Trial 170 pruned. 
+[I 2026-03-17 16:10:05,876] Trial 175 pruned. 
+[I 2026-03-17 16:25:31,009] Trial 180 finished with value: 0.6880146193877149 and parameters: {'learning_rate': 0.0024962822330663634, 'weight_decay': 0.007428085979750512, 'mosaic_prob': 0.26782375402314523, 'label_smooth': 0.11091022882431643, 'copy_paste_p': 0.08187637317455132, 'slice_stride': 10, 'batch_size': 16, 'use_clahe': True, 'use_shift_scale_rotate': True, 'use_brightness_contrast': False, 'use_median_blur': True, 'median_blur_limit': 5, 'use_speckle_noise': False, 'speckle_level': 'heavy'}. Best is trial 14 with value: 0.7280141285840982.
+[I 2026-03-17 16:35:28,546] Trial 209 pruned. 

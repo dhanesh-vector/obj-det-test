@@ -1,0 +1,18 @@
+[I 2026-03-17 14:39:44,849] Using an existing study with name 'yoloe_hparam_search_v4' instead of creating a new one.
+/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/albumentations/core/validation.py:114: UserWarning: ShiftScaleRotate is a special case of Affine transform. Please use Affine transform instead.
+  original_init(self, **validated_kwargs)
+[I 2026-03-17 14:50:34,398] Trial 6 pruned. 
+[I 2026-03-17 14:56:20,167] Trial 28 pruned. 
+[I 2026-03-17 15:10:10,796] Trial 38 pruned. 
+[I 2026-03-17 15:20:28,213] Trial 69 pruned. 
+[I 2026-03-17 15:24:51,722] Trial 86 pruned. 
+[I 2026-03-17 15:29:04,586] Trial 97 pruned. 
+[I 2026-03-17 15:39:52,491] Trial 105 pruned. 
+[I 2026-03-17 15:44:42,042] Trial 126 pruned. 
+[I 2026-03-17 15:47:56,987] Trial 137 pruned. 
+[I 2026-03-17 15:58:04,612] Trial 144 pruned. 
+[I 2026-03-17 16:12:35,307] Trial 157 pruned. 
+[I 2026-03-17 16:22:39,455] Trial 185 pruned. 
+[I 2026-03-17 16:35:40,790] Trial 206 pruned. 
+[I 2026-03-17 16:46:38,578] Trial 224 pruned. 
+[I 2026-03-17 17:00:36,443] Trial 242 pruned. 

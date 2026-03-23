@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from .loss import YOLOELoss
+from .loss import YOLOELoss, ciou_loss
 
 def bbox_iou(box1, box2, eps=1e-7):
     """
@@ -79,7 +79,10 @@ class YOLOEPUFocalLoss(YOLOELoss):
                 loss_cls += (base_bce * soft_weight).sum() / num_anchors
                 continue
             
-            target_cls, target_box, fg_mask = self._assign_targets(gt_boxes, gt_labels, anchor_points, num_anchors, device)
+            # P4 — TAL assignment (inherited); pred_boxes_all already decoded above
+            target_cls, target_box, fg_mask = self._assign_targets(
+                gt_boxes, gt_labels, anchor_points, num_anchors, device,
+                pred_cls=pred_cls, pred_boxes=pred_boxes_all)
             num_pos = fg_mask.sum().item()
             
             # Base classification loss computation
@@ -115,10 +118,10 @@ class YOLOEPUFocalLoss(YOLOELoss):
             neg_loss = (base_cls_loss[neg_mask] * weight[neg_mask].unsqueeze(-1)).sum() / max(num_pos, 1)
             loss_cls += pos_loss + neg_loss
             
-            # Box Regression Loss
+            # Box Regression Loss — P3: CIoU
             if fg_mask.any():
                 pred_boxes = self._decode_boxes(pred_reg[fg_mask], anchor_points[fg_mask], stride_tensor[fg_mask])
-                loss_box += nn.functional.smooth_l1_loss(pred_boxes, target_box[fg_mask], reduction='mean')
+                loss_box += ciou_loss(pred_boxes, target_box[fg_mask])
                 
                 # Compute DFL targets: (l, t, r, b) scaled by stride
                 stride = stride_tensor[fg_mask].squeeze(-1)

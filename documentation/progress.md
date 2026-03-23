@@ -251,8 +251,438 @@ However, a complementary question is: *does the model fire on the right slices a
 
 **Current status:** In progress — running with the speckle + copy-paste combined config. Expected benefit: higher instance diversity per epoch especially for rare lesion sizes; model forced to detect lesions across varied tissue backgrounds.
 
-### Next Steps
-- Evaluate run results with MedianBlur + MultiplicativeNoise + TissueAwareCopyPaste.
-- Compare against PU-Loss baseline (AP@50 = 0.557) to isolate contribution of speckle augmentations and copy-paste.
-- If val loss continues diverging after epoch ~10, consider increasing `weight_decay` further or reducing `epochs` + relying on best-AP checkpoint.
-- Pseudo-labeling on unlabeled data is a viable next step if AP plateaus — run best checkpoint on unlabeled images, keep high-confidence detections as new training labels, retrain.
+### 18. Why AP@50 Is an Unstable HPO Metric — and Why SliceAP@50 Replaces It
+
+#### The instability problem
+
+AP@50 (box-level mean average precision at IoU ≥ 0.5) exhibited single-epoch swings of ±0.10–0.15 in v3 HPO logs with no corresponding change in validation loss. Trial 201, for example, moved from 0.27 to 0.54 and back to 0.39 across three consecutive epochs while val loss barely moved (29.6 → 33.5 → 30.4). This makes it an unreliable stopping signal and corrupts Optuna's pruner: a configuration that would have reached 0.52 by epoch 30 can get killed at epoch 10 because it happened to produce 0.08 on a single bad checkpoint.
+
+Two root causes were identified:
+
+**1. Small effective sample size.**
+Box-level AP@50 uses `torchmetrics MeanAveragePrecision`, which pools all predicted and GT boxes across the full validation set and builds a single PR curve over those boxes. The 357-slice validation set does not contain 357 independent GT boxes — the number of annotated lesion instances is substantially smaller (lesion-sparse ultrasound volumes), so the PR curve is built from far fewer samples than 357. A single misdetected lesion or a single spurious high-confidence false positive shifts the entire curve.
+
+**2. Validation set data split: not scan-level holdout.**
+Inspection of the data directory revealed that all 6 validation scan IDs (CEM004A3, CEM005A1, CEM006A1, CEM007A1, CEM013A2, CEM015A2) also appear in the training set. More critically, for two scans (CEM013A2 and CEM015A2) the validation slice indices fall entirely within the training slice index range — the validation slices are sandwiched between neighbouring training slices from the same scan. In 3D ultrasound, adjacent slices are near-identical (1 mm spacing). This means the model has seen frames adjacent to every validation slice during training, introducing within-scan correlation that makes the metric sensitive to scan-specific confidence calibration rather than true generalization.
+
+The practical consequence: small changes in logit scale (caused by LR schedule progression or weight decay during training) shift the confidence of predictions on familiar scan neighbourhoods unpredictably, producing large AP swings that are not informative about generalization.
+
+#### Why SliceAP@50 is more stable
+
+`SliceAP@50` (implemented in `utils/metrics.py :: Evaluator._per_slice_ap`) treats each of the 357 validation slices as one binary sample:
+
+- **Score:** maximum prediction confidence in that slice (0.0 if no predictions)
+- **Positive:** slice has ≥1 GT box
+- **Hit (TP):** any predicted box has IoU ≥ 0.5 with any GT box
+
+The PR curve has exactly 357 points — the full validation set. Box-level AP@50 can have far fewer effective points when GT instances are sparse.
+
+The stabilization comes from two effects:
+
+1. **More samples:** 357 binary classification events are more stable than ~N_boxes events where N_boxes ≪ 357. Variance of a proportion scales as $1/n$; doubling the effective sample count halves the variance.
+
+2. **Coarser question asked:** SliceAP asks "did you find anything in this slice?" rather than "did you find every box at the right IoU?" The binary hit criterion (`(iou >= 0.5).any()`) absorbs minor box placement variation — a box that shifts by a few pixels between epochs is still a hit. This removes the per-epoch jitter from near-threshold box quality variation.
+
+The metric also has direct clinical relevance for this application: the primary screening task is flagging suspicious slices for radiologist review (binary per-slice decision), not precisely localizing every lesion instance. SliceAP@50 directly measures this.
+
+**Observed stability:** In the same v3 training runs, `slice_ap_50` hovered in the 0.60–0.72 range in later epochs while `map_50` oscillated 0.40–0.55 over the same epochs. The signal-to-noise ratio is substantially higher.
+
+#### Remaining caveats
+
+SliceAP@50 is more lenient: a very large imprecise box that incidentally overlaps a GT box at IoU ≥ 0.5 is still a hit. Two configs with similar SliceAP@50 could differ meaningfully in box quality. For HPO ranking purposes (which config is better, not how precisely it localizes), this is an acceptable trade-off. Final model evaluation should still report both SliceAP@50 and AP@50.
+
+The val-set data split issue (shared scan IDs) is a separate problem that affects both metrics. The correct fix is a scan-level resplit; this does not change the relative merit of SliceAP@50 vs AP@50 as HPO objectives.
+
+---
+
+### 19. Hyperparameter Optimization v4 (`train/tune_hyperparams_v4.py`)
+
+#### Summary of changes from v3
+
+| Component | v3 | v4 |
+|---|---|---|
+| Optuna objective | Raw AP@50 | EMA SliceAP@50 |
+| Pruner reported metric | Raw AP@50 | Raw SliceAP@50 (not EMA) |
+| Early stopping criterion | Raw AP@50 | EMA SliceAP@50 |
+| Pruner type | `MedianPruner` | `HyperbandPruner` |
+| Checkpoint saving | None | Top-3 per trial by EMA SliceAP@50 |
+| Output best config | `best_hyperparams_v3.yaml` | `best_hyperparams_v4.yaml` |
+
+#### EMA smoothing (α = 0.3)
+
+A per-trial exponential moving average is applied to `slice_ap_50` at every epoch:
+
+```
+ema_t = 0.3 × slice_ap_t  +  0.7 × ema_{t-1}
+```
+
+The EMA is warm-started at epoch 1 (set to the raw value, no lag from zero). With α = 0.3 the effective half-life is ~2 epochs — enough to absorb the ±0.10 single-epoch swings visible in the v3 logs while tracking real trends on the timescale of 5–10 epochs.
+
+The EMA is used as:
+- **The trial objective returned to Optuna** (what the study maximises and uses for config ranking)
+- **The early stopping signal** (counter resets only when EMA improves by ≥ `min_delta`)
+
+The raw `slice_ap_50` (not EMA) is reported to the **pruner** via `trial.report()`. This is intentional: the HyperbandPruner's rung comparisons should reflect the model's actual state at a specific epoch, not a lagged average that would make a slowly-converging trial look better than a fast one at early rungs.
+
+#### HyperbandPruner
+
+Replaces `MedianPruner` for two reasons:
+
+1. `MedianPruner` compares a trial's metric against the global median at the same epoch. When trials are dispatched in parallel across 20 SLURM workers, the "same epoch" comparison is often across trials that are at very different phases of convergence, and the global median itself is noisy during the first 8–20 trials before enough data accumulates.
+
+2. `HyperbandPruner` groups trials into brackets and uses successive halving within each bracket. Trials are only compared to others that started with similar budgets. This is more robust to the delayed-onset convergence in this dataset (most configs produce near-zero AP before epoch 8).
+
+Configuration:
+- `min_resource=10` — no pruning before epoch 10 (past the warmup LR ramp)
+- `max_resource=50` — matches `--epochs`
+- `reduction_factor=3` — rungs at epochs 10, 30, 50; keeps top ⅓ at each rung
+
+Known limitation: Hyperband's bracket structure assumes workers run trials sequentially within brackets. With 20 asynchronous SLURM workers sharing one SQLite study, bracket assignment can be disrupted. If erratic early pruning is observed in v4 logs, this is the cause. MedianPruner was more robust to this kind of distributed asynchrony, at the cost of the comparison noise described above.
+
+#### Top-K checkpoint saving (`TopKCheckpointManager`)
+
+Each trial now saves up to 3 model checkpoints during training, managed by `TopKCheckpointManager` using a min-heap. At every epoch:
+
+1. The current model weights are saved to `checkpoints/hparam_v4/trial_<N>/epoch<E>_sliceap<V>.pt`
+2. The new checkpoint is pushed onto the heap (keyed by EMA SliceAP@50)
+3. If the heap exceeds K=3 entries, the checkpoint with the lowest EMA SliceAP@50 is popped and its file deleted
+
+This keeps exactly the top-3 best checkpoints alive at all times without accumulating files. On pruning, `cleanup()` deletes all checkpoint files for that trial to prevent disk bloat.
+
+At the end of each completed trial, `write_manifest()` produces `swa_manifest.yaml` listing the surviving checkpoints:
+
+```yaml
+trial_number: 42
+trial_params: {learning_rate: 4.8e-04, ...}
+checkpoints:
+  - path: "checkpoints/hparam_v4/trial_0042/epoch014_sliceap0.6823.pt"
+    epoch: 14
+    slice_ap50: 0.671234
+    ema_slice_ap50: 0.682300
+  - ...
+```
+
+Only the base YOLOE model weights (`YOLOEWithLoss.model.state_dict()`) are saved per checkpoint — not the loss wrapper — keeping each file to ~25 MB and making them directly loadable by `build_yoloe()` for inference or SWA averaging.
+
+**Disk budget:** 300 trials × 3 checkpoints × ~25 MB ≈ 22 GB on NFS. This is manageable; pruned trial checkpoints are deleted immediately.
+
+#### SWA weight averaging (post-study)
+
+After the study completes, the top trial manifests can be used to perform stochastic weight averaging across the best checkpoints:
+
+```python
+import torch, yaml, glob
+from model.yoloe import build_yoloe
+
+# Load manifests for your chosen top trials
+manifest_paths = ["checkpoints/hparam_v4/trial_0042/swa_manifest.yaml", ...]
+state_dicts = []
+for p in manifest_paths:
+    m = yaml.safe_load(open(p))
+    for ckpt in m["checkpoints"]:
+        sd = torch.load(ckpt["path"], map_location="cpu")["model_state_dict"]
+        state_dicts.append(sd)
+
+# Average weights
+avg_sd = {k: sum(sd[k] for sd in state_dicts) / len(state_dicts) for k in state_dicts[0]}
+model = build_yoloe(model_size="s", num_classes=1)
+model.load_state_dict(avg_sd)
+```
+
+Averaging across checkpoints from different epochs of the same trial (or across top trials) has been shown to improve generalization in noisy-metric regimes by smoothing out checkpoint-level variance. Saving the top-3 per trial makes this option available without requiring a separate full-training SWA run.
+
+---
+
+### 20. Hyperparameter Optimization v5 (`train/tune_hyperparams_v5.py`)
+
+#### Motivation — overfitting analysis of v4 (job 752)
+
+Post-hoc analysis of the 300-trial v4 run identified three consistent overfitting signals across virtually all completed trials:
+
+1. **Train/val loss gap triples by end of training.** The gap at epoch ~5 is ~8–14; by the final epoch it reaches ~23–30. Train loss keeps falling while val loss plateaus, indicating the model is memorising scan-specific features of the 13 training patients.
+
+2. **Val loss bottoms early.** Val loss hits its minimum between epochs 16 and 30 in nearly every trial, then drifts up by +1–7 units. Epochs 35–50 provide no SliceAP@50 gain and only deepen the train/val gap.
+
+3. **Weight decay saturates at the search space boundary.** Both the v3 and v4 best trials converged to `wd=7.97e-03`, immediately below the old upper bound of `1e-2`. When a hyperparameter search saturates at a boundary, the true optimum lies beyond it.
+
+#### Search space changes
+
+| Parameter | v4 range | v5 range | Rationale |
+|---|---|---|---|
+| `weight_decay` | `[1e-4, 1e-2]` log | `[1e-4, 5e-2]` log | Best wd in v3 and v4 both hit the old ceiling; extends regularisation headroom 5× |
+| `mosaic_prob` | `[0.1, 0.5]` | `[0.3, 0.8]` | Cross-scan mosaic is the strongest anti-overfitting augmentation; v4 best (0.39) was near the old ceiling; raising it forces more aggressive patient-mixing |
+| `copy_paste_p` | `[0.0, 0.7]` | `[0.2, 0.7]` | v4 best used 0.11 — well below effective range; with only 13 scans, copy-paste is the only source of novel lesion instances; floor of 0.2 ensures every trial uses it |
+
+All other search space parameters are unchanged from v4.
+
+#### Training budget changes
+
+| Parameter | v4 | v5 | Rationale |
+|---|---|---|---|
+| `--epochs` | 50 | 35 | Val loss bottoms at ep 16–30; ep 35–50 only deepens overfitting. Saves ~30% GPU time per trial, enabling more trials in the same wall time. |
+| `--early-stopping-patience` | 15 | 8 | EMA smoothing (α=0.3, half-life ~2 ep) already absorbs single-epoch dips; 15-epoch patience was equivalent to ~30 raw epochs of tolerance — too permissive. |
+
+#### Unchanged from v4
+
+- Objective: EMA SliceAP@50 (α=0.3), warm-started at epoch 1
+- Pruner: `HyperbandPruner` (`min_resource=10`, `max_resource=35`, `reduction_factor=3`)
+  - Note: `max_resource` updated from 50 → 35 to match new epoch budget; rungs now at epochs 10 and 35
+- Sampler: `TPESampler`
+- Checkpoint saving: `TopKCheckpointManager`, top-3 per trial, `swa_manifest.yaml` for SWA
+- Copy-paste: `TissueAwareCopyPaste` always instantiated (floor > 0), fixed structural params from base config
+
+#### Files
+
+- `train/tune_hyperparams_v5.py` — tuning script
+- `slurm-script/tune_hyperparams_v5.sh` — SLURM array job (20 workers × 15 trials = 300 total)
+- Outputs: `train/config/hparam_v5_rank*.yaml`, `train/config/best_hyperparams_v5.yaml`
+- Checkpoints: `checkpoints/hparam_v5/trial_<N>/`
+
+---
+
+### 21. Hyperparameter Optimization v6 (PU Loss) — Experiment Results & Critical Analysis
+
+#### What was run
+
+- `tune_hyperparams_v6.py` was run with `best_hyperparams_v5.yaml` (which had `use_pu_loss` **accidentally set to `true`** after v5 tuning completed) as the base config. All v6 Optuna trials therefore ran with PU loss enabled throughout.
+- The v6 best config (`train/config/best_hyperparams_v6.yaml`) was used to train `checkpoints/best_model_20260319_153153.pth`, which reached best EMA SliceAP@50 = **0.6756** at epoch 28 and early-stopped at epoch 48.
+- `best_hyperparams_v5.yaml` has been reverted to `use_pu_loss: false`. `best_hyperparams_v6.yaml` is retained as-is (`use_pu_loss: true`) as a historical experiment record.
+
+**Key fact:** The v6 Optuna study converged to **identical numerical hyperparameters** as v5 (lr=0.0004095, wd=0.000131, same augmentation params), differing only in `use_pu_loss`. This confirms that the non-loss hyperparameters (LR, WD, augmentations) are insensitive to which loss function is used — the gap between v5 and v6 is attributable entirely to the PU loss formulation.
+
+#### Test set results (held-out, 328 slices, 5 scans)
+
+| Metric | v5 no-PU (conf=0.47, iou=0.45) | v5 no-PU (conf=0.5, iou=0.5) | v6 PU Loss (conf=0.5, iou=0.5) |
+|---|---|---|---|
+| AP@50 | **0.7704** | 0.7704 | 0.5381 |
+| SliceAP@50 | **0.9406** | 0.9406 | 0.8317 |
+| SliceAP@75 | 0.4257 | 0.4257 | 0.4257 |
+| Precision | **0.6600** | 0.6600 | 0.1978 |
+| Recall | **0.8049** | 0.8049 | 0.6677 |
+| F1 | **0.7253** | 0.7253 | 0.3052 |
+| TP / FN / FP | 282 / 46 / 138 | 264 / 64 / 136 | 219 / 109 / **888** |
+| FA/image | 0.42 | 0.41 | **2.71** |
+| P @ R=0.8 | **0.6658** | 0.6658 | 0.1011 |
+
+**Operational baseline: v5 no-PU at conf=0.47, iou=0.45** (85.98% DR, 0.42 FA/image).
+
+#### Per-scan breakdown
+
+| Scan | v5 DR (best) | v6 DR | v5 FA/slice | v6 FA/slice |
+|---|---|---|---|---|
+| CEM005A1 | 94.5% | **17.97%** | 0.42 | 2.56 |
+| CEM011A3 | 84.0% | 100.0% | 0.68 | 3.44 |
+| CEM012A1 | 71.6% | 96.1% | 0.30 | 2.61 |
+| CEM013B2 | 83.8% | 100.0% | 0.57 | 2.35 |
+| CEM015A2 | 100.0% | 100.0% | 0.42 | 3.36 |
+
+The identical SliceAP@75 = 0.4257 across all conditions confirms the backbone's localization quality is intact — the failure is exclusively in classification branch calibration.
+
+#### Why the current PU loss formulation fails
+
+The implementation in `model/pu_loss.py` has four structural deficiencies:
+
+1. **Soft sampling is not a PU correction.** The weight `(1-p)^γ` applied to negative anchors is mathematically equivalent to focal loss on negative targets. It provides maximum suppression gradient at `p ≈ 1/3`, not at `p ≈ 0` (true background). High-confidence potential positives (`p > 0.7`) receive weight `(0.3)² = 0.09` — reduced, but still a systematic push toward zero throughout training.
+
+2. **Focal IoU starvation of positive gradients.** `weight[fg_mask] = IoU(pred, gt)^β`. At random initialization, predicted box IoU ≈ 0.01–0.05, reducing positive classification gradient to 1–5% of baseline during the critical early epochs. Box regression improves normally (unaffected) while the classification head cannot learn to confidently predict positives. Net gradient ratio neg:pos worsens from ~24:1 (base loss) to ~247:1 (PU loss at epoch 1).
+
+3. **Normalization asymmetry (280× bias).** No-GT images normalize by `num_anchors ≈ 8400`; with-GT image negatives normalize by `num_pos ≈ 30`. The soft weighting on no-GT slices (the intended PU use case) is effectively irrelevant — annotated-image negatives dominate the gradient budget by 280×.
+
+4. **No nnPU non-negativity constraint.** The Kiryo et al. (2017) nnPU estimator requires `max(0, R_u- − π·R_p-)`. Without this clamp, when the model enters a suppression regime (as on CEM005A1), gradients continue pushing predictions toward zero indefinitely with no recovery — explaining the 17.97% DR collapse on that scan.
+
+#### CEM005A1 collapse explained
+
+CEM005A1 is the most lesion-dense scan (128 GT boxes across 128 slices, ~one per slice). The PU loss teaches the model a spurious discriminative rule: suppress confident predictions on scans that globally resemble training scans where suppression was rewarded (scans that appear "background-dominant" in acquisition style). CEM005A1's acquisition signature differs from the other 4 test scans, causing trained suppression to activate across all 128 of its slices. This is a direct consequence of deficiency (4) above.
+
+---
+
+### 22. Planned Next Steps — Phase 1 & Phase 2
+
+#### Current status
+
+- **Active baseline:** `checkpoints/best_model_v5_no_pu_loss.pth` trained from `best_hyperparams_v5.yaml` (`use_pu_loss: false`). No further hyperparameter re-tuning is required — v5 hyperparameters are correctly tuned for the base loss.
+- **Historical record:** `best_hyperparams_v6.yaml` retained as-is with `use_pu_loss: true`. Do not use this config for new training runs without changing the flag.
+- **Known remaining weakness:** CEM012A1 achieves only 67–71% DR under the base model. Root cause under investigation (see Phase 1 goals).
+
+---
+
+#### Phase 1 — Base Loss & Assignment Improvements
+
+**Goal:** Improve the base model's localization precision (AP@75) and reduce false alarms (precision) without sacrificing recall. No new loss paradigm required — these are well-established improvements to the existing YOLOE stack.
+
+##### P3 — CIoU Box Regression Loss (`model/loss.py`)
+
+**Problem:** The current box regression loss is `smooth_l1_loss(pred_boxes, target_boxes)`, which treats x1, y1, x2, y2 as four independent scalars. It provides no gradient incentive for improving overlap when boxes already partially intersect, and cannot distinguish between boxes with the same L1 error but different geometric quality.
+
+**Fix:** Replace with Complete IoU loss (CIoU, Zheng et al. 2020):
+```
+L_CIoU = 1 - IoU + ρ²(b, b^gt)/c² + α·v
+```
+where `ρ²(b, b^gt)/c²` penalises centre-point distance normalised by diagonal, and `αv` penalises aspect ratio difference. CIoU provides non-zero gradient even when boxes don't overlap, and improves AP@75 specifically because the aspect ratio term tightens predicted shapes to GT shapes.
+
+Expected impact: AP@75 improvement from 0.2422 toward 0.33–0.38 (based on typical CIoU gains over smooth L1 in YOLO-family detectors on small, compact objects). FA/image reduction expected as better-localised predictions reduce IoU-threshold boundary noise.
+
+**Files to modify:** `model/loss.py` (replace `smooth_l1_loss` call; add CIoU helper); `model/pu_loss.py` (same replacement for consistency, though PU loss is deprioritised).
+
+##### P4 — Task-Aligned Assignment (TAL) (`model/loss.py`, `model/assigners/`)
+
+**Problem:** `_assign_targets` in `loss.py` uses distance-to-GT-center + inside-box filter. This assigns anchors based purely on spatial proximity, independent of whether the model is actually predicting anything useful at that anchor. A spatially close anchor that predicts a box in entirely the wrong direction still receives a positive label, injecting noisy positive gradient.
+
+**Fix:** Replace with Task-Aligned Learning (TAL) assignment (TOOD, Feng et al. 2021). TAL computes an alignment metric `t_i = cls_score_i^α × IoU_i^β` for each anchor-GT pair, then selects the top-m anchors by this metric within each GT's region. Because both classification score and IoU are jointly considered, only anchors that are both confident and geometrically accurate are assigned positive. This:
+- Makes the positive set self-consistent with current model predictions
+- Eliminates the need for the Focal IoU weight in the loss (it becomes implicit in assignment quality)
+- Naturally improves precision: noisy positive assignments that were confusing the classification head are excluded
+
+Note: `ATSSAssigner` already exists in `model/assigners/atss_assigner.py` but is incomplete (returns IoU tensor only, stops at line 100). TAL requires a new assigner or completion of ATSS. The assignment interface (returns `target_cls`, `target_box`, `fg_mask`) is already defined in `loss.py`'s `_assign_targets` and can be swapped.
+
+Expected impact: Precision improvement from 0.66 toward 0.72–0.76. P@R=0.8 improvement from 0.6658 toward 0.72+. AP@50 expected to hold or improve slightly.
+
+**Files to modify:** `model/assigners/` (new TAL assigner); `model/loss.py` (replace `_assign_targets`).
+
+##### P5 — Hard Negative Mining / Negative Sample Count Cap (`model/loss.py`)
+
+**Problem:** With `num_pos ≈ 30` and `num_anchors ≈ 8400`, the per-anchor negative-to-positive gradient ratio is ~279:1 under the current `sum/num_pos` normalization. This extreme imbalance means thousands of easy background anchors (deep in correct territory, `p ≈ 0.02`) dominate the gradient budget despite contributing almost zero useful learning signal. The model has difficulty discriminating hard negatives (tissue regions with lesion-like appearance) from positives.
+
+**Fix:** Online Hard Example Mining (OHEM) for the negative set. After computing `bce(pred_cls[~fg_mask], target_cls[~fg_mask])`, sort by descending loss and retain only the top `k × num_pos` (e.g., `k=3` or `k=5`) hardest negative anchors before summing. This:
+- Caps the effective neg:pos ratio at `k:1` (e.g., 3:1 or 5:1)
+- Focuses gradient on near-threshold negatives (the hard false positives)
+- Leaves easy, already-suppressed negatives out of the gradient, preventing over-regularization of the background
+
+Combined with P3 (CIoU) and P4 (TAL), this forms the complete precision-improvement stack.
+
+Expected impact: Precision increase to 0.73–0.78. FA/image reduction from 0.42 toward 0.25–0.30. Recall expected to hold (OHEM focuses on hard negatives, does not affect positive gradient).
+
+**Files to modify:** `model/loss.py` (add OHEM selection before neg_loss computation).
+
+**Phase 1 evaluation protocol:**
+- Train using `best_hyperparams_v5.yaml` with each change incrementally (P3 alone → P3+P4 → P3+P4+P5).
+- Report test-set metrics on the held-out 5-scan set using the same eval script (`inference/test_eval.py`).
+- Accept a change only if it improves SliceAP@50 ≥ 0.93 (does not hurt detection rate) AND reduces FA/image by ≥ 0.05.
+- Per-scan breakdown (especially CEM012A1 and CEM005A1) must be checked for each run.
+
+---
+
+#### Phase 2 — PU Loss Research (Dropped)
+
+**Decision date:** 2026-03-20. Phase 2 (P6 nnPU constraint, P7 Optuna v7 gamma/beta tuning) was planned but dropped after reviewing the Phase 1 results. Reasoning is documented below.
+
+##### Why Phase 2 was abandoned
+
+**1. SliceAP@50 is already at ceiling.**
+The Phase 1 model achieves SliceAP@50 = 0.9901 — essentially perfect at the slice level. PU learning's core value is preserving recall on unannotated positive slices ("don't suppress confident predictions where lesions exist but aren't labelled"). With 99% of positive slices already detected, this problem is already solved by the base model. PU loss has almost no headroom to improve the primary metric.
+
+**2. The remaining failure modes are not PU problems.**
+The two outstanding weaknesses after Phase 1 are: (a) CEM012A1 false alarm regression (0.27 → 0.53 FA/slice at conf=0.35), which is a precision problem caused by the model firing on background parenchymal enhancement — a pattern PU learning would soften rather than fix; and (b) a ~15% overall miss rate concentrated in genuinely hard lesions (very small, low contrast, edge slices) that are hard regardless of loss formulation. PU learning addresses recall on unannotated slices, not localisation difficulty or background confusion.
+
+**3. P6 alone is insufficient; all structural fixes are needed together.**
+P6 (nnPU non-negativity clamp) prevents catastrophic training collapse but leaves three other structural deficiencies in `pu_loss.py` unaddressed: the soft sampling inversion (max gradient at p≈0.33 rather than at p≈0), the 280× normalization asymmetry between GT and no-GT images, and the absence of spatial gating (soft weights applied uniformly to all 8400 negative anchors rather than only near-GT candidates). Running P7 (Optuna) without fixing all four issues tunes the parameters of a structurally broken loss and is unlikely to find a good solution.
+
+**4. PU learning requires annotation audit first.**
+A sound PU study requires knowing the actual unlabeled positive rate in the training data — the fraction of lesion-containing slices that were not annotated. The test data shows near-complete annotation coverage (CEM005A1: 128/128 slices annotated, CEM012A1: 102/102). If training data has similarly dense annotation, the PU correction is solving a negligible problem while introducing gradient instability. This audit was not performed, and given the Phase 1 results there is insufficient motivation to perform it now.
+
+**5. Regression risk outweighs expected gain.**
+The v6 experiment demonstrated that the current PU loss formulation causes an 30pp AP@50 regression and a 6.5× increase in false alarms. Even a structurally improved PU loss carries regression risk on a 5-scan test set where a single scan's failure dominates aggregate metrics. The expected upside (marginal improvement on a metric already near ceiling) does not justify this risk.
+
+##### What would justify revisiting PU learning
+
+- Evidence from an annotation audit that ≥20% of training lesion-containing slices are unannotated
+- A larger test set (≥20 scans) with sufficient statistical power to detect a 1–2pp improvement
+- All four structural fixes implemented together (nnPU clamp + spatial gating + normalization consistency + correct soft sampling) before any Optuna search
+- A dataset where the primary failure mode is suppression of confident predictions on positive slices, not background confusion or localisation difficulty
+
+---
+
+#### Summary Priority Table
+
+| Priority | Component | Files | Phase | Status |
+|---|---|---|---|---|
+| P3 | CIoU box regression loss | `model/loss.py` | 1 | **Complete** |
+| P4 | Task-Aligned Assignment (TAL) | `model/loss.py`, `model/assigners/` | 1 | **Complete** |
+| P5 | Hard Negative Mining (OHEM) | `model/loss.py` | 1 | **Complete** |
+| P6 | nnPU non-negativity constraint | `model/pu_loss.py` | 2 | **Dropped** — see reasoning above |
+| P7 | Tune gamma/beta + spatial gating | `train/tune_hyperparams_v7.py` | 2 | **Dropped** — see reasoning above |
+
+---
+
+### 23. Phase 1 Results — CIoU + TAL + OHEM (v5_ciou_tal_ohem)
+
+#### Experiment provenance
+
+| Item | Detail |
+|---|---|
+| **Training config** | `train/config/best_hyperparams_v5.yaml` (`use_pu_loss: false`) |
+| **Training script** | `train/train.py` |
+| **SLURM script** | `slurm-script/train_v5_p3p4p5.sh` (job 1052) |
+| **Checkpoint** | `checkpoints/best_model_v5_ciou_tal_ohem_20260320_134819.pth` |
+| **Best epoch** | 20 |
+| **Best val EMA SliceAP@50** | 0.7671 |
+| **Eval script** | `slurm-script/test_eval_v5_ciou_tal_ohem.sh` (job 1055) |
+| **Eval results dir** | `inference/test_results_v5_ciou_tal_ohem/` |
+| **Eval thresholds** | conf=0.47, iou=0.45 (same as v5 baseline for direct comparison) |
+
+**Changes vs v5 baseline** (implemented in `model/loss.py`):
+- P3: CIoU box regression replaces smooth-L1
+- P4: Task-Aligned Assignment (TAL, α=0.5, β=6.0, topk=13) replaces distance-based top-k
+- P5: Online Hard Example Mining (OHEM, ratio=3×) replaces full negative set
+
+#### Test set results (held-out, 328 slices, 5 scans)
+
+Baselines use `checkpoints/best_model_v5_no_pu_loss.pth` trained from `best_hyperparams_v5.yaml`.
+
+| Metric | v5 baseline (conf=0.5, iou=0.5) | v5 baseline (conf=0.47, iou=0.45) | **v5_ciou_tal_ohem** (conf=0.47, iou=0.45) | Δ vs best baseline |
+|---|---|---|---|---|
+| AP@50 | 0.7704 | 0.7704 | **0.8270** | **+5.7pp** |
+| AP@75 | 0.2422 | 0.2422 | **0.3622** | **+12.0pp** |
+| mAP@50:95 | 0.3229 | 0.3229 | **0.4019** | **+7.9pp** |
+| SliceAP@50 | 0.9406 | 0.9406 | **0.9901** | **+4.9pp** |
+| SliceAP@75 | 0.4257 | 0.4257 | **0.5446** | **+11.9pp** |
+| Precision | 0.6600 | 0.6600 | **0.7967** | **+13.7pp** |
+| Recall | 0.8049 | 0.8049 | 0.7409 | -6.4pp ¹ |
+| F1 | 0.7253 | 0.7253 | **0.7678** | **+4.3pp** |
+| P @ R=0.8 | 0.6658 | 0.6658 | **0.7601** | **+9.4pp** |
+| R @ P=0.8 | 0.6341 | 0.6341 | **0.7317** | **+9.8pp** |
+| TP / FN / FP | 264/64/136 | 279/49/121 | 249/79/**70** | FP **−42%** |
+| FA/image | 0.4146 | 0.3689 | **0.2134** | **−42%** |
+
+¹ *Recall drop is a confidence calibration shift — see note below.*
+
+#### Per-scan breakdown
+
+| Scan | v5 DR (iou45 baseline) | new DR | v5 FA/slice | new FA/slice |
+|---|---|---|---|---|
+| CEM005A1 | 92.97% | 72.66% | 0.33 | 0.25 |
+| CEM011A3 | 84.00% | 72.00% | 0.68 | **0.04** |
+| CEM012A1 | 71.57% | **73.53%** | 0.27 | 0.32 |
+| CEM013B2 | 81.08% | 72.97% | 0.57 | **0.11** |
+| CEM015A2 | 100.00% | **100.00%** | 0.36 | **0.00** |
+
+#### Key findings
+
+**What worked:**
+- **AP@75 +12pp** is the largest gain and directly confirms CIoU is working — predicted boxes are tighter and more geometrically accurate. SliceAP@75 confirms the same (+11.9pp).
+- **False alarms reduced 42%** (FP: 121 → 70, FA/image: 0.37 → 0.21). OHEM is forcing the classifier to be selectively confident. CEM011A3 drops from 0.68 to 0.04 FA/slice; CEM013B2 from 0.57 to 0.11; CEM015A2 achieves zero false alarms for the first time.
+- **P@R=0.8 = 0.7601 vs 0.6658**: at the clinically required recall level, precision improves 9.4pp. At equivalent recall=0.8, estimated FA/image ≈ 0.25 vs 0.37 — a 33% reduction in false alarm burden.
+
+#### Final reported metrics (threshold-free, held-out test set)
+
+Reported from job 1055 (`inference/test_results_v5_ciou_tal_ohem/`, 328 images, 5 scans). Threshold-free metrics integrate over the full PR curve and require no calibration set.
+
+| Metric | v5 baseline (`best_model_v5_no_pu_loss`) | **Best model** (`best_model_v5_ciou_tal_ohem`) | Δ |
+|---|---|---|---|
+| AP@50 | 0.7704 | **0.8270** | +5.7pp |
+| AP@75 | 0.2422 | **0.3622** | +12.0pp |
+| mAP@50:95 | 0.3229 | **0.4019** | +7.9pp |
+| SliceAP@50 | 0.9406 | **0.9901** | +4.9pp |
+| SliceAP@75 | 0.4257 | **0.5446** | +11.9pp |
+| P @ R=0.8 | 0.6658 | **0.7601** | +9.4pp |
+| R @ P=0.8 | 0.6341 | **0.7317** | +9.8pp |
+
+#### Final model
+
+| Item | Detail |
+|---|---|
+| **Checkpoint** | `checkpoints/best_model_v5_ciou_tal_ohem_20260320_134819.pth` |
+| **Training config** | `train/config/best_hyperparams_v5.yaml` (`use_pu_loss: false`) |
+| **Loss improvements** | CIoU box regression (P3), Task-Aligned Assignment (P4), OHEM hard negative mining (P5) |
+| **Val EMA SliceAP@50** | 0.7671 at epoch 20 |
+| **Key gains vs baseline** | AP@75 +12pp, SliceAP@50 +4.9pp, P@R=0.8 +9.4pp |

@@ -1,0 +1,50 @@
+=================================================================
+  YOLOE Test Set Evaluation Report
+=================================================================
+  Checkpoint : checkpoints/best_model_20260318_083558.pth
+  Split      : test  (328 images)
+  Conf thresh: 0.5 (fixed-threshold metrics)
+  IoU thresh : 0.5
+=================================================================
+
+── Standard Detection Metrics ──────────────────────────────
+  AP@35              : 0.7847
+  AP@50              : 0.5126
+  AP@75              : 0.1297
+  mAP@50:95          : 0.1904
+
+── Slice-Level Metrics ──────────────────────────────────────
+  SliceAP@50         : 0.7822
+  SliceAP@75         : 0.2871
+
+── Fixed Threshold Metrics (conf ≥ 0.5) ─────────────────
+  Precision          : 0.6700
+  Recall             : 0.6067
+  F1                 : 0.6368
+
+── Operating Points ─────────────────────────────────────────
+  P @ R=0.8          : 0.0000
+  R @ P=0.8          : 0.0701
+
+── Overall Lesion Breakdown (conf ≥ 0.5) ─────────────
+  Total GT lesions   : 328
+  Detected (TP)      : 199
+  Missed   (FN)      : 129
+  False alarms (FP)  : 98
+  Detection rate     : 0.6067
+  Miss rate          : 0.3933
+  False alarms/image : 0.2988
+
+── Per-Scan Breakdown ───────────────────────────────────────
+  Scan           Slices    GT    TP    FN    FP   DetRate  MissRate  FA/slice
+  ---------------------------------------------------------------
+  CEM005A1          128   128    76    52    70    0.5938    0.4062    0.5469
+  CEM011A3           25    25    20     5    20    0.8000    0.2000    0.8000
+  CEM012A1          102   102    45    57     8    0.4412    0.5588    0.0784
+  CEM013B2           37    37    23    14     0    0.6216    0.3784    0.0000
+  CEM015A2           36    36    35     1     0    0.9722    0.0278    0.0000
+  ---------------------------------------------------------------
+
+  Note: GT / TP / FN counts are at the annotation (box) level.
+  One 3-D lesion may appear as GT boxes in multiple consecutive slices.
+=================================================================

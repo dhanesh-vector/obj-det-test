@@ -1,0 +1,53 @@
+=================================================================
+  YOLOE Test Set Evaluation Report
+=================================================================
+  Checkpoint  : /fs01/home/dhaneshr/code/obj-det-test/checkpoints/best_model_v5_ciou_tal_ohem_20260320_134819.pth
+  Config      : train/config/best_hyperparams_v5.yaml
+  use_pu_loss : False
+  model_size  : s
+  Split       : test  (328 images)
+  Conf thresh : 0.5 (fixed-threshold metrics)
+  IoU thresh  : 0.5
+=================================================================
+
+── Standard Detection Metrics ──────────────────────────────
+  AP@35              : 0.8351
+  AP@50              : 0.8270
+  AP@75              : 0.3622
+  mAP@50:95          : 0.4019
+
+── Slice-Level Metrics ──────────────────────────────────────
+  SliceAP@50         : 0.9901
+  SliceAP@75         : 0.5446
+
+── Fixed Threshold Metrics (conf ≥ 0.5) ─────────────────
+  Precision          : 0.7967
+  Recall             : 0.7409
+  F1                 : 0.7678
+
+── Operating Points ─────────────────────────────────────────
+  P @ R=0.8          : 0.7601
+  R @ P=0.8          : 0.7317
+
+── Overall Lesion Breakdown (conf ≥ 0.5) ─────────────
+  Total GT lesions   : 328
+  Detected (TP)      : 243
+  Missed   (FN)      : 85
+  False alarms (FP)  : 62
+  Detection rate     : 0.7409
+  Miss rate          : 0.2591
+  False alarms/image : 0.1890
+
+── Per-Scan Breakdown ───────────────────────────────────────
+  Scan           Slices    GT    TP    FN    FP   DetRate  MissRate  FA/slice
+  ---------------------------------------------------------------
+  CEM005A1          128   128    88    40    29    0.6875    0.3125    0.2266
+  CEM011A3           25    25    17     8     0    0.6800    0.3200    0.0000
+  CEM012A1          102   102    75    27    31    0.7353    0.2647    0.3039
+  CEM013B2           37    37    27    10     2    0.7297    0.2703    0.0541
+  CEM015A2           36    36    36     0     0    1.0000    0.0000    0.0000
+  ---------------------------------------------------------------
+
+  Note: GT / TP / FN counts are at the annotation (box) level.
+  One 3-D lesion may appear as GT boxes in multiple consecutive slices.
+=================================================================

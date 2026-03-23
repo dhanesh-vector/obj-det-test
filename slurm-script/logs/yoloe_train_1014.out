@@ -1,0 +1,276 @@
+Job started at: Thu Mar 19 03:31:34 PM EDT 2026
+Running on node: bn001
+Activating virtual environment...
+Starting training...
+Using config file: train/config/best_hyperparams_v6.yaml
+TissueAwareCopyPaste enabled: {'p': 0.3007, 'std_tol': 25.0, 'max_pastes': 2}
+Using device: cuda
+Loading datasets...
+Train dataset size: 2306
+Validation dataset size: 357
+ScanAwareSampler: 13 scans, 2306 total slices, stride=7 → ~336 slices/epoch (15% of training set per epoch)
+Building YOLOE model (size: s)...
+Starting training for 100 epochs...
+Early-stopping criterion: EMA SliceAP@50 (alpha=0.3, patience=20, min_delta=0.001)
+Epoch [1/100] Time: 39.42s | LR: 0.000041 | Train Loss: 196.3783 | Val Loss: 202.0035
+  mAP@35: 0.0006 | mAP@50: 0.0001 | mAP@75: 0.0000 | mAP@50:95: 0.0000
+  SliceAP@50: 0.1881 | EMA_SliceAP@50: 0.1881 | SliceAP@75: 0.0000
+  Prec: 0.0000 | Recall: 0.0000 | F1: 0.0000 | Recall@100: 0.0129
+  P@R=0.8: 0.0000 | R@P=0.8: 0.0000
+--> Saved new best model  EMA SliceAP@50: 0.1881 | AP@50: 0.0001 (Val Loss: 202.0035)
+Epoch [2/100] Time: 54.29s | LR: 0.000087 | Train Loss: 131.4420 | Val Loss: 123.6385
+  mAP@35: 0.0010 | mAP@50: 0.0001 | mAP@75: 0.0000 | mAP@50:95: 0.0000
+  SliceAP@50: 0.6337 | EMA_SliceAP@50: 0.3218 | SliceAP@75: 0.0396
+  Prec: 0.0009 | Recall: 0.4398 | F1: 0.0018 | Recall@100: 0.0221
+  P@R=0.8: 0.0000 | R@P=0.8: 0.0000
+--> Saved new best model  EMA SliceAP@50: 0.3218 | AP@50: 0.0001 (Val Loss: 123.6385)
+Epoch [3/100] Time: 54.38s | LR: 0.000133 | Train Loss: 65.5895 | Val Loss: 89.6671
+  mAP@35: 0.0004 | mAP@50: 0.0001 | mAP@75: 0.0000 | mAP@50:95: 0.0000
+  SliceAP@50: 0.4059 | EMA_SliceAP@50: 0.3470 | SliceAP@75: 0.0099
+  Prec: 0.0007 | Recall: 0.2857 | F1: 0.0015 | Recall@100: 0.0230
+  P@R=0.8: 0.0000 | R@P=0.8: 0.0000
+--> Saved new best model  EMA SliceAP@50: 0.3470 | AP@50: 0.0001 (Val Loss: 89.6671)
+Epoch [4/100] Time: 36.45s | LR: 0.000179 | Train Loss: 41.8560 | Val Loss: 54.6603
+  mAP@35: 0.0001 | mAP@50: 0.0001 | mAP@75: 0.0000 | mAP@50:95: 0.0000
+  SliceAP@50: 0.2277 | EMA_SliceAP@50: 0.3112 | SliceAP@75: 0.0099
+  Prec: 0.0006 | Recall: 0.1148 | F1: 0.0012 | Recall@100: 0.0157
+  P@R=0.8: 0.0000 | R@P=0.8: 0.0000
+Epoch [5/100] Time: 23.84s | LR: 0.000225 | Train Loss: 31.6454 | Val Loss: 41.7423
+  mAP@35: 0.0000 | mAP@50: 0.0000 | mAP@75: 0.0000 | mAP@50:95: 0.0000
+  SliceAP@50: 0.0000 | EMA_SliceAP@50: 0.2179 | SliceAP@75: 0.0000
+  Prec: 0.0000 | Recall: 0.0000 | F1: 0.0000 | Recall@100: 0.0000
+  P@R=0.8: 0.0000 | R@P=0.8: 0.0000
+Epoch [6/100] Time: 23.15s | LR: 0.000271 | Train Loss: 26.9359 | Val Loss: 38.8122
+  mAP@35: 0.0001 | mAP@50: 0.0001 | mAP@75: 0.0000 | mAP@50:95: 0.0000
+  SliceAP@50: 0.0198 | EMA_SliceAP@50: 0.1584 | SliceAP@75: 0.0000
+  Prec: 0.0000 | Recall: 0.0000 | F1: 0.0000 | Recall@100: 0.0028
+  P@R=0.8: 0.0000 | R@P=0.8: 0.0000
+Epoch [7/100] Time: 28.16s | LR: 0.000317 | Train Loss: 24.3897 | Val Loss: 36.9963
+  mAP@35: 0.4656 | mAP@50: 0.1629 | mAP@75: 0.0001 | mAP@50:95: 0.0270
+  SliceAP@50: 0.5347 | EMA_SliceAP@50: 0.2713 | SliceAP@75: 0.0099
+  Prec: 0.4810 | Recall: 0.1064 | F1: 0.1743 | Recall@100: 0.1146
+  P@R=0.8: 0.0000 | R@P=0.8: 0.0084
+Epoch [8/100] Time: 24.04s | LR: 0.000363 | Train Loss: 24.6102 | Val Loss: 41.3548
+  mAP@35: 0.0032 | mAP@50: 0.0012 | mAP@75: 0.0000 | mAP@50:95: 0.0003
+  SliceAP@50: 0.1188 | EMA_SliceAP@50: 0.2256 | SliceAP@75: 0.0198
+  Prec: 0.0000 | Recall: 0.0000 | F1: 0.0000 | Recall@100: 0.0415
+  P@R=0.8: 0.0000 | R@P=0.8: 0.0000
+Epoch [9/100] Time: 23.99s | LR: 0.000410 | Train Loss: 22.6131 | Val Loss: 38.2617
+  mAP@35: 0.1866 | mAP@50: 0.1422 | mAP@75: 0.0005 | mAP@50:95: 0.0346
+  SliceAP@50: 0.4950 | EMA_SliceAP@50: 0.3064 | SliceAP@75: 0.0297
+  Prec: 0.2869 | Recall: 0.1961 | F1: 0.2329 | Recall@100: 0.1485
+  P@R=0.8: 0.0000 | R@P=0.8: 0.0392
+Epoch [10/100] Time: 26.33s | LR: 0.000409 | Train Loss: 18.8111 | Val Loss: 43.7706
+  mAP@35: 0.1123 | mAP@50: 0.0949 | mAP@75: 0.0045 | mAP@50:95: 0.0305
+  SliceAP@50: 0.4554 | EMA_SliceAP@50: 0.3511 | SliceAP@75: 0.0792
+  Prec: 0.2472 | Recall: 0.1877 | F1: 0.2134 | Recall@100: 0.1619
+  P@R=0.8: 0.0000 | R@P=0.8: 0.0000
+--> Saved new best model  EMA SliceAP@50: 0.3511 | AP@50: 0.0949 (Val Loss: 43.7706)
+Epoch [11/100] Time: 26.34s | LR: 0.000409 | Train Loss: 19.0019 | Val Loss: 35.4014
+  mAP@35: 0.1992 | mAP@50: 0.1583 | mAP@75: 0.0006 | mAP@50:95: 0.0312
+  SliceAP@50: 0.6139 | EMA_SliceAP@50: 0.4299 | SliceAP@75: 0.0594
+  Prec: 0.0945 | Recall: 0.3613 | F1: 0.1498 | Recall@100: 0.1955
+  P@R=0.8: 0.0000 | R@P=0.8: 0.0588
+--> Saved new best model  EMA SliceAP@50: 0.4299 | AP@50: 0.1583 (Val Loss: 35.4014)
+Epoch [12/100] Time: 27.14s | LR: 0.000409 | Train Loss: 15.1465 | Val Loss: 35.5206
+  mAP@35: 0.1557 | mAP@50: 0.0942 | mAP@75: 0.0032 | mAP@50:95: 0.0225
+  SliceAP@50: 0.5743 | EMA_SliceAP@50: 0.4732 | SliceAP@75: 0.0990
+  Prec: 0.1046 | Recall: 0.3333 | F1: 0.1592 | Recall@100: 0.2263
+  P@R=0.8: 0.0000 | R@P=0.8: 0.0000
+--> Saved new best model  EMA SliceAP@50: 0.4732 | AP@50: 0.0942 (Val Loss: 35.5206)
+Epoch [13/100] Time: 25.71s | LR: 0.000408 | Train Loss: 13.9123 | Val Loss: 35.6837
+  mAP@35: 0.2815 | mAP@50: 0.2453 | mAP@75: 0.0059 | mAP@50:95: 0.0566
+  SliceAP@50: 0.6436 | EMA_SliceAP@50: 0.5243 | SliceAP@75: 0.1287
+  Prec: 0.1082 | Recall: 0.5882 | F1: 0.1828 | Recall@100: 0.2381
+  P@R=0.8: 0.0000 | R@P=0.8: 0.0000
+--> Saved new best model  EMA SliceAP@50: 0.5243 | AP@50: 0.2453 (Val Loss: 35.6837)
+Epoch [14/100] Time: 26.13s | LR: 0.000407 | Train Loss: 13.2456 | Val Loss: 36.9061
+  mAP@35: 0.3959 | mAP@50: 0.3239 | mAP@75: 0.0219 | mAP@50:95: 0.0967
+  SliceAP@50: 0.6040 | EMA_SliceAP@50: 0.5482 | SliceAP@75: 0.1386
+  Prec: 0.1349 | Recall: 0.5238 | F1: 0.2146 | Recall@100: 0.2389
+  P@R=0.8: 0.0000 | R@P=0.8: 0.1989
+--> Saved new best model  EMA SliceAP@50: 0.5482 | AP@50: 0.3239 (Val Loss: 36.9061)
+Epoch [15/100] Time: 26.08s | LR: 0.000405 | Train Loss: 12.5851 | Val Loss: 36.5625
+  mAP@35: 0.2077 | mAP@50: 0.1885 | mAP@75: 0.0212 | mAP@50:95: 0.0601
+  SliceAP@50: 0.5644 | EMA_SliceAP@50: 0.5531 | SliceAP@75: 0.1386
+  Prec: 0.1388 | Recall: 0.3838 | F1: 0.2039 | Recall@100: 0.2112
+  P@R=0.8: 0.0000 | R@P=0.8: 0.0000
+--> Saved new best model  EMA SliceAP@50: 0.5531 | AP@50: 0.1885 (Val Loss: 36.5625)
+Epoch [16/100] Time: 24.34s | LR: 0.000404 | Train Loss: 12.4896 | Val Loss: 29.5078
+  mAP@35: 0.4660 | mAP@50: 0.4508 | mAP@75: 0.0224 | mAP@50:95: 0.1376
+  SliceAP@50: 0.7030 | EMA_SliceAP@50: 0.5980 | SliceAP@75: 0.1683
+  Prec: 0.2479 | Recall: 0.5826 | F1: 0.3478 | Recall@100: 0.2978
+  P@R=0.8: 0.0000 | R@P=0.8: 0.2213
+--> Saved new best model  EMA SliceAP@50: 0.5980 | AP@50: 0.4508 (Val Loss: 29.5078)
+Epoch [17/100] Time: 25.95s | LR: 0.000402 | Train Loss: 11.3642 | Val Loss: 31.5036
+  mAP@35: 0.4666 | mAP@50: 0.4517 | mAP@75: 0.0193 | mAP@50:95: 0.1167
+  SliceAP@50: 0.7228 | EMA_SliceAP@50: 0.6355 | SliceAP@75: 0.1683
+  Prec: 0.1610 | Recall: 0.6527 | F1: 0.2583 | Recall@100: 0.2922
+  P@R=0.8: 0.0000 | R@P=0.8: 0.2465
+--> Saved new best model  EMA SliceAP@50: 0.6355 | AP@50: 0.4517 (Val Loss: 31.5036)
+Epoch [18/100] Time: 25.33s | LR: 0.000400 | Train Loss: 10.4774 | Val Loss: 33.4490
+  mAP@35: 0.2073 | mAP@50: 0.1936 | mAP@75: 0.0773 | mAP@50:95: 0.0989
+  SliceAP@50: 0.6139 | EMA_SliceAP@50: 0.6290 | SliceAP@75: 0.2970
+  Prec: 0.1257 | Recall: 0.4398 | F1: 0.1955 | Recall@100: 0.3134
+  P@R=0.8: 0.0000 | R@P=0.8: 0.0000
+Epoch [19/100] Time: 25.27s | LR: 0.000398 | Train Loss: 9.9859 | Val Loss: 33.4961
+  mAP@35: 0.4358 | mAP@50: 0.2694 | mAP@75: 0.0201 | mAP@50:95: 0.0751
+  SliceAP@50: 0.6436 | EMA_SliceAP@50: 0.6334 | SliceAP@75: 0.1782
+  Prec: 0.1588 | Recall: 0.5826 | F1: 0.2496 | Recall@100: 0.2700
+  P@R=0.8: 0.0000 | R@P=0.8: 0.0000
+Epoch [20/100] Time: 26.75s | LR: 0.000396 | Train Loss: 9.7367 | Val Loss: 33.2401
+  mAP@35: 0.2899 | mAP@50: 0.2686 | mAP@75: 0.1047 | mAP@50:95: 0.1355
+  SliceAP@50: 0.6634 | EMA_SliceAP@50: 0.6424 | SliceAP@75: 0.2871
+  Prec: 0.1429 | Recall: 0.4762 | F1: 0.2198 | Recall@100: 0.3126
+  P@R=0.8: 0.0000 | R@P=0.8: 0.0028
+--> Saved new best model  EMA SliceAP@50: 0.6424 | AP@50: 0.2686 (Val Loss: 33.2401)
+Epoch [21/100] Time: 25.15s | LR: 0.000393 | Train Loss: 10.8227 | Val Loss: 32.3929
+  mAP@35: 0.3876 | mAP@50: 0.3722 | mAP@75: 0.0438 | mAP@50:95: 0.1217
+  SliceAP@50: 0.6436 | EMA_SliceAP@50: 0.6427 | SliceAP@75: 0.2178
+  Prec: 0.2136 | Recall: 0.6162 | F1: 0.3172 | Recall@100: 0.2818
+  P@R=0.8: 0.0000 | R@P=0.8: 0.0112
+Epoch [22/100] Time: 24.83s | LR: 0.000390 | Train Loss: 9.3375 | Val Loss: 36.1329
+  mAP@35: 0.2549 | mAP@50: 0.2432 | mAP@75: 0.0585 | mAP@50:95: 0.0988
+  SliceAP@50: 0.6436 | EMA_SliceAP@50: 0.6430 | SliceAP@75: 0.2574
+  Prec: 0.1603 | Recall: 0.4818 | F1: 0.2406 | Recall@100: 0.3174
+  P@R=0.8: 0.0000 | R@P=0.8: 0.0000
+Epoch [23/100] Time: 25.83s | LR: 0.000387 | Train Loss: 9.4498 | Val Loss: 34.5458
+  mAP@35: 0.3335 | mAP@50: 0.3274 | mAP@75: 0.0737 | mAP@50:95: 0.1370
+  SliceAP@50: 0.6634 | EMA_SliceAP@50: 0.6491 | SliceAP@75: 0.2475
+  Prec: 0.1846 | Recall: 0.5994 | F1: 0.2823 | Recall@100: 0.3078
+  P@R=0.8: 0.0000 | R@P=0.8: 0.1681
+--> Saved new best model  EMA SliceAP@50: 0.6491 | AP@50: 0.3274 (Val Loss: 34.5458)
+Epoch [24/100] Time: 25.64s | LR: 0.000384 | Train Loss: 8.5028 | Val Loss: 32.4196
+  mAP@35: 0.3901 | mAP@50: 0.3627 | mAP@75: 0.0497 | mAP@50:95: 0.1220
+  SliceAP@50: 0.6436 | EMA_SliceAP@50: 0.6474 | SliceAP@75: 0.2277
+  Prec: 0.2109 | Recall: 0.5434 | F1: 0.3038 | Recall@100: 0.2871
+  P@R=0.8: 0.0000 | R@P=0.8: 0.1261
+Epoch [25/100] Time: 24.75s | LR: 0.000380 | Train Loss: 9.2745 | Val Loss: 32.9039
+  mAP@35: 0.3998 | mAP@50: 0.3487 | mAP@75: 0.1348 | mAP@50:95: 0.1713
+  SliceAP@50: 0.6337 | EMA_SliceAP@50: 0.6433 | SliceAP@75: 0.2673
+  Prec: 0.2754 | Recall: 0.5014 | F1: 0.3555 | Recall@100: 0.3062
+  P@R=0.8: 0.0000 | R@P=0.8: 0.1933
+Epoch [26/100] Time: 24.66s | LR: 0.000377 | Train Loss: 9.1867 | Val Loss: 33.9541
+  mAP@35: 0.4150 | mAP@50: 0.4076 | mAP@75: 0.0998 | mAP@50:95: 0.1740
+  SliceAP@50: 0.7228 | EMA_SliceAP@50: 0.6671 | SliceAP@75: 0.2376
+  Prec: 0.2616 | Recall: 0.5378 | F1: 0.3520 | Recall@100: 0.3339
+  P@R=0.8: 0.0000 | R@P=0.8: 0.2829
+--> Saved new best model  EMA SliceAP@50: 0.6671 | AP@50: 0.4076 (Val Loss: 33.9541)
+Epoch [27/100] Time: 24.28s | LR: 0.000373 | Train Loss: 8.7132 | Val Loss: 31.5160
+  mAP@35: 0.3754 | mAP@50: 0.3644 | mAP@75: 0.0579 | mAP@50:95: 0.1188
+  SliceAP@50: 0.6139 | EMA_SliceAP@50: 0.6512 | SliceAP@75: 0.1881
+  Prec: 0.2004 | Recall: 0.5154 | F1: 0.2886 | Recall@100: 0.2524
+  P@R=0.8: 0.0000 | R@P=0.8: 0.1569
+Epoch [28/100] Time: 24.03s | LR: 0.000369 | Train Loss: 7.7867 | Val Loss: 26.6635
+  mAP@35: 0.3420 | mAP@50: 0.3320 | mAP@75: 0.0800 | mAP@50:95: 0.1441
+  SliceAP@50: 0.7327 | EMA_SliceAP@50: 0.6756 | SliceAP@75: 0.2871
+  Prec: 0.1616 | Recall: 0.6723 | F1: 0.2606 | Recall@100: 0.3510
+  P@R=0.8: 0.0000 | R@P=0.8: 0.0000
+--> Saved new best model  EMA SliceAP@50: 0.6756 | AP@50: 0.3320 (Val Loss: 26.6635)
+Epoch [29/100] Time: 24.38s | LR: 0.000365 | Train Loss: 7.3286 | Val Loss: 31.8805
+  mAP@35: 0.3535 | mAP@50: 0.3457 | mAP@75: 0.1872 | mAP@50:95: 0.1958
+  SliceAP@50: 0.6436 | EMA_SliceAP@50: 0.6660 | SliceAP@75: 0.3168
+  Prec: 0.1658 | Recall: 0.5658 | F1: 0.2565 | Recall@100: 0.3476
+  P@R=0.8: 0.0000 | R@P=0.8: 0.1905
+Epoch [30/100] Time: 24.10s | LR: 0.000360 | Train Loss: 8.2239 | Val Loss: 31.8753
+  mAP@35: 0.3594 | mAP@50: 0.3572 | mAP@75: 0.1007 | mAP@50:95: 0.1792
+  SliceAP@50: 0.6436 | EMA_SliceAP@50: 0.6593 | SliceAP@75: 0.2772
+  Prec: 0.2381 | Recall: 0.4342 | F1: 0.3075 | Recall@100: 0.3230
+  P@R=0.8: 0.0000 | R@P=0.8: 0.2185
+Epoch [31/100] Time: 24.07s | LR: 0.000356 | Train Loss: 7.6193 | Val Loss: 28.3894
+  mAP@35: 0.5106 | mAP@50: 0.5004 | mAP@75: 0.2325 | mAP@50:95: 0.2666
+  SliceAP@50: 0.6733 | EMA_SliceAP@50: 0.6635 | SliceAP@75: 0.3465
+  Prec: 0.2532 | Recall: 0.6162 | F1: 0.3589 | Recall@100: 0.3672
+  P@R=0.8: 0.0000 | R@P=0.8: 0.3613
+Epoch [32/100] Time: 23.85s | LR: 0.000351 | Train Loss: 7.9775 | Val Loss: 33.0488
+  mAP@35: 0.5229 | mAP@50: 0.4839 | mAP@75: 0.0967 | mAP@50:95: 0.1954
+  SliceAP@50: 0.6436 | EMA_SliceAP@50: 0.6575 | SliceAP@75: 0.2772
+  Prec: 0.2312 | Recall: 0.5938 | F1: 0.3328 | Recall@100: 0.3255
+  P@R=0.8: 0.0000 | R@P=0.8: 0.3978
+Epoch [33/100] Time: 24.61s | LR: 0.000346 | Train Loss: 7.3796 | Val Loss: 31.1174
+  mAP@35: 0.3892 | mAP@50: 0.3775 | mAP@75: 0.1401 | mAP@50:95: 0.1875
+  SliceAP@50: 0.6436 | EMA_SliceAP@50: 0.6533 | SliceAP@75: 0.2673
+  Prec: 0.1720 | Recall: 0.5294 | F1: 0.2596 | Recall@100: 0.3255
+  P@R=0.8: 0.0000 | R@P=0.8: 0.2857
+Epoch [34/100] Time: 24.02s | LR: 0.000341 | Train Loss: 8.0422 | Val Loss: 33.4083
+  mAP@35: 0.3839 | mAP@50: 0.3593 | mAP@75: 0.0949 | mAP@50:95: 0.1599
+  SliceAP@50: 0.6733 | EMA_SliceAP@50: 0.6593 | SliceAP@75: 0.2574
+  Prec: 0.2133 | Recall: 0.5294 | F1: 0.3041 | Recall@100: 0.3196
+  P@R=0.8: 0.0000 | R@P=0.8: 0.1821
+Epoch [35/100] Time: 24.27s | LR: 0.000336 | Train Loss: 7.9497 | Val Loss: 31.6685
+  mAP@35: 0.3032 | mAP@50: 0.2991 | mAP@75: 0.0913 | mAP@50:95: 0.1337
+  SliceAP@50: 0.6634 | EMA_SliceAP@50: 0.6605 | SliceAP@75: 0.2970
+  Prec: 0.1337 | Recall: 0.5574 | F1: 0.2157 | Recall@100: 0.3286
+  P@R=0.8: 0.0000 | R@P=0.8: 0.0896
+Epoch [36/100] Time: 24.52s | LR: 0.000330 | Train Loss: 7.3950 | Val Loss: 32.9509
+  mAP@35: 0.3953 | mAP@50: 0.3832 | mAP@75: 0.2150 | mAP@50:95: 0.2095
+  SliceAP@50: 0.6139 | EMA_SliceAP@50: 0.6465 | SliceAP@75: 0.3465
+  Prec: 0.2111 | Recall: 0.5518 | F1: 0.3054 | Recall@100: 0.3300
+  P@R=0.8: 0.0000 | R@P=0.8: 0.2689
+Epoch [37/100] Time: 24.44s | LR: 0.000325 | Train Loss: 6.8962 | Val Loss: 30.7047
+  mAP@35: 0.4690 | mAP@50: 0.4537 | mAP@75: 0.2125 | mAP@50:95: 0.2233
+  SliceAP@50: 0.6634 | EMA_SliceAP@50: 0.6516 | SliceAP@75: 0.3465
+  Prec: 0.2818 | Recall: 0.6022 | F1: 0.3839 | Recall@100: 0.3549
+  P@R=0.8: 0.0000 | R@P=0.8: 0.2465
+Epoch [38/100] Time: 24.35s | LR: 0.000319 | Train Loss: 7.0960 | Val Loss: 30.6137
+  mAP@35: 0.4157 | mAP@50: 0.4083 | mAP@75: 0.1961 | mAP@50:95: 0.2219
+  SliceAP@50: 0.6634 | EMA_SliceAP@50: 0.6551 | SliceAP@75: 0.3366
+  Prec: 0.2440 | Recall: 0.5966 | F1: 0.3463 | Recall@100: 0.3739
+  P@R=0.8: 0.0000 | R@P=0.8: 0.2045
+Epoch [39/100] Time: 24.48s | LR: 0.000314 | Train Loss: 7.0077 | Val Loss: 32.6610
+  mAP@35: 0.4000 | mAP@50: 0.3874 | mAP@75: 0.1213 | mAP@50:95: 0.1775
+  SliceAP@50: 0.6634 | EMA_SliceAP@50: 0.6576 | SliceAP@75: 0.3069
+  Prec: 0.1923 | Recall: 0.5462 | F1: 0.2845 | Recall@100: 0.3384
+  P@R=0.8: 0.0000 | R@P=0.8: 0.1849
+Epoch [40/100] Time: 24.76s | LR: 0.000308 | Train Loss: 6.3993 | Val Loss: 31.6571
+  mAP@35: 0.3889 | mAP@50: 0.3704 | mAP@75: 0.2144 | mAP@50:95: 0.1992
+  SliceAP@50: 0.6634 | EMA_SliceAP@50: 0.6593 | SliceAP@75: 0.3861
+  Prec: 0.1456 | Recall: 0.6275 | F1: 0.2364 | Recall@100: 0.3748
+  P@R=0.8: 0.0000 | R@P=0.8: 0.1933
+Epoch [41/100] Time: 24.21s | LR: 0.000302 | Train Loss: 6.4184 | Val Loss: 30.4502
+  mAP@35: 0.3952 | mAP@50: 0.3810 | mAP@75: 0.1858 | mAP@50:95: 0.2158
+  SliceAP@50: 0.6238 | EMA_SliceAP@50: 0.6487 | SliceAP@75: 0.2970
+  Prec: 0.2644 | Recall: 0.4874 | F1: 0.3429 | Recall@100: 0.3524
+  P@R=0.8: 0.0000 | R@P=0.8: 0.2129
+Epoch [42/100] Time: 24.11s | LR: 0.000296 | Train Loss: 6.3010 | Val Loss: 32.9726
+  mAP@35: 0.3442 | mAP@50: 0.3256 | mAP@75: 0.0999 | mAP@50:95: 0.1524
+  SliceAP@50: 0.6535 | EMA_SliceAP@50: 0.6501 | SliceAP@75: 0.3168
+  Prec: 0.2414 | Recall: 0.5490 | F1: 0.3353 | Recall@100: 0.3535
+  P@R=0.8: 0.0000 | R@P=0.8: 0.0056
+Epoch [43/100] Time: 24.32s | LR: 0.000289 | Train Loss: 6.3581 | Val Loss: 31.3022
+  mAP@35: 0.4261 | mAP@50: 0.4193 | mAP@75: 0.2253 | mAP@50:95: 0.2241
+  SliceAP@50: 0.6436 | EMA_SliceAP@50: 0.6481 | SliceAP@75: 0.3762
+  Prec: 0.2882 | Recall: 0.5490 | F1: 0.3780 | Recall@100: 0.3745
+  P@R=0.8: 0.0000 | R@P=0.8: 0.2465
+Epoch [44/100] Time: 24.11s | LR: 0.000283 | Train Loss: 6.2980 | Val Loss: 30.9699
+  mAP@35: 0.3020 | mAP@50: 0.2854 | mAP@75: 0.1336 | mAP@50:95: 0.1447
+  SliceAP@50: 0.6238 | EMA_SliceAP@50: 0.6408 | SliceAP@75: 0.3366
+  Prec: 0.1887 | Recall: 0.5238 | F1: 0.2774 | Recall@100: 0.3473
+  P@R=0.8: 0.0000 | R@P=0.8: 0.0168
+Epoch [45/100] Time: 23.34s | LR: 0.000277 | Train Loss: 7.0294 | Val Loss: 32.4330
+  mAP@35: 0.3961 | mAP@50: 0.3544 | mAP@75: 0.0608 | mAP@50:95: 0.1277
+  SliceAP@50: 0.6634 | EMA_SliceAP@50: 0.6476 | SliceAP@75: 0.2574
+  Prec: 0.2961 | Recall: 0.5714 | F1: 0.3901 | Recall@100: 0.3126
+  P@R=0.8: 0.0000 | R@P=0.8: 0.0000
+Epoch [46/100] Time: 25.19s | LR: 0.000270 | Train Loss: 6.4349 | Val Loss: 31.1674
+  mAP@35: 0.3129 | mAP@50: 0.2946 | mAP@75: 0.0896 | mAP@50:95: 0.1497
+  SliceAP@50: 0.6436 | EMA_SliceAP@50: 0.6464 | SliceAP@75: 0.3168
+  Prec: 0.1604 | Recall: 0.5294 | F1: 0.2463 | Recall@100: 0.3653
+  P@R=0.8: 0.0000 | R@P=0.8: 0.0224
+Epoch [47/100] Time: 25.29s | LR: 0.000264 | Train Loss: 6.1262 | Val Loss: 33.4823
+  mAP@35: 0.2311 | mAP@50: 0.2251 | mAP@75: 0.0653 | mAP@50:95: 0.1100
+  SliceAP@50: 0.5941 | EMA_SliceAP@50: 0.6307 | SliceAP@75: 0.2574
+  Prec: 0.2054 | Recall: 0.4510 | F1: 0.2822 | Recall@100: 0.3261
+  P@R=0.8: 0.0000 | R@P=0.8: 0.0476
+Epoch [48/100] Time: 24.77s | LR: 0.000257 | Train Loss: 6.0395 | Val Loss: 31.8698
+  mAP@35: 0.3614 | mAP@50: 0.3463 | mAP@75: 0.0574 | mAP@50:95: 0.1429
+  SliceAP@50: 0.6238 | EMA_SliceAP@50: 0.6286 | SliceAP@75: 0.2574
+  Prec: 0.2448 | Recall: 0.5658 | F1: 0.3418 | Recall@100: 0.3227
+  P@R=0.8: 0.0000 | R@P=0.8: 0.0952
+Early stopping triggered: EMA SliceAP@50 did not improve by 0.001 for 20 epochs.
+Saved validation plots → results/training_run_20260319_153153_plots.png
+Training complete!
+Best EMA SliceAP@50: 0.6756 at Epoch 28
+Corresponding AP@50: 0.3320
+Run summary saved to results/training_run_20260319_153153.json
+Job completed at: Thu Mar 19 03:53:22 PM EDT 2026

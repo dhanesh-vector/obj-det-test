@@ -1,0 +1,15 @@
+/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/albumentations/core/validation.py:114: UserWarning: ShiftScaleRotate is a special case of Affine transform. Please use Affine transform instead.
+  original_init(self, **validated_kwargs)
+Traceback (most recent call last):
+  File "/fs01/home/dhaneshr/code/obj-det-test/train/train.py", line 383, in <module>
+    main()
+  File "/fs01/home/dhaneshr/code/obj-det-test/train/train.py", line 376, in main
+    plot_validation_summary(last_evaluator, training_info, plots_path)
+  File "/fs01/home/dhaneshr/code/obj-det-test/utils/plots.py", line 37, in plot_validation_summary
+    _plot_pr_curve(fig.add_subplot(gs[0, 0]), evaluator)
+  File "/fs01/home/dhaneshr/code/obj-det-test/utils/plots.py", line 69, in _plot_pr_curve
+    ap = float(np.trapz(prec_s, rec_s)) if len(rec_s) > 1 else 0.0
+               ^^^^^^^^
+  File "/fs01/home/dhaneshr/code/obj-det-test/.venv/lib/python3.12/site-packages/numpy/__init__.py", line 792, in __getattr__
+    raise AttributeError(f"module {__name__!r} has no attribute {attr!r}")
+AttributeError: module 'numpy' has no attribute 'trapz'. Did you mean: 'trace'?

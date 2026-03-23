@@ -1,0 +1,2 @@
+/fs01/home/dhaneshr/code/obj-det-test/inference/test_eval.py:703: UserWarning: Tight layout not applied. The bottom and top margins cannot be made large enough to accommodate all Axes decorations.
+  fig.tight_layout()
